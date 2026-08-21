@@ -98,10 +98,10 @@ export function VideoReelSection() {
               }`}
             >
               <video
-                src={v.src}
+                src={`${v.src}#t=0.001`}
                 muted
                 playsInline
-                preload="none"
+                preload="metadata"
                 disablePictureInPicture
                 disableRemotePlayback
                 className="w-full h-full object-cover"
