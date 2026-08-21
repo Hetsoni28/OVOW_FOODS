@@ -54,9 +54,9 @@ function GalleryVideoItem({
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
       className={`relative overflow-hidden group bg-white shadow-sm cursor-pointer ${
-        img.spanSize === 'large' ? "md:col-span-2 md:row-span-2" : 
-        img.spanSize === 'wide' ? "md:col-span-2" :
-        img.spanSize === 'tall' ? "md:row-span-2" : ""
+        img.spanSize === 'large' ? "sm:col-span-2 sm:row-span-2" : 
+        img.spanSize === 'wide' ? "sm:col-span-2" :
+        img.spanSize === 'tall' ? "sm:row-span-2" : ""
       }`}
     >
       <motion.div layoutId={`gallery-media-${img._id}`} className="absolute inset-0 w-full h-full">
@@ -166,7 +166,7 @@ export function GalleryClient({ initialImages }: { initialImages: GalleryMedia[]
       {/* Masonry-style Grid */}
       <motion.div 
         layout
-        className="grid grid-flow-dense grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 auto-rows-[350px] md:auto-rows-[250px]"
+        className="grid grid-flow-dense grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 auto-rows-[280px] sm:auto-rows-[200px] lg:auto-rows-[250px]"
       >
         <AnimatePresence mode="popLayout">
           {filteredImages.map((img) => (
