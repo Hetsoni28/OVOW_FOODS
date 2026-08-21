@@ -49,14 +49,14 @@ function GalleryVideoItem({
       initial={{ opacity: 1, scale: 1 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
-      className={`relative overflow-hidden group bg-white shadow-sm cursor-pointer ${
-        img.spanSize === 'large' ? "sm:col-span-2 sm:row-span-2" : 
-        img.spanSize === 'wide' ? "sm:col-span-2" :
-        img.spanSize === 'tall' ? "sm:row-span-2" : ""
+      className={`relative overflow-hidden group bg-[#f3efe6] rounded-2xl md:rounded-3xl cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500 ease-out transform hover:-translate-y-1 ${
+        img.spanSize === 'large' ? "md:col-span-2 aspect-square md:aspect-video" : 
+        img.spanSize === 'wide' ? "md:col-span-2 aspect-video" :
+        img.spanSize === 'tall' ? "md:col-span-1 aspect-[4/5]" : "md:col-span-1 aspect-square"
       }`}
     >
       <motion.div layoutId={`gallery-media-${img._id}`} className="absolute inset-0 w-full h-full">
@@ -163,10 +163,10 @@ export function GalleryClient({ initialImages }: { initialImages: GalleryMedia[]
         ))}
       </motion.div>
 
-      {/* Masonry-style Grid */}
+      {/* Gallery Grid */}
       <motion.div 
         layout
-        className="grid grid-flow-dense grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 auto-rows-[280px] sm:auto-rows-[200px] lg:auto-rows-[250px]"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10"
       >
         <AnimatePresence mode="popLayout">
           {filteredImages.map((img) => (
