@@ -53,14 +53,14 @@ function GalleryVideoItem({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
-      className={`relative overflow-hidden group bg-[#f3efe6] rounded-2xl md:rounded-3xl cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500 ease-out transform hover:-translate-y-1 w-full`}
+      className={`relative overflow-hidden group bg-[#f3efe6] rounded-2xl md:rounded-3xl cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500 ease-out transform hover:-translate-y-1 w-full aspect-[4/3]`}
     >
-      <motion.div layoutId={`gallery-media-${img._id}`} className="relative w-full h-full">
+      <motion.div layoutId={`gallery-media-${img._id}`} className="absolute inset-0 w-full h-full">
         {img.videoUrl && (
           <video
             ref={videoRef}
             src={img.videoUrl}
-            className="w-full h-auto object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-[1.03]"
+            className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-[1.03]"
             preload="metadata"
             muted
             loop
@@ -159,19 +159,18 @@ export function GalleryClient({ initialImages }: { initialImages: GalleryMedia[]
         ))}
       </motion.div>
 
-      {/* True Masonry Layout */}
+      {/* Perfect Aspect-Ratio Grid */}
       <motion.div 
         layout
-        className="columns-1 sm:columns-2 lg:columns-3 gap-4 md:gap-6 px-4 md:px-0"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 px-4 md:px-0"
       >
         <AnimatePresence mode="popLayout">
           {filteredImages.map((img) => (
-            <div key={img._id} className="break-inside-avoid mb-4 md:mb-6">
-              <GalleryVideoItem 
-                img={img} 
-                onClick={() => setSelectedImage(img)} 
-              />
-            </div>
+            <GalleryVideoItem 
+              key={img._id} 
+              img={img} 
+              onClick={() => setSelectedImage(img)} 
+            />
           ))}
         </AnimatePresence>
       </motion.div>
@@ -210,16 +209,16 @@ export function GalleryClient({ initialImages }: { initialImages: GalleryMedia[]
             transition={{ duration: 0.4 }}
             className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-12 cursor-zoom-out"
           >
-            {/* Backdrop Blur */}
+            {/* Solid Backdrop - Fixed invalid Tailwind opacity class */}
             <div 
-              className="absolute inset-0 bg-black/95 backdrop-blur-2xl" 
+              className="absolute inset-0 bg-black/95" 
               onClick={() => setSelectedImage(null)}
             />
             
             {/* Close Button */}
             <button 
               onClick={() => setSelectedImage(null)}
-              className="absolute top-6 right-6 md:top-10 md:right-10 w-12 h-12 bg-white/10 hover:bg-white/25 rounded-full flex items-center justify-center text-white transition-colors z-[110] backdrop-blur-md"
+              className="absolute top-6 right-6 md:top-10 md:right-10 w-12 h-12 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-colors z-[110]"
             >
               <X size={24} />
             </button>
@@ -227,7 +226,7 @@ export function GalleryClient({ initialImages }: { initialImages: GalleryMedia[]
             {/* Shared Layout Container */}
             <motion.div
               layoutId={`gallery-container-${selectedImage._id}`}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="relative w-full max-w-7xl aspect-[9/16] md:aspect-video h-[100dvh] md:h-auto bg-black shadow-2xl flex items-center justify-center overflow-hidden z-[105] cursor-default md:rounded-xl"
               onClick={(e) => e.stopPropagation()}
             >
