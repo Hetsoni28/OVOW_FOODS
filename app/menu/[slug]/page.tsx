@@ -65,25 +65,40 @@ export default async function Product({
         </Link>
 
         {/* Product Split Section */}
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           
-          {/* Left: Image Hero */}
-          <div className="relative aspect-square lg:aspect-[4/5] overflow-hidden bg-primary/5 shadow-sm">
-            <Image
-              src={product.image || "/placeholder-food.svg"}
-              alt={product.name}
-              fill
-              className="object-cover"
-              priority
-            />
-            {/* Badges Overlay */}
-            <div className="absolute top-6 left-6 flex flex-col items-start gap-3">
-              <div className="bg-white/90 backdrop-blur-sm px-4 py-2 text-xs font-bold uppercase tracking-widest text-primary shadow-sm">
+          {/* Left: Media Hero (Sticky) */}
+          <div className="lg:sticky lg:top-32 relative aspect-square lg:aspect-[4/5] overflow-hidden bg-primary/5 shadow-2xl rounded-3xl md:rounded-[2rem] group">
+            {product.previewVideo || product.fullExperienceVideo ? (
+              <video
+                src={product.previewVideo || product.fullExperienceVideo}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+              />
+            ) : (
+              <Image
+                src={product.image || "/placeholder-food.svg"}
+                alt={product.name}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-1000"
+                priority
+              />
+            )}
+            
+            {/* Subtle overlay gradient to ensure badge readability */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent pointer-events-none" />
+
+            {/* Badges Overlay (Glassmorphism) */}
+            <div className="absolute top-6 left-6 md:top-8 md:left-8 flex flex-col items-start gap-3 z-10">
+              <div className="backdrop-blur-md bg-white/20 border border-white/30 px-5 py-2.5 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white shadow-lg rounded-full">
                 {product.category}
               </div>
               {product.isSignature && (
-                <div className="bg-[#C9A24A] text-white px-4 py-2 text-xs font-bold uppercase tracking-widest shadow-sm">
-                  Signature Dish
+                <div className="backdrop-blur-md bg-[#C9A24A]/90 border border-[#C9A24A]/50 text-white px-5 py-2.5 text-[10px] sm:text-xs font-bold uppercase tracking-widest shadow-lg rounded-full flex items-center gap-2">
+                  <Flame size={14} className="text-white" /> Signature Dish
                 </div>
               )}
             </div>

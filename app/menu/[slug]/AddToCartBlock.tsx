@@ -27,25 +27,25 @@ export function AddToCartBlock({ product }: { product: Product }) {
 
   return (
     <div className="mt-10 pt-10 border-t border-primary/10">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 lg:gap-6">
         
         {/* Quantity Selector */}
-        <div className="flex items-center gap-6 bg-white px-6 py-4 border border-primary/10">
+        <div className="flex items-center gap-5 bg-white px-5 py-4 border border-primary/10 rounded-full shadow-sm">
           <button
             onClick={handleDecrease}
-            className="text-primary/40 hover:text-primary transition-colors disabled:opacity-30"
+            className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center text-primary/60 hover:text-primary hover:bg-primary/10 transition-all disabled:opacity-30 disabled:hover:bg-primary/5"
             disabled={quantity <= 1}
           >
-            <Minus size={18} strokeWidth={2.5} />
+            <Minus size={16} strokeWidth={2.5} />
           </button>
-          <span className="font-serif text-xl font-medium min-w-[20px] text-center text-primary">
+          <span className="font-serif text-xl font-medium min-w-[24px] text-center text-primary">
             {quantity}
           </span>
           <button
             onClick={handleIncrease}
-            className="text-primary/40 hover:text-primary transition-colors"
+            className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center text-primary/60 hover:text-primary hover:bg-primary/10 transition-all"
           >
-            <Plus size={18} strokeWidth={2.5} />
+            <Plus size={16} strokeWidth={2.5} />
           </button>
         </div>
 
@@ -54,19 +54,19 @@ export function AddToCartBlock({ product }: { product: Product }) {
           onClick={handleAdd}
           disabled={added}
           suppressHydrationWarning
-          className={`flex-1 w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4.5 text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 ${
+          className={`flex-1 w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-5 text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 rounded-full shadow-md ${
             added
-              ? "bg-[#2E7D4F] text-white"
-              : "bg-primary text-white hover:bg-[#1A4D3A] hover:shadow-lg hover:-translate-y-0.5"
+              ? "bg-[#2E7D4F] text-white shadow-lg shadow-[#2E7D4F]/30 scale-[0.98]"
+              : "bg-primary text-white hover:bg-[#1A4D3A] hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-1"
           }`}
         >
           {added ? (
             <>
-              <Check size={16} /> Added successfully
+              <Check size={18} /> Added successfully
             </>
           ) : (
             <>
-              <ShoppingBag size={16} /> Add to Cart — ₹{product.price * quantity}
+              <ShoppingBag size={18} /> Add to Cart — ₹{(product.price * quantity).toLocaleString("en-IN")}
             </>
           )}
         </button>
