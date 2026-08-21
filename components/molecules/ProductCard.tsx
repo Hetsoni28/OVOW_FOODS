@@ -30,6 +30,9 @@ export function ProductCard({ product }: { product: Product }) {
               loop
               muted
               playsInline
+              preload="metadata"
+              disablePictureInPicture
+              disableRemotePlayback
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
           ) : (

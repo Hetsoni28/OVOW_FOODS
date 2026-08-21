@@ -55,6 +55,9 @@ export function VideoReelSection() {
           loop
           muted={muted}
           playsInline
+          preload="auto"
+          disablePictureInPicture
+          disableRemotePlayback
           className="w-full h-full object-cover opacity-90"
         />
         {/* Gradient overlay */}
@@ -98,6 +101,9 @@ export function VideoReelSection() {
                 src={v.src}
                 muted
                 playsInline
+                preload="none"
+                disablePictureInPicture
+                disableRemotePlayback
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-black/30 flex items-center justify-center">

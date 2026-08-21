@@ -14,6 +14,9 @@ export function HeroSection() {
         loop
         muted
         playsInline
+        preload="auto"
+        disablePictureInPicture
+        disableRemotePlayback
         className="absolute inset-0 w-full h-full object-cover z-0"
       />
       {/* Dark Overlay for Text Readability */}

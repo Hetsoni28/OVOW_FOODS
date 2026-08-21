@@ -40,3 +40,6 @@ next-env.d.ts
 /scratch
 .tempmediaStorage
 .user_uploaded
+
+.vercel
+.env*
