@@ -35,13 +35,13 @@ export function ProductDetails({ product }: { product: Product }) {
 
       {/* Details Grid (Soft Cards) */}
       <div className="grid grid-cols-2 gap-4 mb-8 pb-8 border-b border-primary/10">
-        <div className="bg-white p-5 rounded-2xl shadow-sm border border-primary/5 flex flex-col gap-2 transition-transform hover:-translate-y-1 duration-300">
+        <div className="bg-white p-5 rounded-none shadow-sm border border-primary/5 flex flex-col gap-2 transition-transform hover:-translate-y-1 duration-300">
           <Scale size={20} className="text-[#C9A24A]" />
           <p className="text-[10px] font-bold uppercase tracking-widest text-primary/40">Portion Size</p>
           {/* @ts-ignore */}
           <p className="text-lg font-medium text-primary">{product.servingSize || product.size || "1 Portion"}</p>
         </div>
-        <div className="bg-white p-5 rounded-2xl shadow-sm border border-primary/5 flex flex-col gap-2 transition-transform hover:-translate-y-1 duration-300">
+        <div className="bg-white p-5 rounded-none shadow-sm border border-primary/5 flex flex-col gap-2 transition-transform hover:-translate-y-1 duration-300">
           <Clock size={20} className="text-[#C9A24A]" />
           <p className="text-[10px] font-bold uppercase tracking-widest text-primary/40">Prep Time</p>
           <p className="text-lg font-medium text-primary">25-30 mins</p>
@@ -63,8 +63,8 @@ export function ProductDetails({ product }: { product: Product }) {
           "Premium quality ingredients",
           "No artificial colors or preservatives"
         ].map((text, i) => (
-          <div key={i} className="flex items-center gap-4 bg-primary/5 px-4 py-3 rounded-xl border border-primary/10">
-            <div className="bg-white rounded-full p-1 shadow-sm">
+          <div key={i} className="flex items-center gap-4 bg-primary/5 px-4 py-3 rounded-none border border-primary/10">
+            <div className="bg-white rounded-none p-1 shadow-sm">
               <CheckCircle2 size={16} className="text-[#C9A24A]" />
             </div>
             <span className="text-sm text-primary/80 font-medium">{text}</span>

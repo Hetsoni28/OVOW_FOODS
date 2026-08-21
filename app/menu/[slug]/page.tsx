@@ -68,7 +68,7 @@ export default async function Product({
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           
           {/* Left: Media Hero (Sticky) */}
-          <div className="lg:sticky lg:top-32 relative aspect-square lg:aspect-[4/5] overflow-hidden bg-primary/5 shadow-2xl rounded-3xl md:rounded-[2rem] group">
+          <div className="lg:sticky lg:top-32 relative aspect-square lg:aspect-[4/5] overflow-hidden bg-primary/5 shadow-2xl rounded-none group">
             {product.previewVideo || product.fullExperienceVideo ? (
               <video
                 src={product.previewVideo || product.fullExperienceVideo}
@@ -93,11 +93,11 @@ export default async function Product({
 
             {/* Badges Overlay (Glassmorphism) */}
             <div className="absolute top-6 left-6 md:top-8 md:left-8 flex flex-col items-start gap-3 z-10">
-              <div className="backdrop-blur-md bg-white/20 border border-white/30 px-5 py-2.5 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white shadow-lg rounded-full">
+              <div className="backdrop-blur-md bg-white/20 border border-white/30 px-5 py-2.5 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white shadow-lg rounded-none">
                 {product.category}
               </div>
               {product.isSignature && (
-                <div className="backdrop-blur-md bg-[#C9A24A]/90 border border-[#C9A24A]/50 text-white px-5 py-2.5 text-[10px] sm:text-xs font-bold uppercase tracking-widest shadow-lg rounded-full flex items-center gap-2">
+                <div className="backdrop-blur-md bg-[#C9A24A]/90 border border-[#C9A24A]/50 text-white px-5 py-2.5 text-[10px] sm:text-xs font-bold uppercase tracking-widest shadow-lg rounded-none flex items-center gap-2">
                   <Flame size={14} className="text-white" /> Signature Dish
                 </div>
               )}

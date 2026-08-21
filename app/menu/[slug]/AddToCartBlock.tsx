@@ -30,10 +30,10 @@ export function AddToCartBlock({ product }: { product: Product }) {
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 lg:gap-6">
         
         {/* Quantity Selector */}
-        <div className="flex items-center gap-5 bg-white px-5 py-4 border border-primary/10 rounded-full shadow-sm">
+        <div className="flex items-center gap-5 bg-white px-5 py-4 border border-primary/10 rounded-none shadow-sm">
           <button
             onClick={handleDecrease}
-            className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center text-primary/60 hover:text-primary hover:bg-primary/10 transition-all disabled:opacity-30 disabled:hover:bg-primary/5"
+            className="w-8 h-8 rounded-none bg-primary/5 flex items-center justify-center text-primary/60 hover:text-primary hover:bg-primary/10 transition-all disabled:opacity-30 disabled:hover:bg-primary/5"
             disabled={quantity <= 1}
           >
             <Minus size={16} strokeWidth={2.5} />
@@ -43,7 +43,7 @@ export function AddToCartBlock({ product }: { product: Product }) {
           </span>
           <button
             onClick={handleIncrease}
-            className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center text-primary/60 hover:text-primary hover:bg-primary/10 transition-all"
+            className="w-8 h-8 rounded-none bg-primary/5 flex items-center justify-center text-primary/60 hover:text-primary hover:bg-primary/10 transition-all"
           >
             <Plus size={16} strokeWidth={2.5} />
           </button>
@@ -54,7 +54,7 @@ export function AddToCartBlock({ product }: { product: Product }) {
           onClick={handleAdd}
           disabled={added}
           suppressHydrationWarning
-          className={`flex-1 w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-5 text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 rounded-full shadow-md ${
+          className={`flex-1 w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-5 text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 rounded-none shadow-md ${
             added
               ? "bg-[#2E7D4F] text-white shadow-lg shadow-[#2E7D4F]/30 scale-[0.98]"
               : "bg-primary text-white hover:bg-[#1A4D3A] hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-1"
