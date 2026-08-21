@@ -9,7 +9,7 @@ export function HeroSection() {
     <section className="relative bg-primary text-white text-center min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Video */}
       <video
-        src="/videos/hero-bg.mp4"
+        src="/videos/hero-bg.mp4#t=0.001"
         autoPlay
         loop
         muted

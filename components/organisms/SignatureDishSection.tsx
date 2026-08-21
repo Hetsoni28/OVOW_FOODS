@@ -20,7 +20,7 @@ export function SignatureDishSection() {
             className="relative aspect-square bg-white/5 overflow-hidden shadow-2xl"
           >
             <video
-              src="/videos/dum-biryani.mp4"
+              src="/videos/dum-biryani.mp4#t=0.001"
               autoPlay
               loop
               muted
