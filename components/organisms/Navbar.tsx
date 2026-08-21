@@ -64,10 +64,10 @@ export function Navbar() {
             Bulk Order
           </Link>
 
-          {/* Cart Icon (Desktop Only) */}
+          {/* Cart Icon */}
           <button
             onClick={openCart}
-            className="relative hidden md:flex items-center gap-1.5 text-inherit hover:opacity-70 transition-opacity"
+            className="relative flex items-center gap-1.5 text-inherit hover:opacity-70 transition-opacity"
             aria-label="Open cart"
             suppressHydrationWarning
           >
