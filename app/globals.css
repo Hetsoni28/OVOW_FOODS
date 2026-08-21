@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root {
+  --green: #123b2a;
+  --dark: #0b2118;
+  --gold: #c9a24a;
+  --cream: #f8f4ea;
+  --ink: #171a17;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: Inter, Arial, sans-serif;
+}
+.container-x {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+}
+@media (max-width: 640px) {
+  .container-x {
+    width: calc(100% - 28px);
+  }
+}
+
+/* Mobile menu animations */
+@keyframes menuFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes menuSlideIn {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+/* Scroll lock when mobile menu is open */
+html.menu-open {
+  overflow: hidden;
+  height: 100%;
+}
+html.menu-open body {
+  overflow: hidden;
+  height: 100%;
+}
