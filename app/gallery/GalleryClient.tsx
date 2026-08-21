@@ -53,18 +53,14 @@ function GalleryVideoItem({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
-      className={`relative overflow-hidden group bg-[#f3efe6] rounded-2xl md:rounded-3xl cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500 ease-out transform hover:-translate-y-1 ${
-        img.spanSize === 'large' ? "md:col-span-2 aspect-square md:aspect-video" : 
-        img.spanSize === 'wide' ? "md:col-span-2 aspect-video" :
-        img.spanSize === 'tall' ? "md:col-span-1 aspect-[4/5]" : "md:col-span-1 aspect-square"
-      }`}
+      className={`relative overflow-hidden group bg-[#f3efe6] rounded-2xl md:rounded-3xl cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500 ease-out transform hover:-translate-y-1 w-full`}
     >
-      <motion.div layoutId={`gallery-media-${img._id}`} className="absolute inset-0 w-full h-full">
+      <motion.div layoutId={`gallery-media-${img._id}`} className="relative w-full h-full">
         {img.videoUrl && (
           <video
             ref={videoRef}
             src={img.videoUrl}
-            className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-[1.03]"
+            className="w-full h-auto object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-[1.03]"
             preload="metadata"
             muted
             loop
@@ -163,18 +159,19 @@ export function GalleryClient({ initialImages }: { initialImages: GalleryMedia[]
         ))}
       </motion.div>
 
-      {/* Gallery Grid */}
+      {/* True Masonry Layout */}
       <motion.div 
         layout
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10"
+        className="columns-1 sm:columns-2 lg:columns-3 gap-4 md:gap-6 px-4 md:px-0"
       >
         <AnimatePresence mode="popLayout">
           {filteredImages.map((img) => (
-            <GalleryVideoItem 
-              key={img._id} 
-              img={img} 
-              onClick={() => setSelectedImage(img)} 
-            />
+            <div key={img._id} className="break-inside-avoid mb-4 md:mb-6">
+              <GalleryVideoItem 
+                img={img} 
+                onClick={() => setSelectedImage(img)} 
+              />
+            </div>
           ))}
         </AnimatePresence>
       </motion.div>
