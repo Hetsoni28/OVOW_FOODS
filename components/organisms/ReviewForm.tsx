@@ -45,7 +45,7 @@ export function ReviewForm() {
         <p className="text-primary/70">
           Your review has been successfully published to the site!
         </p>
-        <button 
+        <button suppressHydrationWarning 
           onClick={() => setStatus("idle")}
           className="mt-8 text-xs font-bold uppercase tracking-widest text-[#2E7D4F] hover:opacity-80 transition-opacity flex items-center gap-2"
         >
@@ -66,7 +66,7 @@ export function ReviewForm() {
         </label>
         <div className="flex gap-2">
           {[1, 2, 3, 4, 5].map((star) => (
-            <button
+            <button suppressHydrationWarning
               key={star}
               type="button"
               onClick={() => setRating(star)}
@@ -126,7 +126,7 @@ export function ReviewForm() {
         </div>
       )}
 
-      <Button
+      <Button suppressHydrationWarning
         type="submit"
         disabled={isSubmitting}
         className="w-full py-4 text-xs font-bold uppercase tracking-[0.2em] transition-all disabled:opacity-70"

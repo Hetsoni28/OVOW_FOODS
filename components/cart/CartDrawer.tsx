@@ -64,7 +64,7 @@ export function CartDrawer() {
                   </span>
                 )}
               </div>
-              <button
+              <button suppressHydrationWarning
                 onClick={closeCart}
                 className="text-primary/40 hover:text-primary transition-colors"
                 aria-label="Close cart"

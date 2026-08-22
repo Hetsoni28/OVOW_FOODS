@@ -53,7 +53,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           <span className="font-serif text-xl font-bold tracking-tight text-primary">
             OVOW FOODS
           </span>
-          <button
+          <button suppressHydrationWarning
             onClick={onClose}
             className="p-2 text-primary hover:opacity-70 transition-opacity"
             aria-label="Close menu"

@@ -128,7 +128,7 @@ function ProductCard({ product }: { product: Product }) {
         </Link>
 
         {/* Add to Cart */}
-        <button
+        <button suppressHydrationWarning
           onClick={handleAdd}
           className={`mt-auto w-full flex items-center justify-center gap-2 py-3 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 ${
             added
@@ -197,7 +197,7 @@ export function MenuClient({
                 ? activeCategory === "All"
                 : activeCategory === cat.name;
             return (
-              <button
+              <button suppressHydrationWarning
                 key={cat._id}
                 onClick={() =>
                   setActiveCategory(cat.name === "All" ? "All" : cat.name)
@@ -222,7 +222,7 @@ export function MenuClient({
           {filteredProducts.length} dish{filteredProducts.length !== 1 && "es"}
         </p>
         {(searchQuery || activeCategory !== "All") && (
-          <button
+          <button suppressHydrationWarning
             onClick={() => {
               setSearchQuery("");
               setActiveCategory("All");
@@ -252,7 +252,7 @@ export function MenuClient({
           <p className="text-sm text-primary/50 mb-6 max-w-xs">
             Try adjusting your search or category filter.
           </p>
-          <button
+          <button suppressHydrationWarning
             onClick={() => { setSearchQuery(""); setActiveCategory("All"); }}
             className="px-6 py-3 bg-[#C9A24A] text-white text-xs font-bold uppercase tracking-widest hover:bg-[#123B2A] transition-colors"
           >

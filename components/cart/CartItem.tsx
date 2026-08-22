@@ -22,7 +22,7 @@ export function CartItem({ item }: { item: CartItemType }) {
 
       {/* Qty controls */}
       <div className="flex items-center gap-2 mt-1">
-        <button
+        <button suppressHydrationWarning
           onClick={() => decrement(item.slug)}
           className="w-8 h-8 flex items-center justify-center border border-primary/20 text-primary hover:bg-primary hover:text-white transition-colors"
           aria-label="Decrease quantity"
@@ -32,7 +32,7 @@ export function CartItem({ item }: { item: CartItemType }) {
         <span className="w-6 text-center text-sm font-semibold text-primary">
           {item.quantity}
         </span>
-        <button
+        <button suppressHydrationWarning
           onClick={() => increment(item.slug)}
           className="w-8 h-8 flex items-center justify-center border border-primary/20 text-primary hover:bg-primary hover:text-white transition-colors"
           aria-label="Increase quantity"
@@ -42,7 +42,7 @@ export function CartItem({ item }: { item: CartItemType }) {
       </div>
 
       {/* Remove */}
-      <button
+      <button suppressHydrationWarning
         onClick={() => removeItem(item.slug)}
         className="mt-1 text-primary/30 hover:text-red-500 transition-colors"
         aria-label="Remove item"

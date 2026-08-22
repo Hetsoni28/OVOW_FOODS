@@ -34,7 +34,7 @@ export function MenuFilters({
 
           {/* Horizontal Scrollable Categories */}
           <div className="flex items-center gap-3 overflow-x-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            <button
+            <button suppressHydrationWarning
               onClick={() => setActiveCategory("All")}
               className={`shrink-0 px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${
                 activeCategory === "All"
@@ -45,7 +45,7 @@ export function MenuFilters({
               All Menu
             </button>
             {categories?.map((category) => (
-              <button
+              <button suppressHydrationWarning
                 key={category._id}
                 onClick={() => setActiveCategory(category.name)}
                 className={`shrink-0 px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${
@@ -70,7 +70,7 @@ export function MenuFilters({
           </span>
         </div>
         {(searchQuery || activeCategory !== "All") && (
-          <button
+          <button suppressHydrationWarning
             onClick={() => {
               setSearchQuery("");
               setActiveCategory("All");

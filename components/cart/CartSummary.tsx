@@ -48,7 +48,7 @@ export function CartSummary() {
       </p>
 
       {/* Toggle customer details */}
-      <button
+      <button suppressHydrationWarning
         onClick={() => setShowForm((v) => !v)}
         className="w-full flex items-center justify-between text-sm font-semibold text-primary border border-primary/20 px-4 py-3 mb-3 hover:bg-primary/5 transition-colors"
       >
@@ -100,7 +100,7 @@ export function CartSummary() {
         </div>
       )}
 
-      <button
+      <button suppressHydrationWarning
         onClick={showForm ? handleOrder : () => setShowForm(true)}
         suppressHydrationWarning
         className="w-full bg-[#25D366] text-white flex items-center justify-center gap-2.5 py-4 text-xs font-bold uppercase tracking-[0.2em] hover:bg-[#1DA851] transition-colors"

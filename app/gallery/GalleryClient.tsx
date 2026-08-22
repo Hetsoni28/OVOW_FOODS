@@ -138,7 +138,7 @@ export function GalleryClient({ initialImages }: { initialImages: GalleryMedia[]
       >
         {CATEGORIES.map((cat) => (
           <div key={cat} className="relative">
-            <button
+            <button suppressHydrationWarning
               onClick={() => setActiveCategory(cat)}
               className={`relative z-10 px-6 py-3 text-xs font-bold uppercase tracking-widest transition-colors duration-300 ${
                 activeCategory === cat
@@ -194,7 +194,7 @@ export function GalleryClient({ initialImages }: { initialImages: GalleryMedia[]
         className="mt-40 mb-20 text-center"
       >
         <p className="font-serif text-3xl md:text-5xl mb-8">Ready to taste it?</p>
-        <Button href="/menu" className="px-10 py-5 text-sm font-bold uppercase tracking-widest">
+        <Button suppressHydrationWarning href="/menu" className="px-10 py-5 text-sm font-bold uppercase tracking-widest">
           Order Now
         </Button>
       </motion.div>
@@ -216,7 +216,7 @@ export function GalleryClient({ initialImages }: { initialImages: GalleryMedia[]
             />
             
             {/* Close Button */}
-            <button 
+            <button suppressHydrationWarning 
               onClick={() => setSelectedImage(null)}
               className="absolute top-6 right-6 md:top-10 md:right-10 w-12 h-12 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-colors z-[110]"
             >

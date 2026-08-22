@@ -75,7 +75,7 @@ export function VideoReelSection() {
             </h3>
           </div>
           {/* Mute toggle */}
-          <button
+          <button suppressHydrationWarning
             onClick={() => setMuted((m) => !m)}
             className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/20 transition-colors"
           >
@@ -88,7 +88,7 @@ export function VideoReelSection() {
       <div className="container-x py-6">
         <div className="grid grid-cols-4 gap-3">
           {videos.map((v, i) => (
-            <button
+            <button suppressHydrationWarning
               key={v.src}
               onClick={() => setActiveIdx(i)}
               className={`relative aspect-video overflow-hidden transition-all duration-300 ${
