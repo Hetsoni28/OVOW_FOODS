@@ -48,6 +48,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
+      <head>
+        {/* Preload hero video — browser starts downloading immediately with page HTML */}
+        <link rel="preload" as="video" href="/videos/hero-bg.mp4" type="video/mp4" />
+      </head>
       <body
         className={`${playfair.variable} ${manrope.variable} font-sans flex min-h-screen flex-col`}
         suppressHydrationWarning
