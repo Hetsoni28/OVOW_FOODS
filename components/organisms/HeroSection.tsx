@@ -3,31 +3,59 @@
 import { Button } from "@/components/atoms/Button";
 import { motion } from "framer-motion";
 import { fadeUpSlow, staggerFast } from "@/lib/animations";
+import { useEffect, useRef } from "react";
 
 export function HeroSection() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    // Wait for page to be fully painted and interactive before loading video.
+    // This prevents the 8MB video download from competing with page resources.
+    if (!videoRef.current) return;
+
+    const startVideo = () => {
+      const video = videoRef.current;
+      if (!video) return;
+      // Now safe to load — page is already rendered
+      video.src = "/videos/hero-bg.mp4";
+      video.load();
+      video.play().catch(() => {
+        // Autoplay blocked (Low Power Mode / browser policy) — poster stays, no error shown
+      });
+    };
+
+    // Use requestIdleCallback if available (waits for browser idle time)
+    // Fallback: setTimeout 500ms ensures page paint is complete first
+    if ("requestIdleCallback" in window) {
+      (window as Window & typeof globalThis & { requestIdleCallback: (cb: () => void) => void })
+        .requestIdleCallback(startVideo);
+    } else {
+      setTimeout(startVideo, 500);
+    }
+  }, []);
+
   return (
     <section className="relative text-white text-center min-h-screen flex items-center justify-center overflow-hidden">
       {/*
-        VIDEO ONLY — no separate poster image layer.
-        - poster="/images/hero-poster.jpg" shows the first frame instantly while the video loads
-        - preload="auto" starts downloading immediately for fast playback
-        - #t=0.001 forces mobile browsers to seek to the first frame as the thumbnail
-        - playsInline prevents iOS from going fullscreen
+        FINAL FIX — True lazy video loading:
+        - poster shows the food image INSTANTLY (no green, no lag)
+        - src is intentionally empty — video won't download until after page renders
+        - useEffect sets the src + plays AFTER the browser is idle
+        - Result: page feels instant, video appears smoothly after ~0.5s
       */}
       <video
-        src="/videos/hero-bg.mp4#t=0.001"
+        ref={videoRef}
         poster="/images/hero-poster.jpg"
-        autoPlay
         loop
         muted
         playsInline
-        preload="auto"
+        preload="none"
         disablePictureInPicture
         disableRemotePlayback
         className="absolute inset-0 w-full h-full object-cover z-0"
       />
 
-      {/* Dark Overlay for Text Readability */}
+      {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/50 z-[1]" />
 
       <motion.div
