@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { fadeUp, staggerFast } from "@/lib/animations";
 import { Button } from "@/components/atoms/Button";
 
 export function SignatureDishSection() {
+  const [videoLoaded, setVideoLoaded] = useState(false);
   return (
     <section className="bg-primary text-white py-12 md:py-16 overflow-hidden">
       <div className="container-x">
@@ -18,27 +20,25 @@ export function SignatureDishSection() {
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             className="relative aspect-square bg-white/5 overflow-hidden shadow-2xl"
           >
-            {/* Layer 1: Static poster — loads INSTANTLY on all devices */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/hero-poster.jpg"
-              alt="Dum Matka Biryani"
-              fetchPriority="low"
-              decoding="async"
-              className="absolute inset-0 w-full h-full object-cover z-0"
-            />
+            {/* Skeleton shimmer — shows while video is loading on mobile */}
+            {!videoLoaded && (
+              <div className="absolute inset-0 z-0 bg-white/5 overflow-hidden">
+                <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+              </div>
+            )}
 
-            {/* Layer 2: Video — fades in when ready */}
+            {/* Video — fades in smoothly when ready */}
             <video
               src="/videos/dum-biryani.mp4"
               autoPlay
               loop
               muted
               playsInline
-              preload="none"
+              preload="auto"
               disablePictureInPicture
               disableRemotePlayback
-              className="absolute inset-0 w-full h-full object-cover z-[1]"
+              onLoadedData={() => setVideoLoaded(true)}
+              className={`absolute inset-0 w-full h-full object-cover z-[1] transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
             />
 
             {/* Badge */}

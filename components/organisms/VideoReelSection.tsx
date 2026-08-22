@@ -33,7 +33,13 @@ const videos = [
 export function VideoReelSection() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [muted, setMuted] = useState(true);
+  const [videoLoaded, setVideoLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  function handleChangeVideo(i: number) {
+    setActiveIdx(i);
+    setVideoLoaded(false);
+  }
 
   const active = videos[activeIdx];
 
@@ -49,20 +55,16 @@ export function VideoReelSection() {
         </h2>
       </div>
 
-      {/* Main video player — two-layer: poster image + video */}
+      {/* Main video player */}
       <div className="relative aspect-video md:aspect-[21/9] bg-[#0B2118] overflow-hidden">
-        {/* Layer 1: Static poster — loads INSTANTLY, shows on ALL devices */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          key={active.poster}
-          src={active.poster}
-          alt={active.title}
-          fetchPriority="low"
-          decoding="async"
-          className="absolute inset-0 w-full h-full object-cover opacity-90 z-0"
-        />
+        {/* Skeleton shimmer — shows while video is loading on mobile */}
+        {!videoLoaded && (
+          <div className="absolute inset-0 z-0 bg-white/5 overflow-hidden">
+            <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+          </div>
+        )}
 
-        {/* Layer 2: Video — loads and plays when ready, covers the poster */}
+        {/* Video — fades in smoothly when ready */}
         <video
           ref={videoRef}
           key={active.src}
@@ -74,7 +76,8 @@ export function VideoReelSection() {
           preload="auto"
           disablePictureInPicture
           disableRemotePlayback
-          className="absolute inset-0 w-full h-full object-cover opacity-90 z-[1]"
+          onLoadedData={() => setVideoLoaded(true)}
+          className={`absolute inset-0 w-full h-full object-cover opacity-90 z-[1] transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
         />
 
         {/* Gradient overlay */}
@@ -107,19 +110,26 @@ export function VideoReelSection() {
           {videos.map((v, i) => (
             <button suppressHydrationWarning
               key={v.src}
-              onClick={() => setActiveIdx(i)}
-              className={`relative aspect-video overflow-hidden transition-all duration-300 ${
+              onClick={() => handleChangeVideo(i)}
+              className={`relative aspect-video overflow-hidden transition-all duration-300 bg-white/5 ${
                 i === activeIdx
                   ? "ring-2 ring-[#C9A24A] opacity-100"
                   : "opacity-40 hover:opacity-70"
               }`}
             >
-              {/* Use poster image for thumbnails — avoids black frames on mobile */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={v.poster}
-                alt={v.title}
-                className="w-full h-full object-cover"
+              {/* Skeleton shimmer for thumbnails */}
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+              </div>
+              {/* Video frame for thumbnail */}
+              <video
+                src={`${v.src}#t=0.001`}
+                muted
+                playsInline
+                preload="metadata"
+                disablePictureInPicture
+                disableRemotePlayback
+                className="absolute inset-0 w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
                 {i === activeIdx ? (
