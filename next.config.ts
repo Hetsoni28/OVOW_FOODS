@@ -28,8 +28,6 @@ const nextConfig: NextConfig = {
   compress: true,
   // Enable React strict mode for better performance profiling
   reactStrictMode: false,
-  // Faster page loads with output tracing
-  output: 'standalone',
 };
 
 export default nextConfig;
