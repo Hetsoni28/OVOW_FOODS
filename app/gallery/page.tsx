@@ -2,8 +2,6 @@ import { client } from "@/sanity/lib/client";
 import { GALLERY_QUERY } from "@/sanity/lib/queries";
 import { GalleryClient } from "./GalleryClient";
 
-import { VideoReelSection } from "@/components/organisms/VideoReelSection";
-
 export const revalidate = 60; // Revalidate every 60 seconds
 
 export default async function GalleryPage() {
@@ -11,12 +9,9 @@ export default async function GalleryPage() {
 
   return (
     <main className="min-h-screen bg-[#F9F6F0] pt-32 pb-20 text-primary">
-      <div className="container-x mb-20">
+      <div className="container-x">
         <GalleryClient initialImages={initialImages} />
       </div>
-      
-      {/* Moved Video Reel from home page to here */}
-      <VideoReelSection />
     </main>
   );
 }
