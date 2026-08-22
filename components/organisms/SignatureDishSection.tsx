@@ -1,6 +1,5 @@
 "use client";
 
-import { LazyVideo } from "@/components/atoms/LazyVideo";
 import { motion } from "framer-motion";
 import { fadeUp, staggerFast } from "@/lib/animations";
 import { Button } from "@/components/atoms/Button";
@@ -19,8 +18,15 @@ export function SignatureDishSection() {
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             className="relative aspect-square bg-white/5 overflow-hidden shadow-2xl"
           >
-            <LazyVideo
+            <video
               src="/videos/dum-biryani.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              disablePictureInPicture
+              disableRemotePlayback
               className="absolute inset-0 w-full h-full object-cover"
             />
             {/* Badge */}
