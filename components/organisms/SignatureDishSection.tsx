@@ -52,6 +52,13 @@ export function SignatureDishSection() {
               className={`absolute inset-0 w-full h-full object-cover z-[1] transition-opacity duration-700 pointer-events-none ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
             />
 
+            {/* Invisible touch-blocker: prevents Android from stealing taps */}
+            <div
+              className="absolute inset-0 z-[2]"
+              onClick={(e) => e.preventDefault()}
+              onTouchStart={(e) => e.preventDefault()}
+            />
+
             {/* Badge */}
             <div className="absolute top-6 left-6 bg-tertiary text-white px-4 py-2 text-xs font-bold uppercase tracking-widest shadow-lg z-10">
               Signature Dish

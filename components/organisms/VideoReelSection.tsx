@@ -84,8 +84,15 @@ export function VideoReelSection() {
         <div className="absolute inset-0 bg-gradient-to-t from-[#0B2118]/80 via-transparent to-transparent z-[2]" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#0B2118]/30 via-transparent to-transparent z-[2]" />
 
+        {/* Invisible touch-blocker: prevents Android from stealing taps and opening native video player */}
+        <div
+          className="absolute inset-0 z-[3]"
+          onClick={(e) => e.preventDefault()}
+          onTouchStart={(e) => e.preventDefault()}
+        />
+
         {/* Title overlay */}
-        <div className="absolute bottom-8 left-0 right-0 container-x flex items-end justify-between z-[3]">
+        <div className="absolute bottom-8 left-0 right-0 container-x flex items-end justify-between z-[4]">
           <div>
             <p className="text-[#C9A24A] text-[10px] uppercase tracking-widest font-bold mb-1">
               {active.subtitle}
