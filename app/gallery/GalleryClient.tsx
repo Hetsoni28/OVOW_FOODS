@@ -53,7 +53,6 @@ function GalleryVideoItem({
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      onClick={onClick}
       className={`relative overflow-hidden group bg-[#f3efe6] rounded-2xl md:rounded-3xl cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500 ease-out transform hover:-translate-y-1 w-full aspect-[4/3]`}
     >
       <motion.div layoutId={`gallery-media-${img._id}`} className="absolute inset-0 w-full h-full">
@@ -66,7 +65,7 @@ function GalleryVideoItem({
       </motion.div>
 
       {/* Cinematic Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-700 ease-out flex flex-col items-center justify-center p-6">
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-700 ease-out flex flex-col items-center justify-center p-6 z-[2]">
         
         {/* Play Button */}
         <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl flex items-center justify-center mb-6 transform translate-y-0 opacity-100 md:translate-y-8 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 transition-all duration-500 delay-[50ms] ease-out">
@@ -78,6 +77,13 @@ function GalleryVideoItem({
           {img.caption}
         </p>
       </div>
+
+      {/* Full-card touch interceptor — blocks Android native player, fires our lightbox instead */}
+      <div
+        className="absolute inset-0 z-[3]"
+        onClick={onClick}
+        onTouchStart={(e) => { e.preventDefault(); onClick(); }}
+      />
     </motion.div>
   );
 }
