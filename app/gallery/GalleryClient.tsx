@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { fadeUp, staggerFast } from "@/lib/animations";
 import { X, Play } from "lucide-react";
 import { Button } from "@/components/atoms/Button";
+import { LazyVideo } from "@/components/atoms/LazyVideo";
 
 type GalleryMedia = {
   _id: string;
@@ -57,14 +58,9 @@ function GalleryVideoItem({
     >
       <motion.div layoutId={`gallery-media-${img._id}`} className="absolute inset-0 w-full h-full">
         {img.videoUrl && (
-          <video
-            ref={videoRef}
-            src={`${img.videoUrl}#t=0.001`}
+          <LazyVideo
+            src={img.videoUrl}
             className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-[1.03]"
-            preload="auto"
-            muted
-            loop
-            playsInline
           />
         )}
       </motion.div>
@@ -231,19 +227,14 @@ export function GalleryClient({ initialImages }: { initialImages: GalleryMedia[]
               onClick={(e) => e.stopPropagation()}
             >
               <motion.div layoutId={`gallery-media-${selectedImage._id}`} className="absolute inset-0 w-full h-full">
-                <video
+                <LazyVideo
                   key={selectedImage._id}
                   src={selectedImage.videoUrl}
-                  autoPlay
                   controls
-                  muted
-                  playsInline
-                  preload="auto"
+                  muted={false}
                   className="w-full h-full object-contain md:object-cover"
-                  ref={(el) => {
-                    // Unmute after a short delay so autoplay policy is satisfied
-                    if (el) setTimeout(() => { el.muted = false; }, 300);
-                  }}
+                  threshold={0}
+                  rootMargin="0px"
                 />
               </motion.div>
               

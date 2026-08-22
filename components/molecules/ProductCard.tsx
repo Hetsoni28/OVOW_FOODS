@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Product } from "@/types";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/atoms/Button";
+import { LazyVideo } from "@/components/atoms/LazyVideo";
 
 export function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
@@ -24,18 +25,8 @@ export function ProductCard({ product }: { product: Product }) {
       <Link href={`/menu/${product.slug}`} className="block">
         <div className="relative aspect-square overflow-hidden bg-primary/5">
           {product.previewVideo ? (
-            <video
-              src={`${product.previewVideo}#t=0.001`}
-              loop
-              muted
-              playsInline
-              preload="metadata"
-              disablePictureInPicture
-              disableRemotePlayback
-              onMouseEnter={(e) => e.currentTarget.play().catch(() => {})}
-              onMouseLeave={(e) => {
-                e.currentTarget.pause();
-              }}
+            <LazyVideo
+              src={product.previewVideo}
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
           ) : (

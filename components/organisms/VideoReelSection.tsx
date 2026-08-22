@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { Play, Volume2, VolumeX } from "lucide-react";
+import { LazyVideo } from "@/components/atoms/LazyVideo";
 
 const videos = [
   {
@@ -47,18 +48,13 @@ export function VideoReelSection() {
 
       {/* Main video player */}
       <div className="relative aspect-video md:aspect-[21/9] bg-black overflow-hidden">
-        <video
-          ref={videoRef}
+        <LazyVideo
           key={active.src}
           src={active.src}
-          autoPlay
-          loop
           muted={muted}
-          playsInline
-          preload="auto"
-          disablePictureInPicture
-          disableRemotePlayback
           className="w-full h-full object-cover opacity-90"
+          threshold={0}
+          rootMargin="0px"
         />
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#0B2118]/80 via-transparent to-transparent" />
