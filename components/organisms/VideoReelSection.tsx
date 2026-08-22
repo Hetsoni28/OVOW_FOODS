@@ -56,7 +56,7 @@ export function VideoReelSection() {
       </div>
 
       {/* Main video player */}
-      <div className="relative aspect-video md:aspect-[21/9] bg-[#0B2118] overflow-hidden">
+      <div className="relative aspect-[9/16] sm:aspect-square md:aspect-video bg-[#0B2118] overflow-hidden">
         {/* Skeleton shimmer — shows while video is loading on mobile */}
         {!videoLoaded && (
           <div className="absolute inset-0 z-0 bg-white/5 overflow-hidden">
@@ -77,7 +77,7 @@ export function VideoReelSection() {
           disablePictureInPicture
           disableRemotePlayback
           onLoadedData={() => setVideoLoaded(true)}
-          className={`absolute inset-0 w-full h-full object-cover opacity-90 z-[1] transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute inset-0 w-full h-full object-cover opacity-90 z-[1] transition-opacity duration-700 pointer-events-none ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
         />
 
         {/* Gradient overlay */}

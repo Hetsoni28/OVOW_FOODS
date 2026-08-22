@@ -2,7 +2,6 @@ import { HeroSection } from "@/components/organisms/HeroSection";
 import { QuoteSection } from "@/components/organisms/QuoteSection";
 import { MenuPreviewSection } from "@/components/organisms/MenuPreviewSection";
 import { SignatureDishSection } from "@/components/organisms/SignatureDishSection";
-import { VideoReelSection } from "@/components/organisms/VideoReelSection";
 import { CraftSection } from "@/components/organisms/CraftSection";
 import { CtaSection } from "@/components/organisms/CtaSection";
 import type { Metadata } from "next";
@@ -19,7 +18,6 @@ export default function Home() {
       <QuoteSection />
       <MenuPreviewSection />
       <SignatureDishSection />
-      <VideoReelSection />
       <CraftSection />
       <CtaSection />
     </main>
