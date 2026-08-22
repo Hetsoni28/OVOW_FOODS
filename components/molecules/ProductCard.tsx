@@ -6,6 +6,7 @@ import { Plus, Check, Star, Flame, ChefHat } from "lucide-react";
 import { useState } from "react";
 import { Product } from "@/types";
 import { useCart } from "@/context/CartContext";
+import { LazyVideo } from "@/components/atoms/LazyVideo";
 
 export function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
@@ -26,16 +27,9 @@ export function ProductCard({ product }: { product: Product }) {
       {/* Image Container */}
       <Link href={`/menu/${product.slug}`} className="block relative aspect-[4/5] overflow-hidden bg-primary/5">
         {product.previewVideo ? (
-          <video
+          <LazyVideo
             src={product.previewVideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            disablePictureInPicture
-            disableRemotePlayback
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-105"
           />
         ) : (
           <Image
