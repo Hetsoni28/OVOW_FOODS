@@ -6,25 +6,25 @@ import { Play, Volume2, VolumeX } from "lucide-react";
 const videos = [
   {
     src: "/videos/brand-cooking.mp4",
-    poster: "/images/hero-poster.jpg",
+    poster: "/images/brand-cooking-poster.jpg",
     title: "The Art of Cooking",
     subtitle: "Crafted with love",
   },
   {
     src: "/videos/food-montage.mp4",
-    poster: "/images/hero-poster.jpg",
+    poster: "/images/food-montage-poster.jpg",
     title: "A Vegetarian Feast",
     subtitle: "Pure & Premium",
   },
   {
     src: "/videos/paneer-commercial.mp4",
-    poster: "/images/hero-poster.jpg",
+    poster: "/images/paneer-commercial-poster.jpg",
     title: "Paneer Butter Masala",
     subtitle: "Our Signature Dish",
   },
   {
     src: "/videos/food-prep.mp4",
-    poster: "/images/hero-poster.jpg",
+    poster: "/images/food-prep-poster.jpg",
     title: "From Kitchen to You",
     subtitle: "Made Fresh Daily",
   },

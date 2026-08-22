@@ -20,14 +20,25 @@ export function SignatureDishSection() {
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             className="relative aspect-square bg-white/5 overflow-hidden shadow-2xl"
           >
-            {/* Skeleton shimmer — shows while video is loading on mobile */}
+            {/* Layer 1: Static poster — shows in <100ms, ALWAYS visible instantly */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/dum-biryani-poster.jpg"
+              alt=""
+              aria-hidden="true"
+              fetchPriority="high"
+              decoding="sync"
+              className="absolute inset-0 w-full h-full object-cover z-0"
+            />
+
+            {/* Layer 2: Shimmer on top of image while video downloads */}
             {!videoLoaded && (
-              <div className="absolute inset-0 z-0 bg-white/5 overflow-hidden">
-                <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+              <div className="absolute inset-0 z-[1] overflow-hidden">
+                <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/15 to-transparent" />
               </div>
             )}
 
-            {/* Video — fades in smoothly when ready */}
+            {/* Layer 3: Video — fades in smoothly when ready, covers image */}
             <video
               src="/videos/dum-biryani.mp4"
               autoPlay
@@ -38,7 +49,7 @@ export function SignatureDishSection() {
               disablePictureInPicture
               disableRemotePlayback
               onLoadedData={() => setVideoLoaded(true)}
-              className={`absolute inset-0 w-full h-full object-cover z-[1] transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 w-full h-full object-cover z-[2] transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
             />
 
             {/* Badge */}

@@ -19,7 +19,7 @@ export function HeroSection() {
       {/* Layer 1: Static image — instant, works on every device */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/images/hero-poster.jpg"
+        src="/images/hero-bg-poster.jpg"
         alt=""
         aria-hidden="true"
         fetchPriority="high"
