@@ -102,7 +102,6 @@ export function CartSummary() {
 
       <button suppressHydrationWarning
         onClick={showForm ? handleOrder : () => setShowForm(true)}
-        suppressHydrationWarning
         className="w-full bg-[#25D366] text-white flex items-center justify-center gap-2.5 py-4 text-xs font-bold uppercase tracking-[0.2em] hover:bg-[#1DA851] transition-colors"
       >
         <WhatsAppIcon className="w-5 h-5" />
