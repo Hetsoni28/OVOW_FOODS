@@ -109,9 +109,6 @@ export function CartSummary() {
         </div>
       )}
 
-        </div>
-      )}
-
       {!orderAttempted ? (
         <button suppressHydrationWarning
           onClick={showForm ? handleOrder : () => setShowForm(true)}
