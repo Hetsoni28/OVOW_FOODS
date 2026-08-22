@@ -16,7 +16,7 @@ export default async function Menu() {
   ]);
 
   return (
-    <div className="min-h-screen bg-[#0B2118]">
+    <div className="min-h-screen bg-[#F8F4EA]">
       {/* ── Cinematic Hero Banner ── */}
       <section className="relative h-[40vh] md:h-[52vh] flex items-end overflow-hidden bg-[#0B2118]">
         {/* Layered gradient background */}
@@ -54,11 +54,11 @@ export default async function Menu() {
         </div>
 
         {/* Bottom fade into page */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#0B2118] to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#F8F4EA] to-transparent" />
       </section>
 
       {/* ── Menu Content ── */}
-      <div className="container-x pb-24 md:pb-12 bg-[#0B2118]">
+      <div className="container-x pb-24 md:pb-12">
         <MenuClient products={products} categories={categories} />
       </div>
     </div>
