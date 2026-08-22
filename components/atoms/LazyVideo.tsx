@@ -3,20 +3,18 @@
 /**
  * LazyVideo — Universal video component for OVOW FOODS
  *
- * Solves ALL video performance issues permanently:
- * ✅ Only downloads when scrolled into view (IntersectionObserver)
- * ✅ Plays when visible, pauses when off-screen (saves battery + bandwidth)
- * ✅ Shows poster frame instantly (zero black/green flash)
- * ✅ Handles autoplay policy gracefully (muted start)
- * ✅ preload="none" until needed — never wastes bandwidth on off-screen videos
+ * ✅ poster image shows INSTANTLY on all devices (src set in HTML, not JS)
+ * ✅ preload="none" — browser knows the src but won't download until .load() is called
+ * ✅ Only plays when scrolled into view (IntersectionObserver)
+ * ✅ Pauses when scrolled off-screen (saves battery + data)
  * ✅ Works on mobile, desktop, Low Power Mode, slow connections
  *
  * Usage:
  *   <LazyVideo src="/videos/my-video.mp4" className="w-full h-full object-cover" />
- *   <LazyVideo src="/videos/my-video.mp4" poster="/images/thumb.jpg" loop={false} controls />
+ *   <LazyVideo src="/videos/my-video.mp4" poster="/images/thumb.jpg" controls loop={false} />
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 interface LazyVideoProps {
   src: string;
@@ -26,9 +24,9 @@ interface LazyVideoProps {
   controls?: boolean;
   muted?: boolean;
   objectFit?: "cover" | "contain";
-  /** How much of the element must be visible to trigger load/play (0-1) */
+  /** How much of the element must be visible before playing (0–1) */
   threshold?: number;
-  /** Root margin for early loading — loads before fully visible */
+  /** Preload video this many px before it enters view */
   rootMargin?: string;
   onCanPlay?: () => void;
 }
@@ -46,8 +44,7 @@ export function LazyVideo({
   onCanPlay,
 }: LazyVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isInView, setIsInView] = useState(false);
-  const [srcLoaded, setSrcLoaded] = useState(false);
+  const loadedRef = useRef(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -57,19 +54,16 @@ export function LazyVideo({
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // Element entered viewport — load and play
-            setIsInView(true);
-            if (!srcLoaded) {
-              video.src = src;
+            // First time entering view — trigger actual download
+            if (!loadedRef.current) {
               video.load();
-              setSrcLoaded(true);
+              loadedRef.current = true;
             }
             video.play().catch(() => {
-              // Autoplay blocked — video stays paused, poster visible. No crash.
+              // Autoplay blocked (Low Power Mode / browser policy) — poster stays visible
             });
           } else {
-            // Element left viewport — pause to save resources
-            setIsInView(false);
+            // Left viewport — pause to save resources
             if (!video.paused) video.pause();
           }
         });
@@ -79,11 +73,12 @@ export function LazyVideo({
 
     observer.observe(video);
     return () => observer.disconnect();
-  }, [src, srcLoaded, threshold, rootMargin]);
+  }, [threshold, rootMargin]);
 
   return (
     <video
       ref={videoRef}
+      src={src}
       poster={poster}
       loop={loop}
       muted={muted}
