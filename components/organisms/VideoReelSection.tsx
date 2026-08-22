@@ -6,21 +6,25 @@ import { Play, Volume2, VolumeX } from "lucide-react";
 const videos = [
   {
     src: "/videos/brand-cooking.mp4",
+    poster: "/images/hero-poster.jpg",
     title: "The Art of Cooking",
     subtitle: "Crafted with love",
   },
   {
     src: "/videos/food-montage.mp4",
+    poster: "/images/hero-poster.jpg",
     title: "A Vegetarian Feast",
     subtitle: "Pure & Premium",
   },
   {
     src: "/videos/paneer-commercial.mp4",
+    poster: "/images/hero-poster.jpg",
     title: "Paneer Butter Masala",
     subtitle: "Our Signature Dish",
   },
   {
     src: "/videos/food-prep.mp4",
+    poster: "/images/hero-poster.jpg",
     title: "From Kitchen to You",
     subtitle: "Made Fresh Daily",
   },
@@ -45,8 +49,20 @@ export function VideoReelSection() {
         </h2>
       </div>
 
-      {/* Main video player */}
-      <div className="relative aspect-video md:aspect-[21/9] bg-black overflow-hidden">
+      {/* Main video player — two-layer: poster image + video */}
+      <div className="relative aspect-video md:aspect-[21/9] bg-[#0B2118] overflow-hidden">
+        {/* Layer 1: Static poster — loads INSTANTLY, shows on ALL devices */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          key={active.poster}
+          src={active.poster}
+          alt={active.title}
+          fetchPriority="low"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover opacity-90 z-0"
+        />
+
+        {/* Layer 2: Video — loads and plays when ready, covers the poster */}
         <video
           ref={videoRef}
           key={active.src}
@@ -58,14 +74,15 @@ export function VideoReelSection() {
           preload="auto"
           disablePictureInPicture
           disableRemotePlayback
-          className="w-full h-full object-cover opacity-90"
+          className="absolute inset-0 w-full h-full object-cover opacity-90 z-[1]"
         />
+
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0B2118]/80 via-transparent to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0B2118]/30 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0B2118]/80 via-transparent to-transparent z-[2]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0B2118]/30 via-transparent to-transparent z-[2]" />
 
         {/* Title overlay */}
-        <div className="absolute bottom-8 left-0 right-0 container-x flex items-end justify-between">
+        <div className="absolute bottom-8 left-0 right-0 container-x flex items-end justify-between z-[3]">
           <div>
             <p className="text-[#C9A24A] text-[10px] uppercase tracking-widest font-bold mb-1">
               {active.subtitle}
@@ -97,13 +114,11 @@ export function VideoReelSection() {
                   : "opacity-40 hover:opacity-70"
               }`}
             >
-              <video
-                src={`${v.src}#t=0.001`}
-                muted
-                playsInline
-                preload="metadata"
-                disablePictureInPicture
-                disableRemotePlayback
+              {/* Use poster image for thumbnails — avoids black frames on mobile */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={v.poster}
+                alt={v.title}
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-black/30 flex items-center justify-center">

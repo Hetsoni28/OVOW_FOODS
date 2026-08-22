@@ -10,7 +10,7 @@ export function SignatureDishSection() {
       <div className="container-x">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           
-          {/* Video Side */}
+          {/* Video Side — two-layer: poster image + lazy video */}
           <motion.div
             initial={{ opacity: 1, x: 0 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -18,17 +18,29 @@ export function SignatureDishSection() {
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             className="relative aspect-square bg-white/5 overflow-hidden shadow-2xl"
           >
+            {/* Layer 1: Static poster — loads INSTANTLY on all devices */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/hero-poster.jpg"
+              alt="Dum Matka Biryani"
+              fetchPriority="low"
+              decoding="async"
+              className="absolute inset-0 w-full h-full object-cover z-0"
+            />
+
+            {/* Layer 2: Video — fades in when ready */}
             <video
               src="/videos/dum-biryani.mp4"
               autoPlay
               loop
               muted
               playsInline
-              preload="auto"
+              preload="none"
               disablePictureInPicture
               disableRemotePlayback
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover z-[1]"
             />
+
             {/* Badge */}
             <div className="absolute top-6 left-6 bg-tertiary text-white px-4 py-2 text-xs font-bold uppercase tracking-widest shadow-lg z-10">
               Signature Dish
