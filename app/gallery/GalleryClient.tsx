@@ -229,7 +229,7 @@ export function GalleryClient({ initialImages }: { initialImages: GalleryMedia[]
             <motion.div
               layoutId={`gallery-container-${selectedImage._id}`}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full max-w-7xl aspect-[9/16] md:aspect-video h-[100dvh] md:h-auto bg-black shadow-2xl flex items-center justify-center overflow-hidden z-[105] cursor-default md:rounded-xl"
+              className="relative w-full max-w-7xl aspect-[4/3] md:aspect-video h-auto bg-black shadow-2xl flex items-center justify-center overflow-hidden z-[105] cursor-default md:rounded-xl"
               onClick={(e) => e.stopPropagation()}
             >
               <motion.div layoutId={`gallery-media-${selectedImage._id}`} className="absolute inset-0 w-full h-full">
@@ -238,11 +238,18 @@ export function GalleryClient({ initialImages }: { initialImages: GalleryMedia[]
                   src={selectedImage.videoUrl}
                   controls={false}
                   muted={false}
-                  className="w-full h-full object-contain md:object-cover"
+                  className="w-full h-full object-cover pointer-events-none z-0"
                   threshold={0}
                   rootMargin="0px"
                 />
               </motion.div>
+              
+              {/* Invisible touch-blocker: prevents Android from stealing taps in the lightbox */}
+              <div
+                className="absolute inset-0 z-10"
+                onClick={(e) => e.preventDefault()}
+                onTouchStart={(e) => e.preventDefault()}
+              />
               
               {/* Lightbox Text Overlay (Fade In) */}
               <motion.div 
