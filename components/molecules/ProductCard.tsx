@@ -27,15 +27,14 @@ export function ProductCard({ product }: { product: Product }) {
       <Link href={`/menu/${product.slug}`} className="block relative aspect-[4/5] overflow-hidden bg-[#0B2118]">
         {product.previewVideo ? (
           <video
-            src={`${product.previewVideo}#t=0.001`}
+            src={product.previewVideo}
+            autoPlay
             loop
             muted
             playsInline
-            preload="metadata"
+            preload="auto"
             disablePictureInPicture
             disableRemotePlayback
-            onMouseEnter={(e) => e.currentTarget.play().catch(() => {})}
-            onMouseLeave={(e) => e.currentTarget.pause()}
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"
           />
         ) : (
