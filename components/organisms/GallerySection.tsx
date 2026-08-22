@@ -47,6 +47,8 @@ export function GallerySection() {
               src={img}
               alt="Gallery image"
               fill
+              sizes="(max-width: 768px) 85vw, 40vw"
+              loading="lazy"
               className="object-cover opacity-80"
             />
           </div>

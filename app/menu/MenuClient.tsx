@@ -32,11 +32,15 @@ function ProductCard({ product }: { product: Product }) {
         <div className="relative aspect-[4/3] overflow-hidden bg-primary/5">
           {product.previewVideo ? (
             <video
-              src={product.previewVideo}
-              autoPlay
+              src={`${product.previewVideo}#t=0.001`}
               loop
               muted
               playsInline
+              preload="metadata"
+              disablePictureInPicture
+              disableRemotePlayback
+              onMouseEnter={(e) => e.currentTarget.play().catch(() => {})}
+              onMouseLeave={(e) => e.currentTarget.pause()}
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
           ) : (

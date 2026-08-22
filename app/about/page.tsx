@@ -56,6 +56,8 @@ export default function About() {
               src="/placeholder-food.svg" 
               alt="OVOW Food Preparation"
               fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
             />
             <div className="absolute inset-0 bg-primary/10 pointer-events-none mix-blend-multiply" />
