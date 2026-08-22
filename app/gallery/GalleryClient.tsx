@@ -59,9 +59,9 @@ function GalleryVideoItem({
         {img.videoUrl && (
           <video
             ref={videoRef}
-            src={img.videoUrl}
+            src={`${img.videoUrl}#t=0.001`}
             className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-[1.03]"
-            preload="metadata"
+            preload="auto"
             muted
             loop
             playsInline
@@ -232,11 +232,18 @@ export function GalleryClient({ initialImages }: { initialImages: GalleryMedia[]
             >
               <motion.div layoutId={`gallery-media-${selectedImage._id}`} className="absolute inset-0 w-full h-full">
                 <video
+                  key={selectedImage._id}
                   src={selectedImage.videoUrl}
                   autoPlay
                   controls
+                  muted
                   playsInline
+                  preload="auto"
                   className="w-full h-full object-contain md:object-cover"
+                  ref={(el) => {
+                    // Unmute after a short delay so autoplay policy is satisfied
+                    if (el) setTimeout(() => { el.muted = false; }, 300);
+                  }}
                 />
               </motion.div>
               
