@@ -4,6 +4,8 @@ import { client } from "@/sanity/lib/client";
 import { ALL_PRODUCTS_QUERY, ALL_CATEGORIES_QUERY } from "@/sanity/lib/queries";
 import type { Product, Category } from "@/types";
 
+import { LazyVideo } from "@/components/atoms/LazyVideo";
+
 export const metadata: Metadata = {
   title: "Menu",
   description: "Explore our premium 100% pure vegetarian menu. Signature dishes, comfort meals, breads, and desserts.",
@@ -19,8 +21,27 @@ export default async function Menu() {
     <div className="min-h-screen bg-[#F8F4EA]">
       {/* ── Cinematic Hero Banner ── */}
       <section className="relative h-[40vh] md:h-[52vh] flex items-end overflow-hidden bg-[#0B2118]">
-        {/* Layered gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0B2118] via-[#123B2A] to-[#1D5A40]" />
+        {/* Layer 1: Static image fallback */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/images/hero-poster.jpg"
+          alt=""
+          aria-hidden="true"
+          fetchPriority="high"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover z-0"
+        />
+
+        {/* Layer 2: Video */}
+        <LazyVideo
+          src="/videos/hero-bg.mp4"
+          className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
+          threshold={0}
+          rootMargin="0px"
+        />
+
+        {/* Layered gradient background over video */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0B2118]/80 via-[#123B2A]/80 to-[#1D5A40]/60 z-0" />
         {/* Decorative gold radial glow */}
         <div
           className="absolute inset-0 opacity-20"
