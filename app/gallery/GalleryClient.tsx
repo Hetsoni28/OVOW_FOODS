@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { fadeUp, staggerFast } from "@/lib/animations";
-import { X, Play } from "lucide-react";
+import { X, Play, ArrowRight } from "lucide-react";
 import { Button } from "@/components/atoms/Button";
 import { LazyVideo } from "@/components/atoms/LazyVideo";
 
@@ -13,6 +13,8 @@ type GalleryMedia = {
   category: string;
   spanSize: string;
   videoUrl: string;
+  relatedProductSlug?: string;
+  relatedProductName?: string;
 };
 
 const CATEGORIES = ["All", "Food", "Events", "Packaging", "Behind the Scenes"];
@@ -257,10 +259,22 @@ export function GalleryClient({ initialImages }: { initialImages: GalleryMedia[]
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
-                className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black via-black/80 to-transparent p-8 md:p-16 text-center pointer-events-none"
+                className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black via-black/80 to-transparent p-8 md:p-16 text-center pointer-events-none z-20"
               >
                 <p className="text-white/70 text-xs md:text-sm tracking-[0.3em] uppercase font-bold mb-4">{selectedImage.category}</p>
-                <p className="text-white font-serif text-3xl md:text-6xl leading-tight">{selectedImage.caption}</p>
+                <p className="text-white font-serif text-3xl md:text-6xl leading-tight mb-6">{selectedImage.caption}</p>
+
+                {/* "Craving this? View Dish →" CTA */}
+                {selectedImage.relatedProductSlug && (
+                  <a
+                    href={`/menu/${selectedImage.relatedProductSlug}`}
+                    className="pointer-events-auto inline-flex items-center gap-3 bg-[#C9A24A] hover:bg-[#E4C77A] text-white px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] transition-colors duration-300 shadow-xl"
+                    onClick={() => setSelectedImage(null)}
+                  >
+                    Craving this? View Dish
+                    <ArrowRight size={14} />
+                  </a>
+                )}
               </motion.div>
             </motion.div>
           </motion.div>

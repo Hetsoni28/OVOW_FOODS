@@ -67,5 +67,7 @@ export const GALLERY_QUERY = groq`*[_type == "gallery"] | order(_createdAt desc)
   caption,
   category,
   spanSize,
-  "videoUrl": video.asset->url
+  "videoUrl": video.asset->url,
+  "relatedProductSlug": relatedProduct->slug.current,
+  "relatedProductName": relatedProduct->name
 }`

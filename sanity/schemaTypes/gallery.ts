@@ -49,5 +49,12 @@ export const galleryType = defineType({
       },
       initialValue: 'normal',
     }),
+    defineField({
+      name: 'relatedProduct',
+      title: 'Related Product (optional)',
+      type: 'reference',
+      to: [{ type: 'product' }],
+      description: 'Link this gallery item to a product. A "Craving this? View Dish" button will appear in the lightbox.',
+    }),
   ],
 })
