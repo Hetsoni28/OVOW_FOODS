@@ -60,7 +60,7 @@ function GalleryVideoItem({
         {img.videoUrl && (
           <LazyVideo
             src={img.videoUrl}
-            className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-[1.03]"
+            className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-[1.03] pointer-events-none"
           />
         )}
       </motion.div>
@@ -230,7 +230,7 @@ export function GalleryClient({ initialImages }: { initialImages: GalleryMedia[]
                 <LazyVideo
                   key={selectedImage._id}
                   src={selectedImage.videoUrl}
-                  controls
+                  controls={false}
                   muted={false}
                   className="w-full h-full object-contain md:object-cover"
                   threshold={0}
