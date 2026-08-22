@@ -52,12 +52,12 @@ export function ProductCard({ product }: { product: Product }) {
 
         {/* Badges */}
         <div className="absolute top-4 left-4 flex flex-col gap-2">
-          {(product.isSignature || product.signature) && (
+          {(product.isSignature || (product as any).signature) && (
             <span className="bg-[#C9A24A] text-white px-3 py-1.5 text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1.5 shadow-sm">
               <Star size={10} fill="white" /> Signature
             </span>
           )}
-          {(product.isBestseller || product.isBestSeller) && (
+          {(product.isBestseller || (product as any).isBestSeller) && (
             <span className="bg-white/95 backdrop-blur-md text-[#0B2118] px-3 py-1.5 text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1.5 shadow-sm">
               <Flame size={10} className="text-[#C9A24A]" /> Bestseller
             </span>
