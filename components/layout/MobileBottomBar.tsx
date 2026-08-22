@@ -6,10 +6,14 @@ import { UtensilsCrossed, Images, ShoppingBag } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { openWhatsAppInquiry } from "@/lib/whatsapp";
 import { WhatsAppIcon } from "@/components/atoms/WhatsAppIcon";
+import { useState, useEffect } from "react";
 
 export function MobileBottomBar() {
   const { count, openCart } = useCart();
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
 
   const navItems = [
     { label: "Menu", href: "/menu", icon: UtensilsCrossed },
@@ -17,7 +21,7 @@ export function MobileBottomBar() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-[#F9F6F0] border-t border-primary/10 flex items-stretch pb-4">
+    <nav suppressHydrationWarning className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-[#F9F6F0] border-t border-primary/10 flex items-stretch pb-4">
       {navItems.map(({ label, href, icon: Icon }) => (
         <Link
           key={href}
@@ -39,7 +43,7 @@ export function MobileBottomBar() {
       >
         <span className="relative">
           <ShoppingBag size={18} strokeWidth={1.5} />
-          {count > 0 && (
+          {mounted && count > 0 && (
             <span className="absolute -top-2 -right-2 bg-[#C9A24A] text-white text-[9px] font-bold min-w-[16px] h-4 flex items-center justify-center px-0.5">
               {count > 9 ? "9+" : count}
             </span>

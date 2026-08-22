@@ -13,6 +13,11 @@ export function Navbar() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -25,7 +30,7 @@ export function Navbar() {
   const isTransparent = isHome && !isScrolled;
 
   return (
-    <nav 
+    <nav suppressHydrationWarning
       className={`w-full z-50 transition-all duration-300 ${
         isHome ? "fixed top-0" : "sticky top-0"
       } ${
@@ -72,7 +77,7 @@ export function Navbar() {
             suppressHydrationWarning
           >
             <ShoppingBag size={22} strokeWidth={1.5} />
-            {count > 0 && (
+            {mounted && count > 0 && (
               <span className="absolute -top-2 -right-2 bg-[#C9A24A] text-white text-[9px] font-bold w-4.5 h-4.5 min-w-[18px] min-h-[18px] flex items-center justify-center leading-none px-1">
                 {count > 99 ? "99+" : count}
               </span>
