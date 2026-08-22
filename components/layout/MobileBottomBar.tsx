@@ -7,11 +7,29 @@ import { useCart } from "@/context/CartContext";
 import { openWhatsAppInquiry } from "@/lib/whatsapp";
 import { WhatsAppIcon } from "@/components/atoms/WhatsAppIcon";
 import { useState, useEffect } from "react";
+import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 
 export function MobileBottomBar() {
   const { count, openCart } = useCart();
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
+  const [hidden, setHidden] = useState(false);
+
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    
+    if (latest > 50) {
+      if (latest > previous) {
+        setHidden(true);
+      } else if (latest < previous) {
+        setHidden(false);
+      }
+    } else {
+      setHidden(false);
+    }
+  });
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -21,7 +39,16 @@ export function MobileBottomBar() {
   ];
 
   return (
-    <nav suppressHydrationWarning className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-[#F9F6F0] border-t border-primary/10 flex items-stretch pb-4">
+    <motion.nav 
+      variants={{
+        visible: { y: 0 },
+        hidden: { y: "100%" }
+      }}
+      animate={hidden ? "hidden" : "visible"}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      suppressHydrationWarning 
+      className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-[#F9F6F0] border-t border-primary/10 flex items-stretch pb-4"
+    >
       {navItems.map(({ label, href, icon: Icon }) => (
         <Link
           key={href}
@@ -61,6 +88,6 @@ export function MobileBottomBar() {
         <WhatsAppIcon className="w-[18px] h-[18px]" />
         WhatsApp
       </button>
-    </nav>
+    </motion.nav>
   );
 }
