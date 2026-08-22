@@ -3,64 +3,32 @@
 import { Button } from "@/components/atoms/Button";
 import { motion } from "framer-motion";
 import { fadeUpSlow, staggerFast } from "@/lib/animations";
-import { useEffect, useRef, useState } from "react";
 
 export function HeroSection() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoReady, setVideoReady] = useState(false);
-
-  useEffect(() => {
-    // Load the video only after the page is fully interactive
-    // This prevents the video from competing with critical page resources
-    const timer = setTimeout(() => {
-      if (videoRef.current) {
-        videoRef.current.load();
-        videoRef.current.play().catch(() => {
-          // Autoplay blocked (e.g. Low Power Mode) — poster image stays visible, no error
-        });
-      }
-    }, 300); // 300ms delay lets the page paint first
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <section className="relative text-white text-center min-h-screen flex items-center justify-center overflow-hidden">
       {/*
-        STRATEGY:
-        1. Poster image renders instantly on ALL devices — zero green flash
-        2. Video loads 300ms after paint on ALL devices (mobile + desktop)
-        3. Video fades in smoothly over the poster when ready
-        4. If video is blocked (Low Power Mode, bad connection) → poster stays, no crash
+        VIDEO ONLY — no separate poster image layer.
+        - poster="/images/hero-poster.jpg" shows the first frame instantly while the video loads
+        - preload="auto" starts downloading immediately for fast playback
+        - #t=0.001 forces mobile browsers to seek to the first frame as the thumbnail
+        - playsInline prevents iOS from going fullscreen
       */}
-
-      {/* Poster image — instant, zero wait */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/images/hero-poster.jpg"
-        alt=""
-        aria-hidden="true"
-        className="absolute inset-0 w-full h-full object-cover z-0"
-        fetchPriority="high"
-      />
-
-      {/* Background Video — ALL devices, lazy-loaded after paint */}
       <video
-        ref={videoRef}
-        src="/videos/hero-bg.mp4"
+        src="/videos/hero-bg.mp4#t=0.001"
+        poster="/images/hero-poster.jpg"
+        autoPlay
         loop
         muted
         playsInline
-        preload="none"
+        preload="auto"
         disablePictureInPicture
         disableRemotePlayback
-        onCanPlay={() => setVideoReady(true)}
-        className="absolute inset-0 w-full h-full object-cover z-[1] transition-opacity duration-[1500ms] ease-in-out"
-        style={{ opacity: videoReady ? 1 : 0 }}
+        className="absolute inset-0 w-full h-full object-cover z-0"
       />
 
       {/* Dark Overlay for Text Readability */}
-      <div className="absolute inset-0 bg-black/50 z-[2]" />
+      <div className="absolute inset-0 bg-black/50 z-[1]" />
 
       <motion.div
         className="container-x relative z-10 flex flex-col items-center pt-24 pb-32"
