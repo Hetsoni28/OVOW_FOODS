@@ -14,6 +14,7 @@ export function HeroSection() {
       */}
       <video
         src="/videos/hero-bg.mp4"
+        poster="/images/hero-poster.jpg"
         autoPlay
         loop
         muted
