@@ -56,7 +56,7 @@ export function VideoReelSection() {
       </div>
 
       {/* Main video player */}
-      <div className="relative aspect-video md:aspect-[21/9] bg-[#0B2118] overflow-hidden">
+      <div className="relative aspect-[4/3] md:aspect-[21/9] bg-[#0B2118] overflow-hidden">
         {/* Skeleton shimmer — shows while video is loading on mobile */}
         {!videoLoaded && (
           <div className="absolute inset-0 z-0 bg-white/5 overflow-hidden">
