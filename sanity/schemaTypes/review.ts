@@ -31,6 +31,13 @@ export const reviewType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'product',
+      title: 'Related Product (optional)',
+      type: 'reference',
+      to: [{ type: 'product' }],
+      description: 'Link this review to a specific product so it appears on that product page.',
+    }),
+    defineField({
       name: 'isApproved',
       title: 'Approved for Public Display',
       type: 'boolean',

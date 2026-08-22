@@ -71,3 +71,11 @@ export const GALLERY_QUERY = groq`*[_type == "gallery"] | order(_createdAt desc)
   "relatedProductSlug": relatedProduct->slug.current,
   "relatedProductName": relatedProduct->name
 }`
+
+export const PRODUCT_REVIEWS_QUERY = groq`*[_type == "review" && isApproved == true && product->slug.current == $slug] | order(date desc) [0...20] {
+  _id,
+  name,
+  rating,
+  comment,
+  date
+}`

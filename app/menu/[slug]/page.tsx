@@ -3,10 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, Leaf, UtensilsCrossed, Flame } from "lucide-react";
 import { client } from "@/sanity/lib/client";
-import { PRODUCT_BY_SLUG_QUERY, ALL_PRODUCTS_QUERY, RELATED_PRODUCTS_QUERY } from "@/sanity/lib/queries";
+import { PRODUCT_BY_SLUG_QUERY, ALL_PRODUCTS_QUERY, RELATED_PRODUCTS_QUERY, PRODUCT_REVIEWS_QUERY } from "@/sanity/lib/queries";
 import { AddToCartBlock } from "./AddToCartBlock";
 import { ProductCard } from "@/components/molecules/ProductCard";
 import { ProductDetails } from "@/components/organisms/ProductDetails";
+import { ProductReviews } from "@/components/organisms/ProductReviews";
 import type { Metadata } from "next";
 import type { Product } from "@/types";
 
@@ -49,6 +50,13 @@ export default async function Product({
   const relatedProducts = await client.fetch<Product[]>(
     RELATED_PRODUCTS_QUERY, 
     { category: product.category, slug: product.slug },
+    { next: { revalidate: 60 } }
+  );
+
+  type ReviewItem = { _id: string; name: string; rating: number; comment: string; date: string };
+  const productReviews = await client.fetch<ReviewItem[]>(
+    PRODUCT_REVIEWS_QUERY,
+    { slug: product.slug },
     { next: { revalidate: 60 } }
   );
 
@@ -136,6 +144,9 @@ export default async function Product({
             ))}
           </div>
         </div>
+
+        {/* Product Reviews */}
+        <ProductReviews reviews={productReviews} productName={product.name} />
 
       </div>
     </main>
