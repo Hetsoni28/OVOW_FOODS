@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import { openWhatsAppOrder, CustomerDetails } from "@/lib/whatsapp";
+import { openWhatsAppOrder, buildOrderMessage, CustomerDetails } from "@/lib/whatsapp";
+import { COMPANY_CONFIG } from "@/lib/config";
 import { WhatsAppIcon } from "@/components/atoms/WhatsAppIcon";
 
 export function CartSummary() {
@@ -16,6 +17,8 @@ export function CartSummary() {
     notes: "",
   });
   const [errors, setErrors] = useState<Partial<CustomerDetails>>({});
+  const [orderAttempted, setOrderAttempted] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   function validate(): boolean {
     const e: Partial<CustomerDetails> = {};
@@ -30,8 +33,14 @@ export function CartSummary() {
   function handleOrder() {
     if (!validate()) return;
     openWhatsAppOrder(items, details);
-    clearCart();
-    closeCart();
+    setOrderAttempted(true);
+  }
+
+  function handleCopyOrder() {
+    const msg = buildOrderMessage(items, details);
+    navigator.clipboard.writeText(msg);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   }
 
   return (
@@ -100,13 +109,58 @@ export function CartSummary() {
         </div>
       )}
 
-      <button suppressHydrationWarning
-        onClick={showForm ? handleOrder : () => setShowForm(true)}
-        className="w-full bg-[#25D366] text-white flex items-center justify-center gap-2.5 py-4 text-xs font-bold uppercase tracking-[0.2em] hover:bg-[#1DA851] transition-colors"
-      >
-        <WhatsAppIcon className="w-5 h-5" />
-        Order on WhatsApp
-      </button>
+        </div>
+      )}
+
+      {!orderAttempted ? (
+        <button suppressHydrationWarning
+          onClick={showForm ? handleOrder : () => setShowForm(true)}
+          className="w-full bg-[#25D366] text-white flex items-center justify-center gap-2.5 py-4 text-xs font-bold uppercase tracking-[0.2em] hover:bg-[#1DA851] transition-colors"
+        >
+          <WhatsAppIcon className="w-5 h-5" />
+          Order on WhatsApp
+        </button>
+      ) : (
+        <div className="bg-primary/5 p-5 border border-primary/10">
+          <p className="font-serif text-lg text-primary font-bold mb-2">
+            Couldn't open WhatsApp?
+          </p>
+          <p className="text-sm text-primary/70 mb-4">
+            If the WhatsApp app didn't open automatically, you can try again or use the options below. Don't worry, your order is saved here.
+          </p>
+          <div className="flex flex-col gap-2">
+            <button
+              onClick={() => openWhatsAppOrder(items, details)}
+              className="w-full bg-[#25D366] text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-[#1DA851] transition-colors"
+            >
+              Try Again
+            </button>
+            <div className="grid grid-cols-2 gap-2 mt-1">
+              <button
+                onClick={handleCopyOrder}
+                className="bg-white border border-primary/20 text-primary py-3 text-xs font-bold uppercase tracking-widest hover:bg-primary/5 transition-colors"
+              >
+                {copied ? "Copied!" : "Copy Order"}
+              </button>
+              <a
+                href={`tel:${COMPANY_CONFIG.phone.replace(/\s+/g, '')}`}
+                className="bg-primary text-white flex items-center justify-center py-3 text-xs font-bold uppercase tracking-widest hover:bg-primary/90 transition-colors text-center"
+              >
+                Call OVOW
+              </a>
+            </div>
+            <button
+              onClick={() => {
+                clearCart();
+                closeCart();
+              }}
+              className="w-full text-center text-primary/50 hover:text-primary text-xs uppercase tracking-widest font-bold mt-4 transition-colors"
+            >
+              Clear Cart & Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
