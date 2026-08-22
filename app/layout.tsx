@@ -8,6 +8,7 @@ import { CartDrawer } from "@/components/cart/CartDrawer";
 import { FloatingWhatsApp } from "@/components/ui/FloatingWhatsApp";
 import { MobileBottomBar } from "@/components/layout/MobileBottomBar";
 import { ErrorBoundary } from "@/components/layout/ErrorBoundary";
+import { MotionProvider } from "@/components/layout/MotionProvider";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -56,16 +57,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className={`${playfair.variable} ${manrope.variable} font-sans flex min-h-screen flex-col`}
         suppressHydrationWarning
       >
-        <CartProvider>
-          <Navbar />
-          <CartDrawer />
-          <ErrorBoundary>
-            <main className="flex-1 pb-16 md:pb-0">{children}</main>
-            <Footer />
-          </ErrorBoundary>
-          <MobileBottomBar />
-          <FloatingWhatsApp />
-        </CartProvider>
+        <MotionProvider>
+          <CartProvider>
+            <Navbar />
+            <CartDrawer />
+            <ErrorBoundary>
+              <main className="flex-1 pb-16 md:pb-0">{children}</main>
+              <Footer />
+            </ErrorBoundary>
+            <MobileBottomBar />
+            <FloatingWhatsApp />
+          </CartProvider>
+        </MotionProvider>
       </body>
     </html>
   );
