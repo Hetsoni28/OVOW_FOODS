@@ -15,6 +15,8 @@ export function MobileBottomBar() {
   const [mounted, setMounted] = useState(false);
   const [hidden, setHidden] = useState(false);
 
+  if (pathname === "/checkout") return null;
+
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
