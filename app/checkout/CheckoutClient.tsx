@@ -260,8 +260,11 @@ export function CheckoutClient() {
     setSnapItems([...items]); setSnapTotal(total); setStep(2); window.scrollTo({ top: 0 });
   }
   function goToPayment() {
+    // FORCE WhatsApp order creation BEFORE payment!
+    // This solves the issue of losing orders if users pay via UPI but don't submit the order.
+    handleSendWhatsApp();
+
     if (paymentMethod === "cod") { 
-      handleSendWhatsApp();
       setStep(4); 
     } else { 
       setStep(3); 
@@ -274,7 +277,7 @@ export function CheckoutClient() {
     const base = buildCheckoutWhatsAppMessage(snapItems, details, snapTotal, orderRef);
     const payLine = paymentMethod === "cod"
       ? "\n\uD83D\uDCB5 *Payment: Cash on Delivery (COD)*"
-      : "\n\uD83D\uDCF1 *Payment: UPI (paid)*";
+      : "\n\uD83D\uDCF1 *Payment: UPI (Pending/Processing)*";
     return base + payLine;
   }
 
