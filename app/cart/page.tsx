@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingBag, ArrowLeft } from "lucide-react";
+import { ShoppingBag, ArrowLeft, ArrowRight } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { CartItem } from "@/components/cart/CartItem";
 import { CartSummary } from "@/components/cart/CartSummary";
@@ -62,6 +62,8 @@ export default function CartPage() {
 
             {/* Summary + Order */}
             <CartSummary />
+
+
 
             {/* Continue shopping */}
             <div className="mt-4 text-center">

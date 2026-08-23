@@ -265,6 +265,12 @@ export function CheckoutClient() {
 
                 {/* Form */}
                 <div className="lg:col-span-3">
+                  <Link
+                    href="/cart"
+                    className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-primary/40 hover:text-primary transition-colors mb-6"
+                  >
+                    <ArrowLeft size={13} /> Back to Cart
+                  </Link>
                   <h1 className="font-serif text-3xl md:text-4xl text-primary mb-8">
                     Your Details
                   </h1>
@@ -596,6 +602,12 @@ export function CheckoutClient() {
           {step === 4 && (
             <motion.div key="s4" variants={stepAnim} initial="hidden" animate="visible" exit="exit">
               <div className="max-w-md mx-auto">
+                <button
+                  onClick={() => setStep(3)}
+                  className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-primary/40 hover:text-primary transition-colors mb-8"
+                >
+                  <ArrowLeft size={13} /> Back to Payment
+                </button>
 
                 {/* Status card */}
                 <div className="bg-white border border-primary/10 p-8 mb-6 text-center">
