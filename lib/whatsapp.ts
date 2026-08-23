@@ -115,3 +115,64 @@ export function openWhatsAppBulkOrder(details: BulkInquiryDetails): void {
 
   window.open(buildWhatsAppUrl(message), "_blank");
 }
+
+// ── CHECKOUT ORDER MESSAGE ─────────────────────────────────────────────────────
+
+export interface CheckoutCustomerDetails {
+  name: string;
+  mobile: string;
+  address: string;
+  email?: string;
+  notes?: string;
+}
+
+export function buildCheckoutWhatsAppMessage(
+  items: CartItem[],
+  customer: CheckoutCustomerDetails,
+  total: number,
+  orderRef: string
+): string {
+  const lines = items.map(
+    (item) =>
+      `  ${item.quantity} × ${item.name}${item.size ? ` (${item.size})` : ""}  →  ₹${(item.price * item.quantity).toLocaleString("en-IN")}`
+  );
+
+  return [
+    `Hello OVOW FOODS! 👋`,
+    ``,
+    `ORDER REFERENCE: ${orderRef}`,
+    ``,
+    `─── ITEMS ───────────────────────────────`,
+    ...lines,
+    `─────────────────────────────────────────`,
+    ``,
+    `TOTAL: ₹${total.toLocaleString("en-IN")}`,
+    ``,
+    `─── CUSTOMER DETAILS ────────────────────`,
+    `Name: ${customer.name}`,
+    `Mobile: ${customer.mobile}`,
+    `Address: ${customer.address}`,
+    customer.email ? `Email: ${customer.email}` : "",
+    customer.notes ? `Notes: ${customer.notes}` : "",
+    ``,
+    `─── PAYMENT STATUS ──────────────────────`,
+    `Customer has marked payment as completed via UPI.`,
+    `Please verify the payment and confirm the order.`,
+    ``,
+    `Thank you! 🙏`,
+    `OVOW FOODS`,
+  ]
+    .filter((l) => l !== undefined)
+    .join("\n");
+}
+
+export function openCheckoutWhatsApp(
+  items: CartItem[],
+  customer: CheckoutCustomerDetails,
+  total: number,
+  orderRef: string
+): void {
+  const message = buildCheckoutWhatsAppMessage(items, customer, total, orderRef);
+  window.open(buildWhatsAppUrl(message), "_blank");
+}
+

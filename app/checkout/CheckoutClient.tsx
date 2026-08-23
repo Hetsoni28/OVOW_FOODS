@@ -14,6 +14,7 @@ import { buildUpiUri, buildQrUrl } from "@/lib/upi";
 import { generateOrderRef } from "@/lib/order";
 import { buildCheckoutWhatsAppMessage, CheckoutCustomerDetails } from "@/lib/whatsapp";
 import { COMPANY_CONFIG } from "@/lib/config";
+import { useOrderHistory } from "@/hooks/useOrderHistory";
 import type { CartItem } from "@/types";
 
 // ── Types ───────────────────────────────────────────────────────────────────────
@@ -194,6 +195,7 @@ function PaymentPill({
 // ── Main ────────────────────────────────────────────────────────────────────────
 export function CheckoutClient() {
   const { items, total, clearCart } = useCart();
+  const { addOrder } = useOrderHistory();
 
   const [step, setStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("upi");
@@ -279,7 +281,14 @@ export function CheckoutClient() {
   function handleSendWhatsApp() {
     const msg = buildWhatsAppMsg();
     window.open(`https://wa.me/${COMPANY_CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
-    setWaSent(true); clearCart();
+    setWaSent(true); 
+    addOrder({
+      id: orderRef,
+      items: snapItems,
+      total: snapTotal,
+      method: paymentMethod
+    });
+    clearCart();
   }
   function handleCopyOrder() {
     navigator.clipboard.writeText(buildWhatsAppMsg()).then(() => {

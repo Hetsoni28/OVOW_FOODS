@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { UtensilsCrossed, Images, ShoppingBag } from "lucide-react";
+import { UtensilsCrossed, Images, ShoppingBag, Receipt } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { openWhatsAppInquiry } from "@/lib/whatsapp";
 import { WhatsAppIcon } from "@/components/atoms/WhatsAppIcon";
@@ -37,6 +37,7 @@ export function MobileBottomBar() {
 
   const navItems = [
     { label: "Menu", href: "/menu", icon: UtensilsCrossed },
+    { label: "Orders", href: "/orders", icon: Receipt },
     { label: "Gallery", href: "/gallery", icon: Images },
   ];
 

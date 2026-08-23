@@ -55,6 +55,7 @@ export function Navbar() {
         <div className="hidden gap-10 text-[15px] md:flex">
           <Link href="/" className="hover:opacity-70 transition-opacity">Home</Link>
           <Link href="/menu" className="hover:opacity-70 transition-opacity">Menu</Link>
+          <Link href="/orders" className="hover:opacity-70 transition-opacity">Orders</Link>
           <Link href="/about" className="hover:opacity-70 transition-opacity">About</Link>
           <Link href="/gallery" className="hover:opacity-70 transition-opacity">Gallery</Link>
           <Link href="/reviews" className="hover:opacity-70 transition-opacity">Reviews</Link>
