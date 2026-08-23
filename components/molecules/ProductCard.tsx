@@ -23,7 +23,7 @@ export function ProductCard({ product }: { product: Product }) {
   const hasDiscount = product.originalPrice && product.originalPrice > product.price;
 
   return (
-    <div className="group relative flex flex-col h-full bg-white border border-primary/5 hover:border-[#C9A24A]/40 hover:shadow-[0_8px_40px_rgba(18,59,42,0.14)] transition-all duration-500 overflow-hidden">
+    <div className="group relative flex flex-col h-full bg-white border border-primary/5 hover:border-[#C9A24A]/40 hover:shadow-[0_16px_40px_rgba(18,59,42,0.1)] hover:-translate-y-1 transition-all duration-500 overflow-hidden">
       {/* Image Container */}
       <Link href={`/menu/${product.slug}`} className="block relative aspect-[4/5] overflow-hidden bg-primary/5">
         {product.previewVideo ? (
