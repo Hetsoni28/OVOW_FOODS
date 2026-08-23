@@ -269,7 +269,12 @@ export function CheckoutClient() {
     setSnapItems([...items]); setSnapTotal(total); setStep(2); window.scrollTo({ top: 0 });
   }
   function goToPayment() {
-    if (paymentMethod === "cod") { setStep(4); } else { setStep(3); }
+    if (paymentMethod === "cod") { 
+      handleSendWhatsApp();
+      setStep(4); 
+    } else { 
+      setStep(3); 
+    }
     window.scrollTo({ top: 0 });
   }
   function handlePaymentDone() { setStep(4); window.scrollTo({ top: 0 }); }
