@@ -13,16 +13,18 @@ export function Breadcrumbs() {
 
   // Generate breadcrumb path segments
   const segments = pathname.split("/").filter((p) => p !== "");
-  const isDarkHero = pathname === "/menu" || pathname === "/gallery";
+  const isDarkHero = pathname === "/menu";
 
   return (
-    <div className={`w-full z-40 pt-[75px] md:pt-[90px] pointer-events-none ${isDarkHero ? "absolute top-0 left-0" : "relative pb-2"}`}>
+    <div className={`w-full z-40 pt-[75px] md:pt-[90px] pointer-events-none ${isDarkHero ? "absolute top-0 left-0" : "relative pb-4"}`}>
       <div className="container-x w-full pointer-events-auto">
         <motion.nav 
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          className={`flex flex-wrap items-center gap-2 text-[9px] md:text-[10px] font-bold uppercase tracking-widest py-3 ${
-            isDarkHero ? "text-white/60" : "text-primary/60"
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`inline-flex items-center gap-2 text-[9px] md:text-[10px] font-bold uppercase tracking-widest px-4 py-2.5 rounded-full backdrop-blur-md border shadow-sm ${
+            isDarkHero 
+              ? "bg-black/20 border-white/10 text-white/70 shadow-black/10" 
+              : "bg-white/60 border-primary/10 text-primary/60 shadow-primary/5"
           }`}
         >
           <Link 

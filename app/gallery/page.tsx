@@ -8,7 +8,7 @@ export default async function GalleryPage() {
   const initialImages = await client.fetch(GALLERY_QUERY);
 
   return (
-    <main className="min-h-screen bg-[#F9F6F0] pt-32 pb-20 text-primary">
+    <main className="min-h-screen bg-[#F9F6F0] pt-12 pb-20 text-primary">
       <div className="container-x">
         <GalleryClient initialImages={initialImages} />
       </div>
