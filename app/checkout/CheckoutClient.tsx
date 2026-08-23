@@ -394,7 +394,7 @@ export function CheckoutClient() {
                   {/* Desktop CTA */}
                   <button
                     onClick={goToSummary}
-                    className="hidden md:flex mt-6 w-full bg-primary text-white items-center justify-center gap-2 py-4 text-xs font-bold uppercase tracking-widest hover:bg-primary/90 transition-colors"
+                    className="hidden md:flex mt-6 w-full bg-[#C9A24A] text-white items-center justify-center gap-2 py-4 text-xs font-bold uppercase tracking-widest hover:bg-primary transition-colors"
                   >
                     Review Order <ArrowRight size={15} />
                   </button>
@@ -469,7 +469,7 @@ export function CheckoutClient() {
                   {/* Desktop Pay CTA */}
                   <button
                     onClick={goToPayment}
-                    className="hidden md:flex mt-6 w-full bg-[#C9A24A] text-white items-center justify-center gap-2 py-5 text-sm font-bold uppercase tracking-widest hover:bg-[#E4C77A] transition-colors"
+                    className="hidden md:flex mt-6 w-full bg-[#C9A24A] text-white items-center justify-center gap-2 py-5 text-sm font-bold uppercase tracking-widest hover:bg-primary transition-colors"
                   >
                     PAY ₹{snapTotal.toLocaleString("en-IN")} <ArrowRight size={16} />
                   </button>
@@ -578,19 +578,23 @@ export function CheckoutClient() {
                   <a
                     href={upiUri}
                     onClick={() => setUpiAppOpened(true)}
-                    className="w-full flex items-center justify-center gap-2 border-2 border-primary text-primary py-3 text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-colors mb-3"
+                    className="w-full flex items-center justify-center gap-2 bg-[#C9A24A] text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-primary transition-colors mb-3"
                     aria-label={`Open UPI app to pay ₹${snapTotal.toLocaleString("en-IN")}`}
                   >
                     <Smartphone size={15} /> Open UPI App
                   </a>
 
-                  {/* Confirm payment */}
-                  <button
-                    onClick={handlePaymentDone}
-                    className="w-full bg-primary text-white py-4 text-xs font-bold uppercase tracking-widest hover:bg-primary/90 transition-colors"
-                  >
-                    I Have Completed Payment
-                  </button>
+                  {/* Confirm payment — subtle fallback for desktop QR users */}
+                  {/* Mobile users auto-advance via visibilitychange when returning from UPI app */}
+                  <p className="text-center text-[10px] text-primary/40 mt-4">
+                    Paid via QR on another device?{" "}
+                    <button
+                      onClick={handlePaymentDone}
+                      className="underline hover:text-primary transition-colors font-bold"
+                    >
+                      Continue →
+                    </button>
+                  </p>
                 </div>
               </div>
             </motion.div>
@@ -688,7 +692,7 @@ export function CheckoutClient() {
                       </button>
                       <a
                         href={`tel:${COMPANY_CONFIG.phone.replace(/\s+/g, "")}`}
-                        className="flex items-center justify-center gap-2 bg-primary text-white py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-primary/90 transition-colors"
+                        className="flex items-center justify-center gap-2 bg-[#C9A24A] text-white py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-primary transition-colors"
                       >
                         <Phone size={13} /> Call OVOW
                       </a>
@@ -729,12 +733,21 @@ export function CheckoutClient() {
               ₹{snapTotal.toLocaleString("en-IN")}
             </p>
           </div>
-          <button
-            onClick={step === 1 ? goToSummary : goToPayment}
-            className="flex-1 bg-primary text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-primary/90 transition-colors"
-          >
-            {step === 1 ? "Review Order" : `PAY ₹${snapTotal.toLocaleString("en-IN")}`}
-          </button>
+          {step === 1 ? (
+            <button
+              onClick={goToSummary}
+              className="flex-1 bg-[#C9A24A] text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-primary transition-colors"
+            >
+              Review Order
+            </button>
+          ) : (
+            <button
+              onClick={goToPayment}
+              className="flex-1 bg-[#C9A24A] text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-primary transition-colors"
+            >
+              PAY ₹{snapTotal.toLocaleString("en-IN")}
+            </button>
+          )}
         </div>
       )}
     </div>
