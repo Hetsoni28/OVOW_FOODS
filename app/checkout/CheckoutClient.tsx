@@ -604,22 +604,32 @@ export function CheckoutClient() {
                 )}
 
                 {/* Success card */}
-                <motion.div variants={childAnim} className="bg-white border border-primary/8 shadow-sm p-8 mb-4 text-center">
+                <motion.div variants={childAnim} className={`bg-white border shadow-sm p-8 mb-4 text-center ${!waSent && paymentMethod === "upi" ? "border-amber-200" : "border-primary/8"}`}>
                   <motion.div
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.2 }}
-                    className="w-16 h-16 rounded-full bg-primary/6 flex items-center justify-center mx-auto mb-5"
+                    className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5 ${!waSent && paymentMethod === "upi" ? "bg-amber-100" : "bg-primary/6"}`}
                   >
-                    <CheckCircle2 size={36} className="text-primary" strokeWidth={1.5} />
+                    {!waSent && paymentMethod === "upi" ? (
+                      <AlertTriangle size={36} className="text-amber-500" strokeWidth={1.5} />
+                    ) : (
+                      <CheckCircle2 size={36} className="text-primary" strokeWidth={1.5} />
+                    )}
                   </motion.div>
 
-                  <p className="text-[9px] uppercase tracking-[0.2em] font-bold text-primary mb-2">
-                    {paymentMethod === "cod" ? "Order Placed" : "Payment Marked as Completed"}
+                  <p className={`text-[9px] uppercase tracking-[0.2em] font-bold mb-2 ${!waSent && paymentMethod === "upi" ? "text-amber-600" : "text-primary"}`}>
+                    {!waSent && paymentMethod === "upi" 
+                      ? "Action Required" 
+                      : paymentMethod === "cod" ? "Order Placed" : "Payment Marked as Completed"}
                   </p>
-                  <p className="font-serif text-2xl text-primary mb-3">Thank you!</p>
+                  <p className="font-serif text-2xl text-primary mb-3">
+                    {!waSent && paymentMethod === "upi" ? "Almost Done!" : "Thank you!"}
+                  </p>
                   <p className="text-xs text-primary/40 mb-5 leading-relaxed">
-                    {paymentMethod === "cod"
+                    {!waSent && paymentMethod === "upi"
+                      ? "You MUST send us your order details on WhatsApp so our kitchen can start preparing your food."
+                      : paymentMethod === "cod"
                       ? `Please keep ₹${snapTotal.toLocaleString("en-IN")} ready. Our team will call to confirm your delivery.`
                       : "Our team will verify your UPI payment and confirm your order shortly."}
                   </p>
@@ -674,12 +684,14 @@ export function CheckoutClient() {
                 {/* WhatsApp */}
                 {!waSent ? (
                   <motion.div variants={childAnim} className="space-y-2">
-                    <button
+                    <motion.button
+                      animate={{ scale: [1, 1.02, 1] }}
+                      transition={{ repeat: Infinity, duration: 2 }}
                       onClick={handleSendWhatsApp}
                       className="w-full flex items-center justify-center gap-2.5 bg-[#25D366] text-white py-4 text-[11px] font-bold uppercase tracking-widest hover:bg-[#1DA851] transition-colors"
                     >
                       <WhatsAppIcon className="w-4 h-4" /> Send Order on WhatsApp
-                    </button>
+                    </motion.button>
                     <div className="grid grid-cols-2 gap-2">
                       <button
                         onClick={handleCopyOrder}
