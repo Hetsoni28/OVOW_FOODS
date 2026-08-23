@@ -205,6 +205,18 @@ export function CheckoutClient() {
   const [waSent, setWaSent] = useState(false);
   const [copied, setCopied] = useState(false);
   const [upiAppOpened, setUpiAppOpened] = useState(false);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+
+  // Show sticky bar only when user has scrolled down
+  useEffect(() => {
+    function onScroll() {
+      setShowStickyBar(window.scrollY > 80);
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    // Reset on step change
+    setShowStickyBar(window.scrollY > 80);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [step]);
 
   // Sync live cart on step 1
   useEffect(() => {
@@ -706,32 +718,41 @@ export function CheckoutClient() {
         </AnimatePresence>
       </div>
 
-      {/* ── Mobile Sticky CTA ─────────────────────────────────────────────────── */}
-      {(step === 1 || step === 2) && (
-        <div className="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-sm border-t border-primary/8 px-4 py-3 flex items-center gap-3 md:hidden z-50">
-          <div className="shrink-0">
-            <p className="text-[8px] uppercase tracking-widest text-primary/30 font-bold">Total</p>
-            <p className="font-serif text-lg font-bold text-[#C9A24A] tabular-nums">
-              ₹{snapTotal.toLocaleString("en-IN")}
-            </p>
-          </div>
-          {step === 1 ? (
-            <button
-              onClick={goToSummary}
-              className="flex-1 bg-[#C9A24A] text-white py-3 text-[11px] font-bold uppercase tracking-widest hover:bg-primary transition-colors"
-            >
-              Review Order
-            </button>
-          ) : (
-            <button
-              onClick={goToPayment}
-              className="flex-1 bg-[#C9A24A] text-white py-3 text-[11px] font-bold uppercase tracking-widest hover:bg-primary transition-colors"
-            >
-              {paymentMethod === "cod" ? "Place Order" : `Pay ₹${snapTotal.toLocaleString("en-IN")}`}
-            </button>
-          )}
-        </div>
-      )}
+      {/* ── Mobile Sticky CTA (scroll-aware) ────────────────────────────────── */}
+      <AnimatePresence>
+        {(step === 1 || step === 2) && showStickyBar && (
+          <motion.div
+            key="sticky-cta"
+            initial={{ y: 80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 80, opacity: 0 }}
+            transition={{ duration: 0.22, ease: EASE }}
+            className="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-sm border-t border-primary/8 px-4 py-3 flex items-center gap-3 md:hidden z-50"
+          >
+            <div className="shrink-0">
+              <p className="text-[8px] uppercase tracking-widest text-primary/30 font-bold">Total</p>
+              <p className="font-serif text-lg font-bold text-[#C9A24A] tabular-nums">
+                ₹{snapTotal.toLocaleString("en-IN")}
+              </p>
+            </div>
+            {step === 1 ? (
+              <button
+                onClick={goToSummary}
+                className="flex-1 bg-[#C9A24A] text-white py-3 text-[11px] font-bold uppercase tracking-widest hover:bg-primary transition-colors"
+              >
+                Review Order
+              </button>
+            ) : (
+              <button
+                onClick={goToPayment}
+                className="flex-1 bg-[#C9A24A] text-white py-3 text-[11px] font-bold uppercase tracking-widest hover:bg-primary transition-colors"
+              >
+                {paymentMethod === "cod" ? "Place Order" : `Pay ₹${snapTotal.toLocaleString("en-IN")}`}
+              </button>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
