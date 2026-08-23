@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
@@ -6,6 +6,7 @@ import Link from "next/link";
 import {
   ArrowLeft, ArrowRight, Check, CheckCircle2,
   ShoppingBag, Smartphone, AlertTriangle, Phone, Copy, MapPin, User, Hash,
+  QrCode, Banknote,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { WhatsAppIcon } from "@/components/atoms/WhatsAppIcon";
@@ -18,6 +19,7 @@ import type { CartItem } from "@/types";
 // ── Types ───────────────────────────────────────────────────────────────────────
 type Details = CheckoutCustomerDetails;
 type Errors = Partial<Record<keyof Details, string>>;
+type PaymentMethod = "upi" | "cod";
 
 // ── Animations ──────────────────────────────────────────────────────────────────
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
@@ -161,11 +163,40 @@ function OrderPanel({ items, total }: { items: CartItem[]; total: number }) {
   );
 }
 
+
+// ── Payment method pill ──────────────────────────────────────────────────────────
+function PaymentPill({
+  id, active, onClick, icon, title, subtitle,
+}: {
+  id: string; active: boolean; onClick: () => void;
+  icon: React.ReactNode; title: string; subtitle: string;
+}) {
+  return (
+    <button id={id} onClick={onClick}
+      className={`relative flex flex-col items-center gap-2.5 p-5 border-2 transition-all duration-200 text-center w-full ${
+        active ? "border-[#C9A24A] bg-[#C9A24A]/5" : "border-primary/10 hover:border-primary/25 bg-white"
+      }`}
+    >
+      {active && (
+        <span className="absolute top-2.5 right-2.5 w-4 h-4 bg-[#C9A24A] flex items-center justify-center">
+          <Check size={10} strokeWidth={3} className="text-white" />
+        </span>
+      )}
+      <span className={`transition-colors ${active ? "text-[#C9A24A]" : "text-primary/35"}`}>{icon}</span>
+      <div>
+        <p className={`text-xs font-bold transition-colors ${active ? "text-primary" : "text-primary/55"}`}>{title}</p>
+        <p className="text-[10px] text-primary/30 mt-0.5">{subtitle}</p>
+      </div>
+    </button>
+  );
+}
+
 // ── Main ────────────────────────────────────────────────────────────────────────
 export function CheckoutClient() {
   const { items, total, clearCart } = useCart();
 
   const [step, setStep] = useState(1);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("upi");
   const [details, setDetails] = useState<Details>({ name: "", mobile: "", address: "", email: "", notes: "" });
   const [errors, setErrors] = useState<Errors>({});
   const [snapItems, setSnapItems] = useState<CartItem[]>(items);
@@ -225,17 +256,27 @@ export function CheckoutClient() {
     if (!validate()) return;
     setSnapItems([...items]); setSnapTotal(total); setStep(2); window.scrollTo({ top: 0 });
   }
-  function goToPayment() { setStep(3); window.scrollTo({ top: 0 }); }
+  function goToPayment() {
+    if (paymentMethod === "cod") { setStep(4); } else { setStep(3); }
+    window.scrollTo({ top: 0 });
+  }
   function handlePaymentDone() { setStep(4); window.scrollTo({ top: 0 }); }
 
+  function buildWhatsAppMsg() {
+    const base = buildCheckoutWhatsAppMessage(snapItems, details, snapTotal, orderRef);
+    const payLine = paymentMethod === "cod"
+      ? "\n\uD83D\uDCB5 *Payment: Cash on Delivery (COD)*"
+      : "\n\uD83D\uDCF1 *Payment: UPI (paid)*";
+    return base + payLine;
+  }
+
   function handleSendWhatsApp() {
-    const msg = buildCheckoutWhatsAppMessage(snapItems, details, snapTotal, orderRef);
+    const msg = buildWhatsAppMsg();
     window.open(`https://wa.me/${COMPANY_CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
     setWaSent(true); clearCart();
   }
   function handleCopyOrder() {
-    const msg = buildCheckoutWhatsAppMessage(snapItems, details, snapTotal, orderRef);
-    navigator.clipboard.writeText(msg).then(() => {
+    navigator.clipboard.writeText(buildWhatsAppMsg()).then(() => {
       setCopied(true); setTimeout(() => setCopied(false), 2000);
     });
   }
@@ -389,12 +430,30 @@ export function CheckoutClient() {
                     </div>
                   </motion.div>
 
+                  <motion.div variants={childAnim} className="bg-white border border-primary/8 shadow-sm p-6">
+                    <p className="text-[9px] uppercase tracking-[0.2em] font-bold text-primary/40 mb-4">Payment Method</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <PaymentPill id="pm-upi" active={paymentMethod === "upi"} onClick={() => setPaymentMethod("upi")}
+                        icon={<QrCode size={22} />} title="UPI / QR" subtitle="GPay · PhonePe · Paytm" />
+                      <PaymentPill id="pm-cod" active={paymentMethod === "cod"} onClick={() => setPaymentMethod("cod")}
+                        icon={<Banknote size={22} />} title="Cash on Delivery" subtitle="Pay when delivered" />
+                    </div>
+                    {paymentMethod === "cod" && (
+                      <motion.p
+                        initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
+                        className="text-[11px] text-primary/50 mt-4 leading-relaxed bg-primary/[0.03] border border-primary/8 px-4 py-3"
+                      >
+                        Please keep <strong>₹{snapTotal.toLocaleString("en-IN")}</strong> ready at delivery. Our team will call to confirm.
+                      </motion.p>
+                    )}
+                  </motion.div>
+
                   <motion.button
                     variants={childAnim}
                     onClick={goToPayment}
                     className="hidden md:flex w-full bg-[#C9A24A] text-white items-center justify-center gap-2.5 py-4 text-[11px] font-bold uppercase tracking-widest hover:bg-primary transition-colors group"
                   >
-                    Pay ₹{snapTotal.toLocaleString("en-IN")}
+                    {paymentMethod === "cod" ? "Place Order" : `Pay ₹${snapTotal.toLocaleString("en-IN")}`}
                     <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
                   </motion.button>
                 </div>
@@ -516,14 +575,16 @@ export function CheckoutClient() {
           {step === 4 && (
             <motion.div key="s4" variants={pageAnim} initial="hidden" animate="visible" exit="exit">
               <div className="max-w-sm mx-auto">
-                <motion.div variants={childAnim}>
-                  <button
-                    onClick={() => setStep(3)}
-                    className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-primary/30 hover:text-primary transition-colors mb-8"
-                  >
-                    <ArrowLeft size={12} /> Back
-                  </button>
-                </motion.div>
+                {paymentMethod === "upi" && (
+                  <motion.div variants={childAnim}>
+                    <button
+                      onClick={() => setStep(3)}
+                      className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-primary/30 hover:text-primary transition-colors mb-8"
+                    >
+                      <ArrowLeft size={12} /> Back
+                    </button>
+                  </motion.div>
+                )}
 
                 {/* Success card */}
                 <motion.div variants={childAnim} className="bg-white border border-primary/8 shadow-sm p-8 mb-4 text-center">
@@ -537,12 +598,23 @@ export function CheckoutClient() {
                   </motion.div>
 
                   <p className="text-[9px] uppercase tracking-[0.2em] font-bold text-primary mb-2">
-                    Payment Marked as Completed
+                    {paymentMethod === "cod" ? "Order Placed" : "Payment Marked as Completed"}
                   </p>
                   <p className="font-serif text-2xl text-primary mb-3">Thank you!</p>
-                  <p className="text-xs text-primary/40 mb-6 leading-relaxed">
-                    Our team will verify your UPI payment and confirm your order shortly.
+                  <p className="text-xs text-primary/40 mb-5 leading-relaxed">
+                    {paymentMethod === "cod"
+                      ? `Please keep ₹${snapTotal.toLocaleString("en-IN")} ready. Our team will call to confirm your delivery.`
+                      : "Our team will verify your UPI payment and confirm your order shortly."}
                   </p>
+
+                  <div className="flex items-center justify-center gap-2 mb-4">
+                    <div className="inline-flex items-center gap-2 bg-[#C9A24A]/8 border border-[#C9A24A]/20 px-3 py-1.5">
+                      {paymentMethod === "cod" ? <Banknote size={12} className="text-[#C9A24A]" /> : <QrCode size={12} className="text-[#C9A24A]" />}
+                      <span className="text-[9px] font-bold uppercase tracking-widest text-[#C9A24A]">
+                        {paymentMethod === "cod" ? "Cash on Delivery" : "UPI Payment"}
+                      </span>
+                    </div>
+                  </div>
 
                   <div className="inline-flex items-center gap-2.5 bg-[#F9F6F0] border border-primary/8 px-5 py-3">
                     <Hash size={12} className="text-[#C9A24A] shrink-0" />
@@ -575,7 +647,7 @@ export function CheckoutClient() {
                     </div>
                   ))}
                   <div className="flex justify-between items-baseline px-6 py-4 bg-primary/[0.025]">
-                    <p className="text-[9px] uppercase tracking-widest font-bold text-primary/35">Total Paid</p>
+                    <p className="text-[9px] uppercase tracking-widest font-bold text-primary/35">{paymentMethod === "cod" ? "Amount Due on Delivery" : "Total Paid"}</p>
                     <p className="font-serif text-xl font-bold text-[#C9A24A] tabular-nums">
                       ₹{snapTotal.toLocaleString("en-IN")}
                     </p>
@@ -655,7 +727,7 @@ export function CheckoutClient() {
               onClick={goToPayment}
               className="flex-1 bg-[#C9A24A] text-white py-3 text-[11px] font-bold uppercase tracking-widest hover:bg-primary transition-colors"
             >
-              Pay ₹{snapTotal.toLocaleString("en-IN")}
+              {paymentMethod === "cod" ? "Place Order" : `Pay ₹${snapTotal.toLocaleString("en-IN")}`}
             </button>
           )}
         </div>
