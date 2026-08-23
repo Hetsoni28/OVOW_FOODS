@@ -6,6 +6,7 @@ import { Footer } from "@/components/organisms/Footer";
 import { CartProvider } from "@/context/CartContext";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { FloatingWhatsApp } from "@/components/ui/FloatingWhatsApp";
+import { Breadcrumbs } from "@/components/molecules/Breadcrumbs";
 import { MobileBottomBar } from "@/components/layout/MobileBottomBar";
 import { ErrorBoundary } from "@/components/layout/ErrorBoundary";
 import { MotionProvider } from "@/components/layout/MotionProvider";
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <MotionProvider>
           <CartProvider>
             <Navbar />
+            <Breadcrumbs />
             <CartDrawer />
             <ErrorBoundary>
               <main className="flex-1 pb-16 md:pb-0">{children}</main>

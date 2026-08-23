@@ -22,7 +22,7 @@ const item: Variants = {
 
 export default function About() {
   return (
-    <main className="min-h-screen bg-[#F8F4EA] pt-32 pb-20 selection:bg-primary selection:text-white">
+    <main className="min-h-screen bg-[#F8F4EA] pt-12 pb-20 selection:bg-primary selection:text-white">
       {/* Cinematic Hero */}
       <section className="container-x mb-20 md:mb-32">
         <motion.div
