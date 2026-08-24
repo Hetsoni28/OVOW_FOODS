@@ -12,6 +12,8 @@ import { ErrorBoundary } from "@/components/layout/ErrorBoundary";
 import { MotionProvider } from "@/components/layout/MotionProvider";
 import { SmoothScrollProvider } from "@/components/layout/SmoothScrollProvider";
 
+import { SplashScreen } from "@/components/organisms/SplashScreen";
+
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair",
@@ -60,6 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         suppressHydrationWarning
       >
         <SmoothScrollProvider>
+          <SplashScreen />
           <MotionProvider>
             <CartProvider>
               <Navbar />
