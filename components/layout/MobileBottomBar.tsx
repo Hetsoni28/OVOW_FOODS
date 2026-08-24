@@ -15,13 +15,11 @@ export function MobileBottomBar() {
   const [mounted, setMounted] = useState(false);
   const [hidden, setHidden] = useState(false);
 
-  if (pathname === "/checkout") return null;
-
+  // ALL hooks must be called BEFORE any conditional returns (React Rules of Hooks)
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() ?? 0;
-    
     if (latest > 50) {
       if (latest > previous) {
         setHidden(true);
@@ -35,6 +33,9 @@ export function MobileBottomBar() {
 
   useEffect(() => { setMounted(true); }, []);
 
+  // Conditional return AFTER all hooks
+  if (pathname === "/checkout") return null;
+
   const navItems = [
     { label: "Menu", href: "/menu", icon: UtensilsCrossed },
     { label: "Orders", href: "/orders", icon: Receipt },
@@ -42,14 +43,14 @@ export function MobileBottomBar() {
   ];
 
   return (
-    <motion.nav 
+    <motion.nav
       variants={{
         visible: { y: 0 },
         hidden: { y: "100%" }
       }}
       animate={hidden ? "hidden" : "visible"}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      suppressHydrationWarning 
+      suppressHydrationWarning
       className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-[#F9F6F0] border-t border-primary/10 flex items-stretch pb-4"
     >
       {navItems.map(({ label, href, icon: Icon }) => (
