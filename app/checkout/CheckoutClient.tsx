@@ -53,31 +53,39 @@ export function CheckoutClient() {
     setStep(2);
   };
 
-  const handleSendWhatsApp = (isCod: boolean) => {
+  const handleProcessOrder = (isCod: boolean) => {
     addOrder({
       id: orderId,
       items: [...items],
       total: total,
       method: isCod ? "cod" : "upi"
     });
-    
+
     if (isCod) {
       clearCart();
       setStep(4);
+      const msg = buildCheckoutWhatsAppMessage(items, details, total, orderId);
+      window.open(`https://wa.me/${COMPANY_CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
     } else {
-      setStep(3); // Go to QR code for UPI
+      setStep(3); // Go to QR code for UPI, wait for user to confirm payment
     }
-    
-    const msg = buildCheckoutWhatsAppMessage(items, details, total, orderId);
-    window.open(`https://wa.me/${COMPANY_CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
   const handleConfirmPayment = () => {
     clearCart();
     setStep(4);
+    const msg = buildCheckoutWhatsAppMessage(items, details, total, orderId);
+    window.open(`https://wa.me/${COMPANY_CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return (
+      <main className="min-h-screen bg-[#F9F6F0] pt-24 pb-32 flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+      </main>
+    );
+  }
+
   if (items.length === 0 && step === 1) return <CheckoutEmptyState />;
 
   return (
@@ -102,7 +110,7 @@ export function CheckoutClient() {
               setPaymentMethod={setPaymentMethod}
               cart={items}
               cartTotal={total}
-              handleSendWhatsApp={handleSendWhatsApp}
+              handleSendWhatsApp={handleProcessOrder}
               onBack={() => setStep(1)}
             />
           )}
@@ -123,7 +131,10 @@ export function CheckoutClient() {
               key="step4"
               orderId={orderId}
               cartTotal={total}
-              handleSendWhatsApp={() => handleSendWhatsApp(paymentMethod === "cod")}
+              handleSendWhatsApp={() => {
+                const msg = buildCheckoutWhatsAppMessage(items, details, total, orderId);
+                window.open(`https://wa.me/${COMPANY_CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
+              }}
             />
           )}
         </AnimatePresence>
