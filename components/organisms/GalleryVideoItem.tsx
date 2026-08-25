@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { motion } from "framer-motion";
 import { Play } from "lucide-react";
 import { LazyVideo } from "@/components/atoms/LazyVideo";
-import type { GalleryMedia } from "./GalleryTypes";
+import type { GalleryMedia } from "@/lib/types";
 
 export function GalleryVideoItem({ 
   img, 

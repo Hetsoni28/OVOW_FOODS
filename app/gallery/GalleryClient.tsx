@@ -7,7 +7,7 @@ import { GalleryHeader } from "@/components/organisms/GalleryHeader";
 import { GalleryFilters } from "@/components/organisms/GalleryFilters";
 import { GalleryVideoItem } from "@/components/organisms/GalleryVideoItem";
 import { GalleryLightbox } from "@/components/organisms/GalleryLightbox";
-import type { GalleryMedia } from "@/components/organisms/GalleryTypes";
+import type { GalleryMedia } from "@/lib/types";
 
 const CATEGORIES = ["All", "Food", "Events", "Packaging", "Behind the Scenes"];
 

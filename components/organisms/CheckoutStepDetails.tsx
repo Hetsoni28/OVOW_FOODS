@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { User, Phone, MapPin, CheckCircle2 } from "lucide-react";
 import {  pageAnim, childAnim  } from "@/lib/animations";
 import { Field, inputCls } from "./SharedUI";
-import type {  Details, Errors  } from "./CheckoutTypes";
+import type { Details, Errors } from "@/lib/types";
 import { ChangeEvent } from "react";
 
 interface CheckoutStepDetailsProps {

@@ -3,9 +3,9 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Smartphone, Banknote, ShieldCheck } from "lucide-react";
 import {  pageAnim, childAnim  } from "@/lib/animations";
-import type {  PaymentMethod  } from "./CheckoutTypes";
-import type { CartItem } from "@/types";
+import type { PaymentMethod } from "@/lib/types";
 import { CheckoutOrderSummary } from "./CheckoutOrderSummary";
+import type { CartItem } from "@/types";
 
 interface CheckoutStepPaymentProps {
   paymentMethod: PaymentMethod;

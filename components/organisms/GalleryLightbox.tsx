@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { LazyVideo } from "@/components/atoms/LazyVideo";
-import type { GalleryMedia } from "./GalleryTypes";
+import type { GalleryMedia } from "@/lib/types";
 
 interface GalleryLightboxProps {
   selectedImage: GalleryMedia;
