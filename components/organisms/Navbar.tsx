@@ -7,6 +7,7 @@ import { ShoppingBag, Menu } from "lucide-react";
 import { Logo } from "@/components/atoms/Logo";
 import { useCart } from "@/context/CartContext";
 import { MobileMenu } from "@/components/layout/MobileMenu";
+import { InstallAppButton } from "@/components/atoms/InstallAppButton";
 
 export function Navbar() {
   const { count, openCart } = useCart();
@@ -69,6 +70,9 @@ export function Navbar() {
           >
             Bulk Order
           </Link>
+
+          {/* Install App Button - Desktop */}
+          <InstallAppButton />
 
           {/* Cart Icon */}
           <button

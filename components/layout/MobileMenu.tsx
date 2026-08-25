@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { X } from "lucide-react";
 import { useEffect } from "react";
+import { InstallAppButton } from "@/components/atoms/InstallAppButton";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -77,7 +78,16 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         </div>
 
         {/* Footer — above mobile bottom bar (80px clearance) */}
-        <div className="p-6 pb-24 border-t border-primary/10 flex-shrink-0">
+        <div className="p-6 pb-24 border-t border-primary/10 flex-shrink-0 space-y-5">
+          {/* Install App CTA */}
+          <div>
+            <p className="text-xs uppercase tracking-widest text-primary/50 font-bold mb-3">
+              Quick Access
+            </p>
+            <InstallAppButton />
+          </div>
+
+          <div>
           <p className="text-xs uppercase tracking-widest text-primary/50 font-bold mb-2">
             Get in touch
           </p>
@@ -87,6 +97,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           <a href="mailto:hello@ovowfoods.com" className="text-primary hover:opacity-70 text-sm block">
             hello@ovowfoods.com
           </a>
+          </div>
         </div>
       </div>
     </>
