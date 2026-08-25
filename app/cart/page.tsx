@@ -46,7 +46,7 @@ export default function CartPage() {
             </div>
             <Link
               href="/menu"
-              className="bg-primary text-white px-10 py-4 text-xs font-bold uppercase tracking-[0.2em] hover:bg-[#1A4D3A] transition-colors"
+              className="bg-[#C9A24A] text-white px-10 py-4 text-xs font-bold uppercase tracking-[0.2em] hover:bg-[#0B2118] transition-colors"
             >
               Explore Menu
             </Link>

@@ -81,7 +81,7 @@ export function CheckoutStepDetails({ details, errors, onChange, onNext }: Check
         <motion.div variants={childAnim} className="pt-6">
           <button
             onClick={onNext}
-            className="w-full flex items-center justify-between bg-primary text-white px-8 py-5 group hover:bg-[#1A4D3A] transition-all hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-1"
+            className="w-full flex items-center justify-between bg-[#C9A24A] text-white px-8 py-5 group hover:bg-[#0B2118] transition-all hover:shadow-xl hover:shadow-[#0B2118]/20 hover:-translate-y-1"
           >
             <span className="text-xs font-bold uppercase tracking-[0.2em]">Continue to Payment</span>
             <CheckCircle2 size={20} className="group-hover:scale-110 transition-transform text-[#C9A24A]" />

@@ -89,7 +89,7 @@ export function CartDrawer() {
                   <Link
                     href="/menu"
                     onClick={closeCart}
-                    className="bg-primary text-white text-xs uppercase tracking-widest font-semibold px-8 py-4 hover:bg-[#1A4D3A] transition-colors"
+                    className="bg-[#C9A24A] text-white text-xs uppercase tracking-widest font-semibold px-8 py-4 hover:bg-[#0B2118] transition-colors"
                   >
                     Explore Menu
                   </Link>

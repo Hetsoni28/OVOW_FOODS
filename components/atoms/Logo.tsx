@@ -4,7 +4,7 @@ export function Logo({ className = "h-14 w-14" }: { className?: string }) {
       <img
         src="/logo/ovow-foods-logo.png"
         alt="OVOW Foods"
-        className="w-full h-full object-cover scale-[1.08]"
+        className="w-full h-full object-cover rounded-full scale-[1.08]"
       />
     </div>
   );

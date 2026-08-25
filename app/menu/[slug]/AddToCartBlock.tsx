@@ -74,7 +74,7 @@ export function AddToCartBlock({ product }: { product: Product }) {
           className={`relative overflow-hidden flex-1 w-full flex items-center justify-between px-8 py-4 rounded-full transition-all duration-500 shadow-xl ${
             added
               ? "bg-[#25D366] shadow-[#25D366]/30 text-white"
-              : "bg-primary shadow-primary/20 text-white"
+              : "bg-[#C9A24A] shadow-[#C9A24A]/20 text-white hover:bg-[#0B2118] hover:shadow-[#0B2118]/20"
           }`}
         >
           {/* Shine effect on hover */}

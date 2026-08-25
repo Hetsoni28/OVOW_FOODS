@@ -65,7 +65,7 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
                 <a href={upiUri} className="flex-1 bg-white border-2 border-primary text-primary py-3 text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-colors text-center">
                   Pay with App
                 </a>
-                <button onClick={onConfirmPayment} className="flex-1 bg-primary text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-[#1A4D3A] transition-colors shadow-lg shadow-primary/20">
+                <button onClick={onConfirmPayment} className="flex-1 bg-[#C9A24A] text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-[#0B2118] transition-colors shadow-lg shadow-[#0B2118]/20">
                   I have paid
                 </button>
               </div>

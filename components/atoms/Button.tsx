@@ -24,7 +24,7 @@ export function Button({
     "inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-medium transition-colors rounded-none";
 
   const variants = {
-    primary: "bg-tertiary text-white hover:bg-[#B38F3F] hover:text-white",
+    primary: "bg-tertiary text-white hover:bg-[#0B2118] hover:text-white",
     secondary: "bg-white text-primary hover:bg-[#E8E1D5]",
     inverted: "bg-neutral text-white hover:bg-black",
     outlined: "border border-primary text-primary hover:bg-primary/5",

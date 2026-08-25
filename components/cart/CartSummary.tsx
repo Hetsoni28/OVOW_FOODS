@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
@@ -55,7 +55,7 @@ export function CartSummary() {
       <Link
         href="/checkout"
         onClick={closeCart}
-        className="w-full bg-primary text-white flex items-center justify-center gap-2.5 py-4 text-xs font-bold uppercase tracking-[0.2em] hover:bg-primary/90 transition-colors mb-3"
+        className="w-full bg-[#C9A24A] text-white flex items-center justify-center gap-2.5 py-4 px-8 rounded-full shadow-xl shadow-[#C9A24A]/20 text-xs font-bold uppercase tracking-[0.2em] hover:-translate-y-0.5 hover:bg-[#0B2118] hover:shadow-[#0B2118]/20 hover:shadow-2xl transition-all duration-300 mb-3"
       >
         Proceed to Checkout <ArrowRight size={14} />
       </Link>

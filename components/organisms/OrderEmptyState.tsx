@@ -21,7 +21,7 @@ export function OrderEmptyState() {
       <p className="text-sm text-primary/60 mb-6">Looks like you haven't placed any orders from this device.</p>
       <Link
         href="/menu"
-        className="inline-flex items-center gap-2 bg-[#C9A24A] text-white px-6 py-3 text-[11px] font-bold uppercase tracking-widest hover:bg-primary transition-colors"
+        className="inline-flex items-center justify-center gap-2 bg-[#C9A24A] text-white px-6 py-3 text-[11px] font-bold uppercase tracking-widest hover:bg-[#0B2118] transition-colors"
       >
         Explore Menu
       </Link>
