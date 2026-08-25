@@ -61,6 +61,30 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className={`${playfair.variable} ${manrope.variable} font-sans flex min-h-screen flex-col`}
         suppressHydrationWarning
       >
+        {/* Raw splash cover — prevents hero flash, sits BELOW SplashScreen */}
+        <div
+          id="splash-cover"
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9998,
+            backgroundColor: "#123b2a",
+            pointerEvents: "none",
+          }}
+        />
+        {/* Landing overlay — activated by SplashScreen on exit for smooth reveal */}
+        <div
+          id="landing-overlay"
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9997,
+            backgroundColor: "#fff",
+            opacity: 0,
+            pointerEvents: "none",
+            display: "none",
+          }}
+        />
         <SmoothScrollProvider>
           <SplashScreen />
           <MotionProvider>

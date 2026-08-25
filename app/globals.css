@@ -17,6 +17,22 @@ body {
   color: var(--ink);
   font-family: Inter, Arial, sans-serif;
 }
+
+/* Splash screen cover — applied before JS hydrates to prevent hero flash */
+body.splash-active {
+  background: #123b2a !important;
+  overflow: hidden;
+}
+
+/* Landing overlay — dissolves after splash exits for a smooth site reveal */
+@keyframes landing-dissolve {
+  0%   { opacity: 1; }
+  100% { opacity: 0; pointer-events: none; }
+}
+#landing-overlay {
+  animation: landing-dissolve 0.9s cubic-bezier(0.76, 0, 0.24, 1) 0.1s forwards;
+}
+
 .container-x {
   width: min(1180px, calc(100% - 40px));
   margin-inline: auto;
