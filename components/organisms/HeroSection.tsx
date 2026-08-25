@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/atoms/Button";
+import { InstallAppButton } from "@/components/atoms/InstallAppButton";
 import { motion } from "framer-motion";
 import { fadeUpSlow, staggerFast } from "@/lib/animations";
 import { LazyVideo } from "@/components/atoms/LazyVideo";
@@ -58,10 +59,14 @@ export function HeroSection() {
         >
           A sensory journey into heritage vegetarian cuisine, crafted for the conscious palate.
         </motion.p>
-        <motion.div variants={fadeUpSlow} className="mt-10">
+        <motion.div variants={fadeUpSlow} className="mt-10 flex flex-col items-center gap-4">
           <Button href="/menu" className="px-8 py-4 text-xs font-bold tracking-[0.2em] uppercase">
             Experience the Collection
           </Button>
+          {/* Install App CTA — mobile only */}
+          <div className="md:hidden">
+            <InstallAppButton />
+          </div>
         </motion.div>
       </motion.div>
     </section>
