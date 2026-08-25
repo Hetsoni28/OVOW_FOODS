@@ -1,4 +1,15 @@
 import type { NextConfig } from 'next';
+import withPWAInit from '@ducanh2912/next-pwa';
+
+const withPWA = withPWAInit({
+  dest: 'public',
+  cacheOnFrontEndNav: true,
+  aggressiveFrontEndNavCaching: true,
+  disable: process.env.NODE_ENV === 'development',
+  workboxOptions: {
+    disableDevLogs: true,
+  },
+});
 
 const nextConfig: NextConfig = {
   // Allow mobile devices on the local network to load JS chunks
@@ -28,6 +39,8 @@ const nextConfig: NextConfig = {
   compress: true,
   // Enable React strict mode for better performance profiling
   reactStrictMode: false,
+  // Silence Turbopack error caused by next-pwa injecting Webpack config
+  turbopack: {},
 };
 
-export default nextConfig;
+export default withPWA(nextConfig);

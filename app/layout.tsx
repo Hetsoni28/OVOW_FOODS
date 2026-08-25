@@ -48,6 +48,14 @@ export const metadata: Metadata = {
     locale: "en_IN",
     type: "website",
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "OVOW FOODS",
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -56,6 +64,49 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         {/* Preload hero video — browser starts downloading immediately with page HTML */}
         <link rel="preload" as="video" href="/videos/hero-bg.mp4" type="video/mp4" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Restaurant",
+              name: "OVOW FOODS",
+              image: "https://ovowfoods.com/og-image.jpg",
+              "@id": "https://ovowfoods.com",
+              url: "https://ovowfoods.com",
+              telephone: "+917567566214",
+              address: {
+                "@type": "PostalAddress",
+                streetAddress: "13, Near, Ghatlodiya",
+                addressLocality: "Ahmedabad",
+                addressRegion: "Gujarat",
+                postalCode: "382481",
+                addressCountry: "IN",
+              },
+              geo: {
+                "@type": "GeoCoordinates",
+                latitude: 23.0525,
+                longitude: 72.5337,
+              },
+              openingHoursSpecification: {
+                "@type": "OpeningHoursSpecification",
+                dayOfWeek: [
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday",
+                  "Saturday",
+                  "Sunday",
+                ],
+                opens: "11:00",
+                closes: "04:00",
+              },
+              servesCuisine: "Vegetarian",
+              priceRange: "₹₹",
+            }),
+          }}
+        />
       </head>
       <body
         className={`${playfair.variable} ${manrope.variable} font-sans flex min-h-screen flex-col`}
