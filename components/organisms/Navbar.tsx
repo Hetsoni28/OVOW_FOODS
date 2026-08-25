@@ -71,11 +71,6 @@ export function Navbar() {
             Bulk Order
           </Link>
 
-          {/* Install App Button - Mobile only */}
-          <div className="md:hidden">
-            <InstallAppButton />
-          </div>
-
           {/* Cart Icon */}
           <button
             onClick={openCart}
