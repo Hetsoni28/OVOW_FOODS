@@ -30,7 +30,7 @@ export function GalleryFilters({ categories, activeCategory, setActiveCategory }
           {activeCategory === cat && (
             <motion.div
               layoutId="gallery-filter-bg"
-              className="absolute inset-0 bg-primary z-0"
+              className="absolute inset-0 bg-[#C9A24A] z-0"
               transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
             />
           )}

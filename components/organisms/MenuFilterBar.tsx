@@ -35,7 +35,7 @@ export function MenuFilterBar({ categories, activeCategory, setActiveCategory, s
                 }
                 className={`shrink-0 px-5 py-2.5 text-[10px] uppercase tracking-[0.2em] font-bold transition-all duration-300 rounded-sm whitespace-nowrap border ${
                   isActive
-                    ? "bg-[#0B2118] border-[#0B2118] text-[#C9A24A] shadow-md"
+                    ? "bg-[#C9A24A] border-[#C9A24A] text-white shadow-md"
                     : "bg-white border-primary/10 text-primary/60 hover:border-primary/30 hover:text-primary"
                 }`}
               >

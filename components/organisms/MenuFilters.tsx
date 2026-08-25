@@ -38,7 +38,7 @@ export function MenuFilters({
               onClick={() => setActiveCategory("All")}
               className={`shrink-0 px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${
                 activeCategory === "All"
-                  ? "bg-primary text-[#E4C77A]"
+                  ? "bg-[#C9A24A] text-white border-[#C9A24A]"
                   : "bg-white border border-primary/20 text-primary hover:border-primary/50"
               }`}
             >
@@ -50,7 +50,7 @@ export function MenuFilters({
                 onClick={() => setActiveCategory(category.name)}
                 className={`shrink-0 px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${
                   activeCategory === category.name
-                    ? "bg-primary text-[#E4C77A]"
+                    ? "bg-[#C9A24A] text-white border-[#C9A24A]"
                     : "bg-white border border-primary/20 text-primary hover:border-primary/50"
                 }`}
               >
