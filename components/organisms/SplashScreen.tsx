@@ -49,6 +49,10 @@ export function SplashScreen() {
   const [phase, setPhase] = useState<"brand" | "video">("brand");
   const [logoVisible, setLogoVisible] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  // Tracks whether video has started playing so safety net won't kill it mid-play
+  const videoStartedRef = useRef(false);
+  // Cleanup ref for canplay listener
+  const canPlayCleanupRef = useRef<(() => void) | null>(null);
 
   const progress = useMotionValue(0);
   const progressWidth = useTransform(progress, [0, 1], ["0%", "100%"]);
@@ -74,21 +78,48 @@ export function SplashScreen() {
     if (seen) return;
 
     const t1 = setTimeout(() => setLogoVisible(true), 150);
+
     const t2 = setTimeout(() => {
       const v = videoRef.current;
-      // Only switch to video phase if the video has started loading data.
-      // If not ready (slow network), skip video phase — brand screen stays visible
-      // and the 5s safety net will end the splash gracefully.
-      if (v && v.readyState >= 2) {
+      if (!v) return;
+
+      const tryPlay = () => {
+        videoStartedRef.current = true;
         setPhase("video");
         v.play().catch(() => handleSplashEnd());
-      }
-      // else: stay on brand phase, safety net handles exit
-    }, 2800);
-    // Safety net: on very slow networks, force end splash after 5s
-    const t3 = setTimeout(() => handleSplashEnd(), 5000);
+      };
 
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+      if (v.readyState >= 2) {
+        // Video already buffered enough — play immediately
+        tryPlay();
+      } else {
+        // Video still loading — keep brand screen visible and wait for it
+        // As soon as it's ready, switch to video phase and play
+        const onCanPlay = () => {
+          v.removeEventListener("canplay", onCanPlay);
+          canPlayCleanupRef.current = null;
+          tryPlay();
+        };
+        v.addEventListener("canplay", onCanPlay);
+        canPlayCleanupRef.current = () => v.removeEventListener("canplay", onCanPlay);
+      }
+    }, 2800);
+
+    // Safety net: only fires if video NEVER started playing within 10s
+    // If video is playing, onEnded handles the exit naturally
+    const t3 = setTimeout(() => {
+      if (!videoStartedRef.current) {
+        canPlayCleanupRef.current?.(); // cancel pending listener
+        handleSplashEnd();
+      }
+    }, 10000);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      canPlayCleanupRef.current?.();
+    };
   }, []);
 
   const handleTimeUpdate = () => {
