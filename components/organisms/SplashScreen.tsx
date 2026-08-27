@@ -101,24 +101,9 @@ export function SplashScreen() {
     }, 300);
   };
 
-  if (!isMounted) {
-    // Show logo immediately before JS hydrates — eliminates the green blank flash
-    return (
-      <div
-        className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
-        style={{ backgroundColor: "#0d2d20" }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/logo/ovow-foods-logo.png"
-          alt="OVOW FOODS"
-          width={160}
-          height={160}
-          style={{ borderRadius: "50%", objectFit: "contain" }}
-        />
-      </div>
-    );
-  }
+  // Before JS hydrates: splash-cover (green bg in layout.tsx) covers the page.
+  // We return null here — no static logo — so the logo only shows ONCE in the animation.
+  if (!isMounted) return null;
 
   // Logo size: smaller on mobile to fit all screens including iPhone SE
   const logoSize = isMobile ? 150 : 190;
