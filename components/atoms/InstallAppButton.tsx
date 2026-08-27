@@ -27,14 +27,17 @@ function InstallGuidePopup({
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-[99999] flex items-end justify-center p-4 pb-8">
+    <div
+      className="fixed inset-0 z-[99999] flex items-end justify-center p-4"
+      style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom, 16px))" }}
+    >
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
-      {/* Card */}
-      <div className="relative w-full max-w-sm bg-[#0d2d20] rounded-2xl p-6 shadow-2xl border border-white/10 z-10">
+      {/* Card — max-height so it never hides behind nav bar on small phones */}
+      <div className="relative w-full max-w-sm bg-[#0d2d20] rounded-2xl p-6 shadow-2xl border border-white/10 z-10 overflow-y-auto max-h-[85vh]">
         {/* X close button */}
         <button
           onClick={onClose}
