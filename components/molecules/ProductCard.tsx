@@ -12,9 +12,12 @@ export function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
 
+  const isSoldOut = product.available === false;
+
   function handleAdd(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
+    if (isSoldOut) return;
     addItem(product);
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
@@ -46,12 +49,17 @@ export function ProductCard({ product }: { product: Product }) {
 
         {/* Badges */}
         <div className="absolute top-4 left-4 flex flex-col gap-2">
-          {(product.isSignature || (product as any).signature) && (
+          {isSoldOut && (
+            <span className="bg-black/80 text-white px-3 py-1.5 text-[9px] uppercase tracking-[0.2em] font-bold shadow-sm backdrop-blur-sm">
+              Sold Out
+            </span>
+          )}
+          {!isSoldOut && (product.isSignature || (product as any).signature) && (
             <span className="bg-[#C9A24A] text-white px-3 py-1.5 text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1.5 shadow-sm">
               <Star size={10} fill="white" /> Signature
             </span>
           )}
-          {(product.isBestseller || (product as any).isBestSeller) && (
+          {!isSoldOut && (product.isBestseller || (product as any).isBestSeller) && (
             <span className="bg-white/95 backdrop-blur-md text-[#0B2118] px-3 py-1.5 text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1.5 shadow-sm">
               <Flame size={10} className="text-[#C9A24A]" /> Bestseller
             </span>
@@ -103,9 +111,13 @@ export function ProductCard({ product }: { product: Product }) {
             
             <button suppressHydrationWarning
               onClick={handleAdd}
+              disabled={isSoldOut || added}
+              title={isSoldOut ? "Currently Unavailable" : "Add to cart"}
               className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm border ${
-                added 
-                  ? "bg-[#2E7D4F] border-[#2E7D4F] text-white shadow-md" 
+                isSoldOut
+                  ? "bg-gray-100 border-gray-200 text-gray-300 cursor-not-allowed"
+                  : added
+                  ? "bg-[#2E7D4F] border-[#2E7D4F] text-white shadow-md"
                   : "bg-white border-[#C9A24A] text-[#C9A24A] hover:bg-[#C9A24A] hover:text-white"
               }`}
             >

@@ -6,14 +6,15 @@ export const ALL_CATEGORIES_QUERY = groq`*[_type == "category" && active == true
   "slug": slug.current
 }`
 
-// List view: lean query — no fullExperienceVideo, no ingredients (saves bandwidth)
-export const ALL_PRODUCTS_QUERY = groq`*[_type == "product" && isAvailable != false] | order(sortOrder asc) {
+// List view: lean query — shows ALL products including sold-out (displayed with SOLD OUT badge)
+export const ALL_PRODUCTS_QUERY = groq`*[_type == "product"] | order(sortOrder asc) {
   _id,
   name,
   "slug": slug.current,
   description,
   price,
   originalPrice,
+  available,
   "category": category->name,
   "image": image.asset->url + "?w=600&auto=format&q=75",
   isSpicy,
@@ -33,6 +34,7 @@ export const PRODUCT_BY_SLUG_QUERY = groq`*[_type == "product" && slug.current =
   description,
   price,
   originalPrice,
+  available,
   "category": category->name,
   "image": image.asset->url + "?w=1200&auto=format&q=80",
   isSpicy,
@@ -43,7 +45,7 @@ export const PRODUCT_BY_SLUG_QUERY = groq`*[_type == "product" && slug.current =
   "fullExperienceVideo": fullExperienceVideo.asset->url
 }`
 
-export const RELATED_PRODUCTS_QUERY = groq`*[_type == "product" && category->name == $category && slug.current != $slug && isAvailable != false][0...3] {
+export const RELATED_PRODUCTS_QUERY = groq`*[_type == "product" && category->name == $category && slug.current != $slug && available != false][0...3] {
   _id,
   name,
   "slug": slug.current,
