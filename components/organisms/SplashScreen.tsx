@@ -74,8 +74,8 @@ export function SplashScreen() {
       setPhase("video");
       videoRef.current?.play();
     }, 2800);
-    // Safety net: on very slow networks, force end splash after 10s
-    const t3 = setTimeout(() => handleSplashEnd(), 10000);
+    // Safety net: on very slow networks, force end splash after 5s
+    const t3 = setTimeout(() => handleSplashEnd(), 5000);
 
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, []);
