@@ -75,8 +75,15 @@ export function SplashScreen() {
 
     const t1 = setTimeout(() => setLogoVisible(true), 150);
     const t2 = setTimeout(() => {
-      setPhase("video");
-      videoRef.current?.play();
+      const v = videoRef.current;
+      // Only switch to video phase if the video has started loading data.
+      // If not ready (slow network), skip video phase — brand screen stays visible
+      // and the 5s safety net will end the splash gracefully.
+      if (v && v.readyState >= 2) {
+        setPhase("video");
+        v.play().catch(() => handleSplashEnd());
+      }
+      // else: stay on brand phase, safety net handles exit
     }, 2800);
     // Safety net: on very slow networks, force end splash after 5s
     const t3 = setTimeout(() => handleSplashEnd(), 5000);
@@ -253,6 +260,11 @@ export function SplashScreen() {
               preload="auto"
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleSplashEnd}
+              onError={handleSplashEnd}
+              onStalled={() => {
+                // Video stalled (slow network) — end splash after short wait
+                setTimeout(handleSplashEnd, 1200);
+              }}
               className="w-full h-full object-cover"
             >
               {isMobile ? (
