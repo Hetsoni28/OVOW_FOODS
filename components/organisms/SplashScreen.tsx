@@ -69,6 +69,10 @@ export function SplashScreen() {
     setIsMounted(true);
     setIsMobile(window.innerWidth < 768);
 
+    // Skip all timers for returning users — splash was already seen
+    const seen = sessionStorage.getItem("ovow_splash_seen");
+    if (seen) return;
+
     const t1 = setTimeout(() => setLogoVisible(true), 150);
     const t2 = setTimeout(() => {
       setPhase("video");
@@ -87,18 +91,13 @@ export function SplashScreen() {
 
   const handleSplashEnd = () => {
     animate(progress, 1, { duration: 0.3 });
-    // Activate landing overlay for smooth site reveal
-    const overlay = document.getElementById("landing-overlay");
-    if (overlay) {
-      overlay.style.display = "block";
-      overlay.style.opacity = "1";
-    }
     setTimeout(() => {
       setShowSplash(false);
       sessionStorage.setItem("ovow_splash_seen", "true");
       const cover = document.getElementById("splash-cover");
       if (cover) cover.style.display = "none";
-      document.body.style.overflow = "unset";
+      // Remove overflow lock cleanly so Lenis scroll is not disrupted
+      document.body.style.overflow = "";
     }, 300);
   };
 
