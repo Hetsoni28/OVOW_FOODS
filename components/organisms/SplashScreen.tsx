@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import {
@@ -74,8 +74,10 @@ export function SplashScreen() {
       setPhase("video");
       videoRef.current?.play();
     }, 2800);
+    // Safety net: on very slow networks, force end splash after 10s
+    const t3 = setTimeout(() => handleSplashEnd(), 10000);
 
-    return () => { clearTimeout(t1); clearTimeout(t2); };
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, []);
 
   const handleTimeUpdate = () => {
@@ -101,7 +103,22 @@ export function SplashScreen() {
   };
 
   if (!isMounted) {
-    return <div className="fixed inset-0 z-[9999] bg-[#0d2d20]" />;
+    // Show logo immediately before JS hydrates — eliminates the green blank flash
+    return (
+      <div
+        className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
+        style={{ backgroundColor: "#0d2d20" }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/logo/ovow-foods-logo.png"
+          alt="OVOW FOODS"
+          width={160}
+          height={160}
+          style={{ borderRadius: "50%", objectFit: "contain" }}
+        />
+      </div>
+    );
   }
 
   // Logo size: smaller on mobile to fit all screens including iPhone SE
