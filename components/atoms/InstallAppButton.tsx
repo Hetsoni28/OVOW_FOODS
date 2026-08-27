@@ -1,7 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { Download, X, Share } from "lucide-react";
+
+// useLayoutEffect fires synchronously before paint on client (no flash).
+// Falls back to useEffect on server to avoid SSR warnings.
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -14,29 +19,27 @@ export function InstallAppButton() {
   const [isIOS, setIsIOS] = useState(false);
   const [showIOSGuide, setShowIOSGuide] = useState(false);
 
-  useEffect(() => {
-    // Detect iOS (iPhone, iPad, iPod)
+  // Runs synchronously before first paint — no delay, no flash
+  useIsomorphicLayoutEffect(() => {
     const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
     setIsIOS(ios);
 
-    // Check if already installed (standalone mode)
     const isStandalone =
       window.matchMedia("(display-mode: standalone)").matches ||
-      ("standalone" in window.navigator && (window.navigator as { standalone?: boolean }).standalone === true);
+      ("standalone" in window.navigator &&
+        (window.navigator as { standalone?: boolean }).standalone === true);
 
-    if (isStandalone) {
-      setIsInstalled(true);
-      return;
-    }
+    if (isStandalone) setIsInstalled(true);
+  }, []);
 
-    // Android/Chrome: listen for native install prompt
+  // Async: listen for Android/Chrome install prompt event
+  useEffect(() => {
     const handler = (e: Event) => {
       e.preventDefault();
       setInstallPrompt(e as BeforeInstallPromptEvent);
     };
     window.addEventListener("beforeinstallprompt", handler);
     window.addEventListener("appinstalled", () => setIsInstalled(true));
-
     return () => {
       window.removeEventListener("beforeinstallprompt", handler);
     };
