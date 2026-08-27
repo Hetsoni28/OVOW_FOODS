@@ -114,17 +114,30 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className={`${playfair.variable} ${manrope.variable} font-sans flex min-h-screen flex-col`}
         suppressHydrationWarning
       >
-        {/* Raw splash cover — prevents hero flash, sits BELOW SplashScreen */}
+        {/* Raw splash cover — shows LOGO immediately from raw HTML before any JS loads.
+            This eliminates the blank green flash on slow networks entirely. */}
         <div
           id="splash-cover"
           style={{
             position: "fixed",
             inset: 0,
             zIndex: 9998,
-            backgroundColor: "#123b2a",
+            backgroundColor: "#0d2d20",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             pointerEvents: "none",
           }}
-        />
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo/ovow-foods-logo.png"
+            alt="OVOW FOODS"
+            width={160}
+            height={160}
+            style={{ borderRadius: "50%", objectFit: "contain" }}
+          />
+        </div>
         {/* Landing overlay — activated by SplashScreen on exit for smooth reveal */}
         <div
           id="landing-overlay"
