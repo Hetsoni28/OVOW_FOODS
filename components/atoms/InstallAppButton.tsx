@@ -81,7 +81,7 @@ export function InstallAppButton() {
       <>
         <button
           onClick={() => setShowIOSGuide(true)}
-          className="flex items-center gap-2 bg-[#C9A24A] text-white px-4 py-2 text-[11px] font-bold uppercase tracking-widest hover:bg-[#0B2118] transition-all duration-300 shadow-lg shadow-[#C9A24A]/20 rounded-full"
+          className="flex items-center gap-2 bg-[#C9A24A] text-white px-4 py-2 text-[11px] font-bold uppercase tracking-widest hover:bg-[#0B2118] transition-all duration-300 shadow-lg shadow-[#C9A24A]/20 "
         >
           <Download size={14} />
           Install App
@@ -105,7 +105,7 @@ export function InstallAppButton() {
               </button>
 
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 bg-[#C9A24A]/20 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-[#C9A24A]/20  flex items-center justify-center">
                   <Download size={18} className="text-[#C9A24A]" />
                 </div>
                 <div>
@@ -116,7 +116,7 @@ export function InstallAppButton() {
 
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#C9A24A] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                  <span className="w-6 h-6  bg-[#C9A24A] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
                   <div>
                     <p className="text-white text-sm font-medium flex items-center gap-1">
                       Tap the Share button <Share size={14} className="text-[#C9A24A]" />
@@ -125,14 +125,14 @@ export function InstallAppButton() {
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#C9A24A] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                  <span className="w-6 h-6  bg-[#C9A24A] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
                   <div>
                     <p className="text-white text-sm font-medium">Tap &quot;Add to Home Screen&quot;</p>
                     <p className="text-white/50 text-xs mt-0.5">Scroll down in the Share menu to find it</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#C9A24A] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+                  <span className="w-6 h-6  bg-[#C9A24A] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
                   <div>
                     <p className="text-white text-sm font-medium">Tap &quot;Add&quot;</p>
                     <p className="text-white/50 text-xs mt-0.5">OVOW FOODS will appear on your Home Screen!</p>
@@ -142,7 +142,7 @@ export function InstallAppButton() {
 
               <button
                 onClick={() => setShowIOSGuide(false)}
-                className="mt-6 w-full bg-[#C9A24A] hover:bg-[#b8912e] text-white font-bold py-3 rounded-full text-sm tracking-widest uppercase transition-colors"
+                className="mt-6 w-full bg-[#C9A24A] hover:bg-[#b8912e] text-white font-bold py-3  text-sm tracking-widest uppercase transition-colors"
               >
                 Got it!
               </button>
@@ -159,7 +159,7 @@ export function InstallAppButton() {
     return (
       <button
         onClick={handleAndroidInstall}
-        className="flex items-center gap-2 bg-[#C9A24A] text-white px-4 py-2 text-[11px] font-bold uppercase tracking-widest hover:bg-[#0B2118] transition-all duration-300 shadow-lg shadow-[#C9A24A]/20 rounded-full"
+        className="flex items-center gap-2 bg-[#C9A24A] text-white px-4 py-2 text-[11px] font-bold uppercase tracking-widest hover:bg-[#0B2118] transition-all duration-300 shadow-lg shadow-[#C9A24A]/20 "
       >
         <Download size={14} />
         Install App
@@ -174,7 +174,7 @@ export function InstallAppButton() {
       <>
         <button
           onClick={() => setShowAndroidGuide(true)}
-          className="flex items-center gap-2 bg-[#C9A24A] text-white px-4 py-2 text-[11px] font-bold uppercase tracking-widest hover:bg-[#0B2118] transition-all duration-300 shadow-lg shadow-[#C9A24A]/20 rounded-full"
+          className="flex items-center gap-2 bg-[#C9A24A] text-white px-4 py-2 text-[11px] font-bold uppercase tracking-widest hover:bg-[#0B2118] transition-all duration-300 shadow-lg shadow-[#C9A24A]/20 "
         >
           <Download size={14} />
           Install App
@@ -194,7 +194,7 @@ export function InstallAppButton() {
             </button>
 
             <div className="flex items-center gap-3 mb-5">
-              <div className="w-10 h-10 bg-[#C9A24A]/20 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-[#C9A24A]/20  flex items-center justify-center">
                 <Download size={18} className="text-[#C9A24A]" />
               </div>
               <div>
@@ -205,21 +205,21 @@ export function InstallAppButton() {
 
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <span className="w-6 h-6 rounded-full bg-[#C9A24A] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                <span className="w-6 h-6  bg-[#C9A24A] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
                 <div>
                   <p className="text-white text-sm font-medium">Open your browser menu</p>
                   <p className="text-white/50 text-xs mt-0.5">Tap the ⋮ or ☰ menu icon in your browser</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <span className="w-6 h-6 rounded-full bg-[#C9A24A] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                <span className="w-6 h-6  bg-[#C9A24A] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
                 <div>
                   <p className="text-white text-sm font-medium">Tap &quot;Add to Home Screen&quot;</p>
                   <p className="text-white/50 text-xs mt-0.5">Or &quot;Install App&quot; / &quot;Add to phone&quot;</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <span className="w-6 h-6 rounded-full bg-[#C9A24A] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+                <span className="w-6 h-6  bg-[#C9A24A] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
                 <div>
                   <p className="text-white text-sm font-medium">Tap &quot;Add&quot; to confirm</p>
                   <p className="text-white/50 text-xs mt-0.5">OVOW FOODS will be on your Home Screen!</p>
@@ -229,7 +229,7 @@ export function InstallAppButton() {
 
             <button
               onClick={() => setShowAndroidGuide(false)}
-              className="mt-6 w-full bg-[#C9A24A] hover:bg-[#b8912e] text-white font-bold py-3 rounded-full text-sm tracking-widest uppercase transition-colors"
+              className="mt-6 w-full bg-[#C9A24A] hover:bg-[#b8912e] text-white font-bold py-3  text-sm tracking-widest uppercase transition-colors"
             >
               Got it!
             </button>
