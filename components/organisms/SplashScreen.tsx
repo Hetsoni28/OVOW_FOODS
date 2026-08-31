@@ -77,6 +77,12 @@ export function SplashScreen() {
     const seen = sessionStorage.getItem("ovow_splash_seen");
     if (seen) return;
 
+    // Force iOS to start buffering in the background (since preload="metadata")
+    // This allows `canplay` to eventually fire without blocking initial page load
+    if (videoRef.current) {
+      videoRef.current.load();
+    }
+
     const t1 = setTimeout(() => setLogoVisible(true), 150);
 
     const t2 = setTimeout(() => {
