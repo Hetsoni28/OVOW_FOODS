@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useLayoutEffect } from "react";
 import { Download, X, Share } from "lucide-react";
+import { createPortal } from "react-dom";
 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -26,7 +27,7 @@ function InstallGuidePopup({
     return () => window.removeEventListener("scroll", handler);
   }, [onClose]);
 
-  return (
+  const content = (
     <div
       className="fixed inset-0 z-[99999] flex items-end justify-center p-4"
       style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom, 16px))" }}
@@ -90,6 +91,11 @@ function InstallGuidePopup({
       </div>
     </div>
   );
+
+  if (typeof document !== "undefined") {
+    return createPortal(content, document.body);
+  }
+  return null;
 }
 
 function Step({ n, title, sub }: { n: number; title: React.ReactNode; sub: string }) {
