@@ -23,6 +23,7 @@
     "allowJs": true,
     "skipLibCheck": true,
     "baseUrl": ".",
+    "ignoreDeprecations": "5.0",
     "paths": {
       "@/*": [
         "./*"

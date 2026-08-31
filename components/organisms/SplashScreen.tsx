@@ -288,7 +288,7 @@ export function SplashScreen() {
               autoPlay={false}
               muted
               playsInline
-              preload="auto"
+              preload="metadata"
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleSplashEnd}
               onError={handleSplashEnd}
