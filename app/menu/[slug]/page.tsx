@@ -109,6 +109,11 @@ export default async function Product({
                   <Flame size={14} className="text-white" /> Signature Dish
                 </div>
               )}
+              {product.isSwaminarayan && (
+                <div className="backdrop-blur-md bg-[#123B2A]/90 border border-[#C9A24A]/30 text-white px-5 py-2.5 text-[10px] sm:text-xs font-bold uppercase tracking-widest shadow-lg rounded-none flex items-center gap-2">
+                  <span>🌿</span> Swaminarayan
+                </div>
+              )}
             </div>
           </div>
 

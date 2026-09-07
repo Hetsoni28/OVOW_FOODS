@@ -16,6 +16,7 @@ export function MenuClient({
 }) {
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [swaminarayanOnly, setSwaminarayanOnly] = useState(false);
 
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
@@ -27,13 +28,15 @@ export function MenuClient({
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (p.description &&
           p.description.toLowerCase().includes(searchQuery.toLowerCase()));
-      return matchesCategory && matchesSearch;
+      const matchesDiet = swaminarayanOnly ? p.isSwaminarayan : true;
+      return matchesCategory && matchesSearch && matchesDiet;
     });
-  }, [activeCategory, searchQuery, products]);
+  }, [activeCategory, searchQuery, swaminarayanOnly, products]);
 
   const handleClear = () => {
     setSearchQuery("");
     setActiveCategory("All");
+    setSwaminarayanOnly(false);
   };
 
   return (
@@ -47,15 +50,29 @@ export function MenuClient({
       />
 
       <div className="max-w-7xl mx-auto px-4 md:px-8">
-        <div className="flex items-center justify-between py-8">
-          <p className="text-[10px] uppercase tracking-[0.25em] font-bold text-primary/50 flex items-center gap-2">
-            <SlidersHorizontal size={12} className="text-[#C9A24A]" />
-            {filteredProducts.length} DISH{filteredProducts.length !== 1 && "ES"}
-          </p>
-          {(searchQuery || activeCategory !== "All") && (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between py-6 gap-4">
+          <div className="flex items-center gap-4">
+            <p className="text-[10px] uppercase tracking-[0.25em] font-bold text-primary/50 flex items-center gap-2">
+              <SlidersHorizontal size={12} className="text-[#C9A24A]" />
+              {filteredProducts.length} DISH{filteredProducts.length !== 1 && "ES"}
+            </p>
+            {/* Swaminarayan Filter Toggle */}
+            <button
+              onClick={() => setSwaminarayanOnly(!swaminarayanOnly)}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-300 text-[10px] font-bold tracking-widest uppercase ${
+                swaminarayanOnly
+                  ? "bg-[#C9A24A] border-[#C9A24A] text-white shadow-lg shadow-[#C9A24A]/20"
+                  : "bg-transparent border-primary/20 text-primary/60 hover:border-[#C9A24A] hover:text-[#C9A24A]"
+              }`}
+            >
+              <span className="text-[12px]">🌿</span>
+              Swaminarayan Only
+            </button>
+          </div>
+          {(searchQuery || activeCategory !== "All" || swaminarayanOnly) && (
             <button suppressHydrationWarning
               onClick={handleClear}
-              className="text-[10px] uppercase tracking-widest font-bold text-[#C9A24A] hover:text-primary transition-colors flex items-center gap-1.5"
+              className="text-[10px] uppercase tracking-widest font-bold text-[#C9A24A] hover:text-primary transition-colors flex items-center gap-1.5 self-start sm:self-center"
             >
               <X size={12} /> Clear filters
             </button>

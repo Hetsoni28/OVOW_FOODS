@@ -64,6 +64,11 @@ export function ProductCard({ product }: { product: Product }) {
               <Flame size={10} className="text-[#C9A24A]" /> Bestseller
             </span>
           )}
+          {product.isSwaminarayan && (
+            <span className="bg-[#123B2A] text-white px-3 py-1.5 text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1.5 shadow-sm border border-[#C9A24A]/30">
+              <span className="text-[10px]">🌿</span> Swaminarayan
+            </span>
+          )}
         </div>
 
         {/* Veg mark */}

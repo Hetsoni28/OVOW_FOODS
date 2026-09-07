@@ -30,17 +30,28 @@ export function ProductDetails({ product }: { product: Product }) {
       className="flex flex-col justify-center"
     >
       
-      {/* Pure Veg Tag */}
-      {product.vegetarian !== false && (
-        <motion.div variants={item} className="flex items-center gap-2 mb-6">
-          <span className="flex items-center justify-center w-5 h-5 border-2 border-[#2E7D4F] rounded-sm">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#2E7D4F]" />
-          </span>
-          <span className="text-[10px] font-bold uppercase tracking-widest text-[#2E7D4F]">
-            100% Pure Vegetarian
-          </span>
-        </motion.div>
-      )}
+      {/* Tags Row */}
+      <motion.div variants={item} className="flex flex-wrap items-center gap-4 mb-6">
+        {product.vegetarian !== false && (
+          <div className="flex items-center gap-2">
+            <span className="flex items-center justify-center w-5 h-5 border-2 border-[#2E7D4F] rounded-sm">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#2E7D4F]" />
+            </span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[#2E7D4F]">
+              100% Pure Vegetarian
+            </span>
+          </div>
+        )}
+        
+        {product.isSwaminarayan && (
+          <div className="flex items-center gap-2">
+            <span className="text-[14px]">🌿</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[#123B2A]">
+              Swaminarayan Friendly
+            </span>
+          </div>
+        )}
+      </motion.div>
 
       {/* Luxury Typography */}
       <motion.h1 variants={item} className="font-serif text-5xl md:text-6xl lg:text-7xl text-primary leading-tight mb-4">

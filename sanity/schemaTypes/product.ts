@@ -111,6 +111,13 @@ export const productType = defineType({
       initialValue: true,
     }),
     defineField({
+      name: 'isSwaminarayan',
+      title: 'Is Swaminarayan Friendly?',
+      type: 'boolean',
+      description: 'Turn on if this dish is made without onion and garlic.',
+      initialValue: false,
+    }),
+    defineField({
       name: 'signature',
       title: 'Is Signature?',
       type: 'boolean',

@@ -24,6 +24,7 @@ export interface Product {
   spiceLevel?: string;
   isSpicy?: boolean;
   vegetarian?: boolean;
+  isSwaminarayan?: boolean;
   signature?: boolean;
   isSignature?: boolean; // Legacy
   isBestseller?: boolean;
