@@ -239,6 +239,17 @@ export function IconMenu({ size = 20, className, ...p }: IconProps) {
   );
 }
 
+export function IconSquareMenu({ size = 20, className, ...p }: IconProps) {
+  return (
+    <svg {...defaults(size)} className={className} {...p}>
+      <rect width="18" height="18" x="3" y="3" rx="2" />
+      <path d="M7 8h10" />
+      <path d="M7 12h10" />
+      <path d="M7 16h10" />
+    </svg>
+  );
+}
+
 export function IconPlay({ size = 20, className, ...p }: IconProps) {
   return (
     <svg {...defaults(size)} className={className} {...p}>

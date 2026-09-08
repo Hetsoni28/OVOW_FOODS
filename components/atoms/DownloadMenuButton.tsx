@@ -347,7 +347,22 @@ export function DownloadMenuButton({ products }: Props) {
         return acc;
       }, {});
 
-      for (const [category, items] of Object.entries(grouped)) {
+      // Custom Sort Order
+      const getCategoryWeight = (name: string) => {
+        const lower = name.toLowerCase();
+        if (lower.includes("subji") || lower.includes("sabji")) return 1;
+        if (lower.includes("biryani")) return 2;
+        if (lower.includes("dal")) return 3;
+        if (lower.includes("dessert") || lower.includes("sweet")) return 4;
+        if (lower.includes("roti") || lower.includes("bread") || lower.includes("side") || lower.includes("raita")) return 5;
+        return 99;
+      };
+
+      const sortedCategories = Object.entries(grouped).sort((a, b) => {
+        return getCategoryWeight(a[0]) - getCategoryWeight(b[0]);
+      });
+
+      for (const [category, items] of sortedCategories) {
         // Need space for header + at least one item
         pageNum = pdf.check(25 + ITEM_H, pageNum, logoB64);
         

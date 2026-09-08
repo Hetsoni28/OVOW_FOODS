@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { IconUtensilsCrossed, IconImages, IconShoppingBag, IconReceipt } from "@/components/atoms/Icons";
+import { IconSquareMenu, IconImages, IconShoppingBag, IconReceipt } from "@/components/atoms/Icons";
 import { useCart } from "@/context/CartContext";
 import { openWhatsAppInquiry } from "@/lib/whatsapp";
 import { WhatsAppIcon } from "@/components/atoms/WhatsAppIcon";
@@ -37,7 +37,7 @@ export function MobileBottomBar() {
   if (pathname === "/checkout") return null;
 
   const navItems = [
-    { label: "Menu", href: "/menu", icon: IconUtensilsCrossed },
+    { label: "Menu", href: "/menu", icon: IconSquareMenu },
     { label: "Orders", href: "/orders", icon: IconReceipt },
     { label: "Gallery", href: "/gallery", icon: IconImages },
   ];
