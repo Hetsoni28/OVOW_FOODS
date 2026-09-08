@@ -18,6 +18,11 @@ export interface Product {
   ingredients?: string;
   allergens?: string;
   previewVideo?: string;
+  video?: {
+    asset?: {
+      url: string;
+    };
+  };
   isSpicy?: boolean;
 
   vegetarian?: boolean;

@@ -19,8 +19,8 @@ export function AboutLocation() {
             <IconMapPin className="text-[#C9A24A] shrink-0 mt-1" />
             <div>
               <h4 className="font-bold text-xs uppercase tracking-widest text-primary/50 mb-2">Location</h4>
-              <p className="text-lg text-primary font-medium">13, Near Ghatlodiya</p>
-              <p className="text-primary/70">Ahmedabad, Gujarat 382481</p>
+              <p className="text-lg text-primary font-medium">Ahmedabad, Gujarat</p>
+              <p className="text-primary/70">Serving the local area</p>
             </div>
           </div>
           <div className="flex gap-4">

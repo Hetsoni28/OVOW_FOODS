@@ -75,10 +75,13 @@ export function LazyVideo({
     return () => observer.disconnect();
   }, [threshold, rootMargin]);
 
+  // Use 0.5s instead of 0.001s to avoid blank frames if the video fades in from white/black
+  const videoSrc = src.includes('#t=') ? src : `${src}#t=0.5`;
+
   return (
     <video
       ref={videoRef}
-      src={src}
+      src={videoSrc}
       poster={poster}
       loop={loop}
       muted={muted}

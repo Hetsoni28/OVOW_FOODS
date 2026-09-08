@@ -7,7 +7,6 @@ export const COMPANY_CONFIG = {
   upiId: process.env.NEXT_PUBLIC_UPI_ID || "your-upi-id@bank",
   instagram: "https://instagram.com/ovowfoods",
   facebook: "https://www.facebook.com/share/1EWiUiZRps/",
-  address: "13, Near, Ghatlodiya, Ahmedabad, Gujarat 382481", 
+  address: "Ahmedabad, Gujarat", 
   hours: "Open · Closes 4 am",
 } as const;
-

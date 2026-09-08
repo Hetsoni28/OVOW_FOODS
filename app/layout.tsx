@@ -79,7 +79,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               telephone: "+917567566214",
               address: {
                 "@type": "PostalAddress",
-                streetAddress: "13, Near, Ghatlodiya",
                 addressLocality: "Ahmedabad",
                 addressRegion: "Gujarat",
                 postalCode: "382481",

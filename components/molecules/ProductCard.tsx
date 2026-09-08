@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Product } from "@/types";
 import { useCart } from "@/context/CartContext";
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product, fallbackVideo }: { product: Product, fallbackVideo?: string }) {
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
 
@@ -23,15 +23,15 @@ export function ProductCard({ product }: { product: Product }) {
   }
 
   const hasDiscount = product.originalPrice && product.originalPrice > product.price;
+  const displayVideo = product.previewVideo || fallbackVideo;
 
   return (
     <div className="group relative flex flex-col h-full bg-white border border-primary/5 hover:border-[#C9A24A]/40 hover:shadow-[0_16px_40px_rgba(18,59,42,0.1)] hover:-translate-y-1 transition-all duration-500 overflow-hidden">
       {/* Image Container */}
       <Link href={`/menu/${product.slug}`} className="block relative aspect-[4/5] overflow-hidden bg-primary/5">
-        {product.previewVideo ? (
+        {displayVideo ? (
           <LazyVideo 
-            src={product.previewVideo} 
-            poster="/placeholder-food.svg"
+            src={displayVideo} 
             className="w-full h-full object-cover"
           />
         ) : (
@@ -44,85 +44,85 @@ export function ProductCard({ product }: { product: Product }) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
         {/* Badges */}
-        <div className="absolute top-4 left-4 flex flex-col gap-2">
+        <div className="absolute top-2 left-2 md:top-4 md:left-4 flex flex-col gap-1.5 md:gap-2">
           {isSoldOut && (
-            <span className="bg-black/80 text-white px-3 py-1.5 text-[9px] uppercase tracking-[0.2em] font-bold shadow-sm backdrop-blur-sm">
+            <span className="bg-black/80 text-white px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold shadow-sm backdrop-blur-sm">
               Sold Out
             </span>
           )}
           {!isSoldOut && (product.isSignature || (product as any).signature) && (
-            <span className="bg-[#C9A24A] text-white px-3 py-1.5 text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1.5 shadow-sm">
-              <IconStar size={10} fill="white" /> Signature
+            <span className="bg-[#C9A24A] text-white px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1 md:gap-1.5 shadow-sm">
+              <IconStar size={8} fill="white" className="md:w-2.5 md:h-2.5" /> Signature
             </span>
           )}
           {!isSoldOut && (product.isBestseller || (product as any).isBestSeller) && (
-            <span className="bg-white/95 backdrop-blur-md text-[#0B2118] px-3 py-1.5 text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1.5 shadow-sm">
-              <IconFlame size={10} className="text-[#C9A24A]" /> Bestseller
+            <span className="bg-white/95 backdrop-blur-md text-[#0B2118] px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1 md:gap-1.5 shadow-sm">
+              <IconFlame size={8} className="text-[#C9A24A] md:w-2.5 md:h-2.5" /> Bestseller
             </span>
           )}
           {product.isSwaminarayan && (
-            <span className="bg-[#123B2A] text-white px-3 py-1.5 text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1.5 shadow-sm border border-[#C9A24A]/30">
-              <span className="text-[10px]">🌿</span> Swaminarayan
+            <span className="bg-[#123B2A] text-white px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1 md:gap-1.5 shadow-sm border border-[#C9A24A]/30">
+              <span className="text-[8px] md:text-[10px]">🌿</span> Swaminarayan
             </span>
           )}
         </div>
 
         {/* Veg mark */}
-        <div className="absolute top-4 right-4">
-          <span className="flex items-center justify-center w-5 h-5 bg-white backdrop-blur-md border border-[#2E7D4F] rounded-sm shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-[#2E7D4F]" />
+        <div className="absolute top-2 right-2 md:top-4 md:right-4">
+          <span className="flex items-center justify-center w-4 h-4 md:w-5 md:h-5 bg-white backdrop-blur-md border border-[#2E7D4F] rounded-sm shadow-sm">
+            <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-[#2E7D4F]" />
           </span>
         </div>
       </Link>
 
       {/* Info Container */}
-      <div className="flex flex-1 flex-col p-5 md:p-6 bg-white relative z-10">
+      <div className="flex flex-1 flex-col p-3 md:p-5 bg-white relative z-10">
         <Link href={`/menu/${product.slug}`} className="flex-1 flex flex-col">
-          <div className="flex items-center justify-between gap-4 mb-3">
-            <span className="text-[9px] uppercase tracking-[0.25em] font-bold text-[#C9A24A] flex items-center gap-1.5">
-              <IconChefHat size={12} /> {typeof product.category === 'string' ? product.category : product.category?.name || 'Dish'}
+          <div className="flex items-center justify-between gap-2 mb-2 md:mb-3">
+            <span className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] font-medium text-primary/40 flex items-center gap-1.5">
+              <span className="hidden md:block"><IconChefHat size={10} /></span> {typeof product.category === 'string' ? product.category : product.category?.name || 'Dish'}
             </span>
             {hasDiscount && (
-              <span className="bg-red-50 text-red-600 border border-red-100 text-[9px] font-bold px-2 py-0.5 uppercase tracking-widest">
+              <span className="bg-red-50 text-red-600 border border-red-100 text-[8px] md:text-[9px] font-bold px-1.5 py-0.5 uppercase tracking-widest">
                 Save
               </span>
             )}
           </div>
 
-          <h3 className="font-serif text-xl md:text-2xl text-primary leading-tight mb-2 group-hover:text-[#C9A24A] transition-colors">
+          <h3 className="font-serif text-sm md:text-xl text-primary leading-snug mb-1 md:mb-2 group-hover:text-[#C9A24A] transition-colors">
             {product.name}
           </h3>
           
           {product.description && (
-            <p className="text-xs md:text-sm text-primary/60 line-clamp-2 leading-relaxed mb-4">
+            <p className="hidden md:block text-xs md:text-sm text-primary/60 line-clamp-2 leading-relaxed mb-4">
               {product.description}
             </p>
           )}
 
-          <div className="mt-auto pt-4 flex items-end justify-between border-t border-primary/10">
+          <div className="flex items-center justify-between mt-auto pt-3 md:pt-4">
             <div>
-              <p className="text-[10px] text-primary/40 uppercase tracking-widest mb-1">{product.servingSize || product.size || '1 Portion'}</p>
-              <div className="flex items-center gap-2">
-                <span className="font-serif text-xl text-primary font-medium">₹{product.price}</span>
+              <p className="text-[8px] md:text-[10px] text-primary/40 uppercase tracking-widest mb-0.5 md:mb-1">{product.servingSize || "1 Portion"}</p>
+              <div className="flex items-center gap-1.5 md:gap-2">
+                <p className="text-sm md:text-lg font-medium text-primary">₹{product.price}</p>
                 {hasDiscount && (
-                  <span className="text-sm text-primary/40 line-through">₹{product.originalPrice}</span>
+                  <p className="text-[10px] md:text-sm text-primary/40 line-through">₹{product.originalPrice}</p>
                 )}
               </div>
             </div>
             
-            <button suppressHydrationWarning
+            <button 
+              suppressHydrationWarning
               onClick={handleAdd}
-              disabled={isSoldOut || added}
-              title={isSoldOut ? "Currently Unavailable" : "Add to cart"}
-              className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm border ${
-                isSoldOut
-                  ? "bg-gray-100 border-gray-200 text-gray-300 cursor-not-allowed"
-                  : added
-                  ? "bg-[#2E7D4F] border-[#2E7D4F] text-white shadow-md"
-                  : "bg-white border-[#C9A24A] text-[#C9A24A] hover:bg-[#C9A24A] hover:text-white"
+              disabled={isSoldOut}
+              className={`w-7 h-7 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
+                isSoldOut 
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : added 
+                    ? 'bg-[#2E7D4F] text-white border-transparent' 
+                    : 'border border-primary/20 text-primary hover:bg-[#C9A24A] hover:border-transparent hover:text-white'
               }`}
             >
-              {added ? <IconCheck size={16} strokeWidth={2.5} /> : <IconPlus size={16} />}
+              {added ? <IconCheck size={14} className="md:w-[18px] md:h-[18px]" /> : <span className="text-lg md:text-xl font-light mb-0.5">+</span>}
             </button>
           </div>
         </Link>

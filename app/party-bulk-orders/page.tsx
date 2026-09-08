@@ -16,25 +16,32 @@ export default function BulkOrdersPage() {
             variants={staggerFast}
             initial="hidden"
             animate="visible"
-            className="flex flex-col justify-center"
+            className="flex flex-col justify-center lg:pr-8"
           >
-            <motion.p variants={fadeUp} className="text-xs uppercase tracking-widest text-primary/40 font-bold mb-4">
-              Planning something special?
-            </motion.p>
-            <motion.h1 variants={fadeUp} className="font-serif text-5xl md:text-6xl text-primary leading-tight mb-6">
-              Party & Bulk Orders.
+            <motion.div variants={fadeUp} className="flex items-center gap-4 mb-6 md:mb-8">
+              <span className="w-8 md:w-12 h-[1px] bg-[#C9A24A]"></span>
+              <p className="text-[#C9A24A] text-[10px] md:text-xs uppercase tracking-[0.3em] font-bold m-0">
+                Planning something special?
+              </p>
+            </motion.div>
+
+            <motion.h1 variants={fadeUp} className="font-serif text-5xl md:text-6xl lg:text-7xl text-primary leading-tight mb-6 md:mb-8">
+              Elevate Your <br/><span className="text-[#C9A24A] italic">Gatherings</span>
             </motion.h1>
-            <motion.p variants={fadeUp} className="text-lg text-primary/70 leading-relaxed mb-10 max-w-md">
-              From intimate gatherings to grand celebrations, OVOW brings a premium, 100% pure vegetarian culinary experience right to your venue. Fill out the details below to start designing your bespoke menu.
+
+            <motion.p variants={fadeUp} className="text-base md:text-lg text-primary/70 leading-relaxed mb-10 md:mb-12 max-w-md">
+              From intimate gatherings to grand celebrations, OVOW brings a premium, 100% pure vegetarian culinary experience right to your venue. Fill out the details to start designing your bespoke menu.
             </motion.p>
 
-            <motion.div variants={fadeUp} className="relative aspect-video lg:aspect-square overflow-hidden bg-primary/5 hidden lg:block">
-              <Image
-                src="/placeholder-food.svg"
-                alt="OVOW Catering Experience"
-                fill
-                className="object-cover"
-              />
+            <motion.div variants={fadeUp} className="grid sm:grid-cols-2 gap-8 pt-8 md:pt-10 border-t border-primary/10">
+              <div>
+                <h4 className="font-bold text-xs uppercase tracking-[0.2em] text-primary mb-3">Purity Guaranteed</h4>
+                <p className="text-primary/60 text-sm leading-relaxed">100% Pure Vegetarian with custom No Onion & No Garlic options available.</p>
+              </div>
+              <div>
+                <h4 className="font-bold text-xs uppercase tracking-[0.2em] text-primary mb-3">Bespoke Menus</h4>
+                <p className="text-primary/60 text-sm leading-relaxed">Curated to your specific taste, dietary requirements, and event scale.</p>
+              </div>
             </motion.div>
           </motion.div>
 

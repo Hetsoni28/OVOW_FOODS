@@ -53,7 +53,24 @@ export const RELATED_PRODUCTS_QUERY = groq`*[_type == "product" && category->nam
   "slug": slug.current,
   price,
   "category": category->name,
-  signature
+  "previewVideo": video.asset->url,
+  signature,
+  isBestSeller
+}`
+
+export const HOME_FEATURED_PRODUCTS_QUERY = groq`*[_type == "product" && available != false && (isBestSeller == true || signature == true)] | order(_updatedAt desc) [0...4] {
+  _id,
+  name,
+  "slug": slug.current,
+  description,
+  price,
+  originalPrice,
+  available,
+  "category": category->name,
+  "previewVideo": video.asset->url,
+  signature,
+  isBestSeller,
+  servingSize
 }`
 
 export const APPROVED_REVIEWS_QUERY = groq`*[_type == "review" && isApproved == true] | order(date desc) [0...20] {
