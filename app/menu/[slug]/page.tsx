@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { IconArrowLeft, IconCheckCircle, IconLeaf, IconUtensilsCrossed, IconFlame } from "@/components/atoms/Icons";
+import { LazyVideo } from "@/components/atoms/LazyVideo";
 import { client } from "@/sanity/lib/client";
 import { PRODUCT_BY_SLUG_QUERY, ALL_PRODUCTS_QUERY, RELATED_PRODUCTS_QUERY, PRODUCT_REVIEWS_QUERY } from "@/sanity/lib/queries";
 import { AddToCartBlock } from "./AddToCartBlock";
@@ -77,15 +77,18 @@ export default async function Product({
           
           {/* Left: Media Hero (Sticky) */}
           <div className="lg:sticky lg:top-32 aspect-square lg:aspect-[4/5] bg-primary/5 shadow-2xl rounded-none group">
-            <div className="relative w-full h-full overflow-hidden">
-              <Image
-                src={product.image || "/placeholder-food.svg"}
-                alt={product.name}
-                fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover group-hover:scale-105 transition-transform duration-1000"
-                priority
-              />
+            <div className="relative w-full h-full overflow-hidden bg-black flex items-center justify-center">
+              {product.previewVideo ? (
+                <LazyVideo 
+                  src={product.previewVideo} 
+                  poster="/placeholder-food.svg"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+                />
+              ) : (
+                <div className="text-white/30 text-xs font-bold tracking-widest uppercase">
+                  No Video Available
+                </div>
+              )}
             </div>
 
             {/* Subtle overlay gradient to ensure badge readability */}

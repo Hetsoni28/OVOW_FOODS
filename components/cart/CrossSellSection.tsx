@@ -69,7 +69,7 @@ export function CrossSellSection() {
                     name: item.name,
                     price: item.price,
                     category: item.category,
-                    image: item.image,
+                    previewVideo: undefined, // Or pass item.previewVideo if available
                     vegetarian: true,
                   });
                 }}

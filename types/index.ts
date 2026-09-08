@@ -15,7 +15,9 @@ export interface Product {
   price: number;
   originalPrice?: number;
   description?: string;
-  image?: string;
+  ingredients?: string;
+  allergens?: string;
+  previewVideo?: string;
   isSpicy?: boolean;
 
   vegetarian?: boolean;

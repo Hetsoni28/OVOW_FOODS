@@ -18,17 +18,7 @@ export const categoryType = defineType({
       options: { source: 'name' },
       validation: (rule) => rule.required(),
     }),
-    defineField({
-      name: 'description',
-      title: 'Description',
-      type: 'text',
-    }),
-    defineField({
-      name: 'image',
-      title: 'Image',
-      type: 'image',
-      options: { hotspot: true },
-    }),
+    // Removed description and image fields to simplify category creation
     defineField({
       name: 'active',
       title: 'Active',

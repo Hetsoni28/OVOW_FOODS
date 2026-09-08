@@ -24,6 +24,18 @@ export const productType = defineType({
       type: 'text',
     }),
     defineField({
+      name: 'ingredients',
+      title: 'Ingredients',
+      type: 'text',
+      description: 'List the ingredients used (e.g. Toor dal, onion, tomato)',
+    }),
+    defineField({
+      name: 'allergens',
+      title: 'Allergens',
+      type: 'string',
+      description: 'List any allergens (e.g. May contain dairy)',
+    }),
+    defineField({
       name: 'price',
       title: 'Price',
       type: 'number',
@@ -48,10 +60,11 @@ export const productType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: 'image',
-      title: 'Hero Image',
-      type: 'image',
-      options: { hotspot: true },
+      name: 'video',
+      title: 'Product Video',
+      type: 'file',
+      options: { accept: 'video/mp4,video/webm' },
+      description: 'Upload an MP4 or WebM video for this product.',
       validation: (rule) => rule.required(),
     }),
     defineField({
