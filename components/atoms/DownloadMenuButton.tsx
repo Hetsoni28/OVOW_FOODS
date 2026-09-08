@@ -351,6 +351,7 @@ export function DownloadMenuButton({ products }: Props) {
       const getCategoryWeight = (name: string) => {
         const lower = name.toLowerCase();
         if (lower.includes("subji") || lower.includes("sabji") || lower.includes("subzi") || lower.includes("sabzi") || lower.includes("main") || lower.includes("curry") || lower.includes("paneer")) return 1;
+        if (lower.includes("vegspecial") || lower.includes("veg special")) return 1.5;
         if (lower.includes("biryani") || lower.includes("rice")) return 2;
         if (lower.includes("dal") || lower.includes("daal")) return 3;
         if (lower.includes("roti") || lower.includes("bread")) return 4;
