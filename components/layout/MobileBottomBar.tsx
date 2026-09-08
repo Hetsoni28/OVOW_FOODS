@@ -67,7 +67,7 @@ export function MobileBottomBar() {
       ))}
 
       {/* Cart */}
-      <button suppressHydrationWarning
+      <button 
         onClick={openCart}
         suppressHydrationWarning
         className="flex flex-1 flex-col items-center justify-center gap-1 text-[10px] uppercase tracking-widest font-semibold text-primary/40 hover:text-primary transition-colors relative"
@@ -84,7 +84,7 @@ export function MobileBottomBar() {
       </button>
 
       {/* WhatsApp */}
-      <button suppressHydrationWarning
+      <button 
         onClick={() => openWhatsAppInquiry()}
         suppressHydrationWarning
         className="flex flex-1 flex-col items-center justify-center gap-1 text-[10px] uppercase tracking-widest font-semibold text-[#25D366] hover:opacity-80 transition-opacity"

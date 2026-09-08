@@ -108,7 +108,7 @@ export function Navbar() {
           </motion.button>
 
           {/* Hamburger Menu (Mobile Only) */}
-          <button suppressHydrationWarning
+          <button 
             onClick={() => setIsMobileMenuOpen(true)}
             className="md:hidden flex items-center justify-center w-12 h-12 -mr-3 text-inherit hover:opacity-70 transition-opacity"
             aria-label="Open menu"

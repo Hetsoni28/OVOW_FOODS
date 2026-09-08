@@ -6,7 +6,7 @@ import { IconPlus, IconCheck, IconStar, IconFlame, IconChefHat } from "@/compone
 import { useState } from "react";
 import { Product } from "@/types";
 import { useCart } from "@/context/CartContext";
-import { LazyVideo } from "@/components/atoms/LazyVideo";
+import { useCart } from "@/context/CartContext";
 
 export function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
@@ -29,20 +29,13 @@ export function ProductCard({ product }: { product: Product }) {
     <div className="group relative flex flex-col h-full bg-white border border-primary/5 hover:border-[#C9A24A]/40 hover:shadow-[0_16px_40px_rgba(18,59,42,0.1)] hover:-translate-y-1 transition-all duration-500 overflow-hidden">
       {/* Image Container */}
       <Link href={`/menu/${product.slug}`} className="block relative aspect-[4/5] overflow-hidden bg-primary/5">
-        {product.previewVideo ? (
-          <LazyVideo
-            src={product.previewVideo}
-            className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-105"
-          />
-        ) : (
-          <Image
-            src={product.image || "/placeholder-food.svg"}
-            alt={product.name}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
-          />
-        )}
+        <Image
+          src={product.image || "/placeholder-food.svg"}
+          alt={product.name}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
+        />
         
         {/* Subtle gradient overlay for badges */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
