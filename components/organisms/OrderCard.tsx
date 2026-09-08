@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Calendar, ArrowRight } from "lucide-react";
+import { IconCalendar, IconArrowRight } from "@/components/atoms/Icons";
 import { COMPANY_CONFIG } from "@/lib/config";
 import type { CartItem } from "@/types";
 
@@ -30,7 +30,7 @@ export function OrderCard({ order, index }: { order: OrderItem; index: number })
             Order #{order.id}
           </p>
           <div className="flex items-center gap-1.5 text-xs text-primary/70">
-            <Calendar size={12} className="text-primary/40" />
+            <IconCalendar size={12} className="text-primary/40" />
             {new Date(order.date).toLocaleDateString("en-IN", {
               day: "numeric", month: "short", year: "numeric",
               hour: "2-digit", minute: "2-digit"
@@ -67,7 +67,7 @@ export function OrderCard({ order, index }: { order: OrderItem; index: number })
           target="_blank"
           className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-[#C9A24A] hover:text-primary transition-colors"
         >
-          Reorder via WhatsApp <ArrowRight size={14} />
+          Reorder via WhatsApp <IconArrowRight size={14} />
         </Link>
       </div>
     </motion.div>

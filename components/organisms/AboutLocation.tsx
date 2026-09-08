@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { MapPin, Clock } from "lucide-react";
+import { IconMapPin, IconClock } from "@/components/atoms/Icons";
 
 export function AboutLocation() {
   return (
@@ -16,7 +16,7 @@ export function AboutLocation() {
         <h2 className="font-serif text-3xl md:text-4xl text-primary mb-8">Visit Us</h2>
         <div className="grid sm:grid-cols-2 gap-8">
           <div className="flex gap-4">
-            <MapPin className="text-[#C9A24A] shrink-0 mt-1" />
+            <IconMapPin className="text-[#C9A24A] shrink-0 mt-1" />
             <div>
               <h4 className="font-bold text-xs uppercase tracking-widest text-primary/50 mb-2">Location</h4>
               <p className="text-lg text-primary font-medium">13, Near Ghatlodiya</p>
@@ -24,7 +24,7 @@ export function AboutLocation() {
             </div>
           </div>
           <div className="flex gap-4">
-            <Clock className="text-[#C9A24A] shrink-0 mt-1" />
+            <IconClock className="text-[#C9A24A] shrink-0 mt-1" />
             <div>
               <h4 className="font-bold text-xs uppercase tracking-widest text-primary/50 mb-2">Hours</h4>
               <p className="text-lg text-primary font-medium">Open Daily</p>

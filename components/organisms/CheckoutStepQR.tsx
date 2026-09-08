@@ -1,10 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowLeft, Check, Copy, QrCode, AlertTriangle } from "lucide-react";
+import { IconArrowLeft, IconCheck, IconCopy, IconAlertTriangle } from "@/components/atoms/Icons";
 import { useState } from "react";
 import Image from "next/image";
-import {  pageAnim, childAnim  } from "@/lib/animations";
+import { pageAnim, childAnim } from "@/lib/animations";
 import { COMPANY_CONFIG } from "@/lib/config";
 import { CheckoutOrderSummary } from "./CheckoutOrderSummary";
 import type { CartItem } from "@/types";
@@ -20,23 +20,30 @@ interface CheckoutStepQRProps {
 }
 
 export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConfirmPayment, onBack }: CheckoutStepQRProps) {
-  const [copied, setCopied] = useState(false);
+  const [copiedUpi, setCopiedUpi] = useState(false);
+  const [copiedAmt, setCopiedAmt] = useState(false);
 
   const copyUpi = () => {
     navigator.clipboard.writeText(COMPANY_CONFIG.upiId);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedUpi(true);
+    setTimeout(() => setCopiedUpi(false), 2000);
+  };
+
+  const copyAmount = () => {
+    navigator.clipboard.writeText(cartTotal.toFixed(2));
+    setCopiedAmt(true);
+    setTimeout(() => setCopiedAmt(false), 2000);
   };
 
   return (
     <motion.div variants={pageAnim} initial="hidden" animate="visible" exit="exit" className="bg-white p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-primary/5">
       <motion.div variants={childAnim} className="mb-10 flex items-center justify-between">
         <div>
-          <h2 className="font-serif text-3xl md:text-4xl text-primary mb-3">Scan to Pay</h2>
-          <p className="text-primary/50 text-sm">Scan the QR code with any UPI app.</p>
+          <h2 className="font-serif text-3xl md:text-4xl text-primary mb-2">Scan &amp; Pay</h2>
+          <p className="text-primary/50 text-sm">Works with PhonePe, GPay, Paytm, BHIM &amp; all UPI apps</p>
         </div>
-        <button onClick={onBack} className="p-2 hover:bg-primary/5 rounded-full transition-colors group">
-          <ArrowLeft size={20} className="text-primary/40 group-hover:text-primary transition-colors" />
+        <button suppressHydrationWarning onClick={onBack} className="p-2 hover:bg-primary/5 rounded-full transition-colors group">
+          <IconArrowLeft size={20} className="text-primary/40 group-hover:text-primary transition-colors" />
         </button>
       </motion.div>
 
@@ -45,39 +52,104 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
           <CheckoutOrderSummary cart={cart} cartTotal={cartTotal} />
         </div>
 
-        <motion.div variants={childAnim} className="lg:order-1">
-          <div className="bg-primary/5 p-8 flex flex-col items-center justify-center border border-primary/10 relative overflow-hidden">
+        <motion.div variants={childAnim} className="lg:order-1 space-y-4">
+
+          {/* QR Card */}
+          <div className="bg-primary/5 p-6 flex flex-col items-center border border-primary/10 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#C9A24A]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-            <div className="bg-white p-4 shadow-xl border border-primary/5 mb-8 relative z-10">
-              <Image src={qrUrl} alt="UPI QR Code" width={220} height={220} className="w-56 h-56 md:w-64 md:h-64 object-contain" unoptimized />
-            </div>
-            
-            <div className="text-center space-y-4 w-full relative z-10">
-              <div className="flex items-center justify-center gap-2">
-                <span className="text-primary/60 text-sm">UPI ID:</span>
-                <span className="font-bold text-primary tracking-wide">{COMPANY_CONFIG.upiId}</span>
-                <button onClick={copyUpi} className="p-2 hover:bg-primary/10 rounded-full transition-colors text-primary" title="Copy UPI ID">
-                  {copied ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
-                </button>
+
+            {/* Amount Badge — most important info */}
+            <div className="relative z-10 mb-5 flex flex-col items-center gap-1">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-primary/40 font-bold">Amount to Pay</span>
+              <div className="flex items-baseline gap-1">
+                <span className="font-serif text-4xl font-bold text-primary">
+                  ₹{cartTotal.toLocaleString("en-IN")}
+                </span>
+                <span className="text-primary/40 text-sm">.00</span>
               </div>
-              
-              <div className="flex gap-4">
-                <a href={upiUri} className="flex-1 bg-white border-2 border-primary text-primary py-3 text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-colors text-center">
-                  Pay with App
-                </a>
-                <button onClick={onConfirmPayment} className="flex-1 bg-[#C9A24A] text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-[#0B2118] transition-colors shadow-lg shadow-[#0B2118]/20">
-                  I have paid
-                </button>
+              {/* Pulsing dot — shows the amount is encoded live in QR */}
+              <div className="flex items-center gap-1.5 mt-1">
+                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                <span className="text-[10px] text-green-600 font-semibold uppercase tracking-widest">Amount pre-filled in QR</span>
               </div>
             </div>
-          </div>
-          
-          <div className="mt-6 flex items-start gap-3 bg-red-50 p-4 border border-red-100">
-            <AlertTriangle size={20} className="text-red-500 shrink-0 mt-0.5" />
-            <p className="text-sm text-red-800 leading-relaxed">
-              <strong>Do not close this page</strong> until you click <br/>"I have paid" after successful payment.
+
+            {/* QR Code — encodes upi://pay?pa=UPI_ID&am=EXACT_AMOUNT&cu=INR&tn=ORDER_REF */}
+            <div className="bg-white p-4 shadow-xl border border-primary/5 relative z-10">
+              <Image
+                src={qrUrl}
+                alt={`UPI QR Code — ₹${cartTotal.toLocaleString("en-IN")}`}
+                width={220}
+                height={220}
+                className="w-52 h-52 md:w-60 md:h-60 object-contain"
+                unoptimized
+              />
+            </div>
+
+            <p className="text-[10px] text-primary/40 mt-3 z-10 relative text-center">
+              Order #{orderId} · Scan with any camera or UPI app
             </p>
           </div>
+
+          {/* Manual transfer section — for users without scan */}
+          <div className="border border-primary/10 p-5 space-y-3 bg-white">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-primary/40">Can&apos;t scan? Transfer manually</p>
+
+            {/* UPI ID row */}
+            <div className="flex items-center justify-between py-2 border-b border-primary/5">
+              <div>
+                <p className="text-[10px] text-primary/40 uppercase tracking-widest">UPI ID</p>
+                <p className="font-bold text-primary text-sm tracking-wide">{COMPANY_CONFIG.upiId}</p>
+              </div>
+              <button suppressHydrationWarning
+                onClick={copyUpi}
+                className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-3 py-2 border border-primary/20 hover:border-primary hover:bg-primary hover:text-white text-primary transition-all"
+              >
+                {copiedUpi ? <IconCheck size={12} className="text-green-500" /> : <IconCopy size={12} />}
+                {copiedUpi ? "Copied!" : "Copy ID"}
+              </button>
+            </div>
+
+            {/* Exact Amount row */}
+            <div className="flex items-center justify-between py-2">
+              <div>
+                <p className="text-[10px] text-primary/40 uppercase tracking-widest">Exact Amount</p>
+                <p className="font-bold text-primary text-sm">₹{cartTotal.toLocaleString("en-IN")}.00</p>
+              </div>
+              <button suppressHydrationWarning
+                onClick={copyAmount}
+                className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-3 py-2 border border-primary/20 hover:border-primary hover:bg-primary hover:text-white text-primary transition-all"
+              >
+                {copiedAmt ? <IconCheck size={12} className="text-green-500" /> : <IconCopy size={12} />}
+                {copiedAmt ? "Copied!" : "Copy ₹"}
+              </button>
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex gap-4">
+            <a
+              href={upiUri}
+              className="flex-1 bg-white border-2 border-primary text-primary py-3.5 text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-colors text-center"
+            >
+              Open UPI App
+            </a>
+            <button suppressHydrationWarning
+              onClick={onConfirmPayment}
+              className="flex-1 bg-[#C9A24A] text-white py-3.5 text-xs font-bold uppercase tracking-widest hover:bg-[#0B2118] transition-colors shadow-lg shadow-[#0B2118]/20"
+            >
+              ✓ I Have Paid
+            </button>
+          </div>
+
+          {/* Warning */}
+          <div className="flex items-start gap-3 bg-red-50 p-4 border border-red-100">
+            <IconAlertTriangle size={18} className="text-red-500 shrink-0 mt-0.5" />
+            <p className="text-xs text-red-800 leading-relaxed">
+              <strong>Do not close this page</strong> until you click &ldquo;I Have Paid&rdquo; after successful payment.
+            </p>
+          </div>
+
         </motion.div>
       </div>
     </motion.div>

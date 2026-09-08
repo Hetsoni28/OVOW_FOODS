@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Leaf, ShieldCheck, Package } from "lucide-react";
+import { IconLeaf, IconShieldCheck, IconPackage } from "@/components/atoms/Icons";
 import {  container, item  } from "@/lib/animations";
 
 export function AboutValues() {
@@ -17,17 +17,17 @@ export function AboutValues() {
         >
           {[
             {
-              icon: Leaf,
+              icon: IconLeaf,
               title: "100% Pure Vegetarian",
               desc: "Sourced from the freshest farms and prepared in a strictly vegetarian kitchen."
             },
             {
-              icon: ShieldCheck,
+              icon: IconShieldCheck,
               title: "Hygienic Preparation",
               desc: "State-of-the-art cleanliness standards for your peace of mind and health."
             },
             {
-              icon: Package,
+              icon: IconPackage,
               title: "Quality Packaging",
               desc: "Premium, food-safe containers that preserve temperature, taste, and aesthetics."
             }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Star } from "lucide-react";
+import { IconStar } from "@/components/atoms/Icons";
 import { submitReviewAction } from "@/actions/submitReview";
 import { Button } from "@/components/atoms/Button";
 
@@ -39,7 +39,7 @@ export function ReviewForm() {
     return (
       <div className="flex flex-col items-start py-8">
         <div className="w-16 h-16 bg-[#25D366]/10 text-[#25D366] flex items-center justify-center mb-6 rounded-full">
-          <Star className="fill-current" size={28} />
+          <IconStar className="fill-current" size={28} />
         </div>
         <h3 className="font-serif text-3xl text-primary mb-2">Thank you!</h3>
         <p className="text-primary/70">
@@ -74,7 +74,7 @@ export function ReviewForm() {
               onMouseLeave={() => setHoveredRating(0)}
               className="focus:outline-none transition-transform hover:scale-110"
             >
-              <Star 
+              <IconStar 
                 size={28} 
                 className={`${
                   star <= (hoveredRating || rating) 

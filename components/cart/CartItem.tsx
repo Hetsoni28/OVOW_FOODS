@@ -1,6 +1,6 @@
 "use client";
 
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { IconMinus, IconPlus, IconTrash } from "@/components/atoms/Icons";
 import { CartItem as CartItemType } from "@/types";
 import { useCart } from "@/context/CartContext";
 
@@ -27,7 +27,7 @@ export function CartItem({ item }: { item: CartItemType }) {
           className="w-8 h-8 flex items-center justify-center border border-primary/20 text-primary hover:bg-primary hover:text-white transition-colors"
           aria-label="Decrease quantity"
         >
-          <Minus size={12} />
+          <IconMinus size={12} />
         </button>
         <span className="w-6 text-center text-sm font-semibold text-primary">
           {item.quantity}
@@ -37,7 +37,7 @@ export function CartItem({ item }: { item: CartItemType }) {
           className="w-8 h-8 flex items-center justify-center border border-primary/20 text-primary hover:bg-primary hover:text-white transition-colors"
           aria-label="Increase quantity"
         >
-          <Plus size={12} />
+          <IconPlus size={12} />
         </button>
       </div>
 
@@ -47,7 +47,7 @@ export function CartItem({ item }: { item: CartItemType }) {
         className="mt-1 text-primary/30 hover:text-red-500 transition-colors"
         aria-label="Remove item"
       >
-        <Trash2 size={15} />
+        <IconTrash size={15} />
       </button>
     </div>
   );

@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ShoppingBag } from "lucide-react";
+import { IconShoppingBag } from "@/components/atoms/Icons";
 
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
@@ -15,7 +15,7 @@ export function OrderEmptyState() {
       className="bg-white border border-primary/10 p-12 text-center"
     >
       <div className="w-16 h-16 bg-[#C9A24A]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-        <ShoppingBag size={24} className="text-[#C9A24A]" />
+        <IconShoppingBag size={24} className="text-[#C9A24A]" />
       </div>
       <h2 className="font-serif text-2xl text-primary font-bold mb-2">No past orders yet</h2>
       <p className="text-sm text-primary/60 mb-6">Looks like you haven't placed any orders from this device.</p>

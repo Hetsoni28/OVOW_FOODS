@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Play, Volume2, VolumeX } from "lucide-react";
+import { IconPlay, IconVolume2, IconVolumeX } from "@/components/atoms/Icons";
 
 const videos = [
   {
@@ -106,7 +106,7 @@ export function VideoReelSection() {
             onClick={() => setMuted((m) => !m)}
             className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/20 transition-colors"
           >
-            {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+            {muted ? <IconVolumeX size={16} /> : <IconVolume2 size={16} />}
           </button>
         </div>
       </div>
@@ -141,10 +141,10 @@ export function VideoReelSection() {
               <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
                 {i === activeIdx ? (
                   <div className="w-6 h-6 rounded-full bg-[#C9A24A] flex items-center justify-center">
-                    <Play size={10} fill="white" className="text-white ml-0.5" />
+                    <IconPlay size={10} fill="white" className="text-white ml-0.5" />
                   </div>
                 ) : (
-                  <Play size={14} className="text-white/80" />
+                  <IconPlay size={14} className="text-white/80" />
                 )}
               </div>
               <p className="absolute bottom-1 left-0 right-0 text-center text-white text-[8px] md:text-[10px] font-bold uppercase tracking-wider px-1 truncate">

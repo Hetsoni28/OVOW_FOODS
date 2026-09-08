@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { UtensilsCrossed, Images, ShoppingBag, Receipt } from "lucide-react";
+import { IconUtensilsCrossed, IconImages, IconShoppingBag, IconReceipt } from "@/components/atoms/Icons";
 import { useCart } from "@/context/CartContext";
 import { openWhatsAppInquiry } from "@/lib/whatsapp";
 import { WhatsAppIcon } from "@/components/atoms/WhatsAppIcon";
@@ -37,9 +37,9 @@ export function MobileBottomBar() {
   if (pathname === "/checkout") return null;
 
   const navItems = [
-    { label: "Menu", href: "/menu", icon: UtensilsCrossed },
-    { label: "Orders", href: "/orders", icon: Receipt },
-    { label: "Gallery", href: "/gallery", icon: Images },
+    { label: "Menu", href: "/menu", icon: IconUtensilsCrossed },
+    { label: "Orders", href: "/orders", icon: IconReceipt },
+    { label: "Gallery", href: "/gallery", icon: IconImages },
   ];
 
   return (
@@ -67,13 +67,13 @@ export function MobileBottomBar() {
       ))}
 
       {/* Cart */}
-      <button
+      <button suppressHydrationWarning
         onClick={openCart}
         suppressHydrationWarning
         className="flex flex-1 flex-col items-center justify-center gap-1 text-[10px] uppercase tracking-widest font-semibold text-primary/40 hover:text-primary transition-colors relative"
       >
         <span className="relative">
-          <ShoppingBag size={18} strokeWidth={1.5} />
+          <IconShoppingBag size={18} strokeWidth={1.5} />
           {mounted && count > 0 && (
             <span className="absolute -top-2 -right-2 bg-[#C9A24A] text-white text-[9px] font-bold min-w-[16px] h-4 flex items-center justify-center px-0.5">
               {count > 9 ? "9+" : count}
@@ -84,7 +84,7 @@ export function MobileBottomBar() {
       </button>
 
       {/* WhatsApp */}
-      <button
+      <button suppressHydrationWarning
         onClick={() => openWhatsAppInquiry()}
         suppressHydrationWarning
         className="flex flex-1 flex-col items-center justify-center gap-1 text-[10px] uppercase tracking-widest font-semibold text-[#25D366] hover:opacity-80 transition-opacity"

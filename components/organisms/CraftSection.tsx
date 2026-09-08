@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import { IconArrowRight } from "@/components/atoms/Icons";
 import { motion } from "framer-motion";
 import { fadeUp, stagger } from "@/lib/animations";
 
@@ -30,7 +30,7 @@ export function CraftSection() {
               href="/gallery"
               className="flex items-center gap-2 text-xs uppercase tracking-widest font-semibold mt-6 md:mt-0 hover:opacity-70 transition-opacity"
             >
-              Explore Gallery <ArrowRight size={14} />
+              Explore Gallery <IconArrowRight size={14} />
             </Link>
           </motion.div>
         </motion.div>

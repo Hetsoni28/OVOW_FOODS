@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { X } from "lucide-react";
+import { IconX } from "@/components/atoms/Icons";
 import { LazyVideo } from "@/components/atoms/LazyVideo";
 import type { GalleryMedia } from "@/lib/types";
 
@@ -30,7 +30,7 @@ export function GalleryLightbox({ selectedImage, onClose }: GalleryLightboxProps
         onClick={onClose}
         className="absolute top-6 right-6 md:top-10 md:right-10 w-12 h-12 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-colors z-[110]"
       >
-        <X size={24} />
+        <IconX size={24} />
       </button>
       
       {/* Shared Layout Container */}

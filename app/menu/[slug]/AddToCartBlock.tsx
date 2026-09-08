@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Minus, Check, ShoppingBag, ArrowRight, BellOff } from "lucide-react";
+import { IconPlus, IconMinus, IconCheck, IconShoppingBag, IconArrowRight, IconBellOff } from "@/components/atoms/Icons";
 import { useCart } from "@/context/CartContext";
 import { Product } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,6 +10,7 @@ export function AddToCartBlock({ product }: { product: Product }) {
   const { addItem, openCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [floatingPop, setFloatingPop] = useState<number | null>(null);
 
   const isSoldOut = product.available === false;
 
@@ -22,6 +23,12 @@ export function AddToCartBlock({ product }: { product: Product }) {
       addItem(product);
     }
     setAdded(true);
+    setFloatingPop(quantity); // Trigger floating animation
+    
+    setTimeout(() => {
+      setFloatingPop(null);
+    }, 1000);
+
     setTimeout(() => {
       setAdded(false);
       openCart();
@@ -44,7 +51,7 @@ export function AddToCartBlock({ product }: { product: Product }) {
           {/* Message */}
           <div className="bg-primary/[0.03] border border-primary/[0.08] p-5">
             <div className="flex items-start gap-3">
-              <BellOff size={18} className="text-primary/30 mt-0.5 flex-shrink-0" />
+              <IconBellOff size={18} className="text-primary/30 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-sm font-semibold text-primary/70">
                   We&apos;re preparing something delicious.
@@ -61,7 +68,7 @@ export function AddToCartBlock({ product }: { product: Product }) {
             disabled
             className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-primary/5 text-primary/25 cursor-not-allowed border border-primary/[0.08]"
           >
-            <ShoppingBag size={18} />
+            <IconShoppingBag size={18} />
             <span className="text-[11px] font-bold uppercase tracking-[0.2em]">
               Not Available Right Now
             </span>
@@ -77,14 +84,14 @@ export function AddToCartBlock({ product }: { product: Product }) {
       <div className="flex flex-col sm:flex-row items-center gap-4 lg:gap-5">
 
         {/* Quantity Selector */}
-        <div className="flex items-center gap-6 bg-white/60 backdrop-blur-md px-6 py-3 rounded-full border border-primary/10 shadow-sm w-full sm:w-auto justify-between sm:justify-start">
+        <div className="flex items-center gap-6 bg-white/60 backdrop-blur-md px-6 py-3 rounded-none border border-primary/10 shadow-sm w-full sm:w-auto justify-between sm:justify-start">
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={handleDecrease}
-            className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center text-primary/60 hover:text-primary hover:bg-primary/10 transition-colors disabled:opacity-30 disabled:hover:bg-primary/5"
+            className="w-10 h-10 rounded-none bg-primary/5 flex items-center justify-center text-primary/60 hover:text-primary hover:bg-primary/10 transition-colors disabled:opacity-30 disabled:hover:bg-primary/5"
             disabled={quantity <= 1}
           >
-            <Minus size={18} strokeWidth={2.5} />
+            <IconMinus size={18} strokeWidth={2.5} />
           </motion.button>
 
           <div className="relative w-8 h-8 flex items-center justify-center overflow-hidden">
@@ -105,9 +112,9 @@ export function AddToCartBlock({ product }: { product: Product }) {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={handleIncrease}
-            className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center text-primary/60 hover:text-primary hover:bg-primary/10 transition-colors"
+            className="w-10 h-10 rounded-none bg-primary/5 flex items-center justify-center text-primary/60 hover:text-primary hover:bg-primary/10 transition-colors"
           >
-            <Plus size={18} strokeWidth={2.5} />
+            <IconPlus size={18} strokeWidth={2.5} />
           </motion.button>
         </div>
 
@@ -118,14 +125,14 @@ export function AddToCartBlock({ product }: { product: Product }) {
           onClick={handleAdd}
           disabled={added}
           suppressHydrationWarning
-          className={`relative overflow-hidden flex-1 w-full flex items-center justify-between px-8 py-4 rounded-full transition-all duration-500 shadow-xl ${
+          className={`group relative overflow-hidden flex-1 w-full flex items-center justify-between px-8 py-4 rounded-none transition-all duration-500 shadow-xl ${
             added
               ? "bg-[#25D366] shadow-[#25D366]/30 text-white"
               : "bg-[#C9A24A] shadow-[#C9A24A]/20 text-white hover:bg-[#0B2118] hover:shadow-[#0B2118]/20"
           }`}
         >
           {!added && (
-            <div className="absolute inset-0 -translate-x-full hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 pointer-events-none" />
+            <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 pointer-events-none" />
           )}
 
           <div className="flex items-center gap-3">
@@ -137,11 +144,11 @@ export function AddToCartBlock({ product }: { product: Product }) {
                   animate={{ scale: 1, rotate: 0 }}
                   transition={{ type: "spring", stiffness: 200, damping: 15 }}
                 >
-                  <Check size={20} strokeWidth={3} />
+                  <IconCheck size={20} strokeWidth={3} />
                 </motion.div>
               ) : (
                 <motion.div key="bag" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
-                  <ShoppingBag size={20} className="text-white/80" />
+                  <IconShoppingBag size={20} className="text-white/80" />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -149,6 +156,20 @@ export function AddToCartBlock({ product }: { product: Product }) {
               {added ? "Added to Cart" : "Add to Order"}
             </span>
           </div>
+
+          <AnimatePresence>
+            {floatingPop !== null && (
+              <motion.div
+                initial={{ opacity: 0, y: 0, scale: 0.5 }}
+                animate={{ opacity: 1, y: -60, scale: 1.5 }}
+                exit={{ opacity: 0, y: -80, scale: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="absolute top-1/2 left-1/4 text-white font-serif font-bold text-2xl pointer-events-none drop-shadow-xl"
+              >
+                +{floatingPop}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <AnimatePresence mode="popLayout">
             {!added && (
@@ -162,7 +183,7 @@ export function AddToCartBlock({ product }: { product: Product }) {
                 <span className="font-serif text-xl font-bold tracking-wider">
                   ₹{(product.price * quantity).toLocaleString("en-IN")}
                 </span>
-                <ArrowRight size={16} className="text-white/50" />
+                <IconArrowRight size={16} className="text-white/50" />
               </motion.div>
             )}
           </AnimatePresence>

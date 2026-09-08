@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Phone, Instagram, Facebook, MapPin } from "lucide-react";
+import { IconPhone, IconInstagram, IconFacebook, IconMapPin } from "@/components/atoms/Icons";
 import { Logo } from "@/components/atoms/Logo";
 import { COMPANY_CONFIG } from "@/lib/config";
 
@@ -15,7 +15,7 @@ export function Footer() {
             {/* Phone */}
             <a href={`tel:${COMPANY_CONFIG.phone.replace(/\s+/g, '')}`} className="flex items-center gap-4 hover:opacity-80 transition-opacity">
               <div className="w-12 h-12 shrink-0 border border-tertiary flex items-center justify-center text-tertiary">
-                <Phone size={24} className="fill-tertiary" />
+                <IconPhone size={24} className="fill-tertiary" />
               </div>
               <div className="flex flex-col text-left">
                 <span className="text-tertiary text-[10px] uppercase tracking-widest font-bold">Order Now</span>
@@ -28,7 +28,7 @@ export function Footer() {
             {/* Instagram */}
             <a href={COMPANY_CONFIG.instagram} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <div className="w-10 h-10 shrink-0 bg-gradient-to-tr from-[#FFDC80] via-[#F56040] to-[#833AB4] flex items-center justify-center text-white p-2">
-                <Instagram size={24} />
+                <IconInstagram size={24} />
               </div>
               <span className="text-white text-sm md:text-base font-medium">ovow foods</span>
             </a>
@@ -36,9 +36,9 @@ export function Footer() {
             <div className="hidden md:block w-px h-12 bg-tertiary"></div>
 
             {/* Facebook */}
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <a href={COMPANY_CONFIG.facebook} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <div className="w-10 h-10 shrink-0 bg-[#1877F2] flex items-center justify-center text-white">
-                <Facebook size={24} className="fill-white stroke-none" />
+                <IconFacebook size={24} className="fill-white stroke-none" />
               </div>
               <span className="text-white text-sm md:text-base font-medium">ovow foods</span>
             </a>
@@ -48,7 +48,7 @@ export function Footer() {
             {/* Location */}
             <a href="https://maps.google.com/?q=OVOW+FOODS+Ahmedabad" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:opacity-80 transition-opacity max-w-[250px] text-left">
               <div className="text-tertiary shrink-0">
-                <MapPin size={32} className="fill-tertiary text-primary" />
+                <IconMapPin size={32} className="fill-tertiary text-primary" />
               </div>
               <span className="text-white text-xs md:text-sm font-medium tracking-wide">
                 {COMPANY_CONFIG.address} <br/> <span className="text-tertiary font-bold">{COMPANY_CONFIG.hours}</span>

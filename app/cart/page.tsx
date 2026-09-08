@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingBag, ArrowLeft, ArrowRight } from "lucide-react";
+import { IconShoppingBag, IconArrowLeft, IconArrowRight } from "@/components/atoms/Icons";
 import { useCart } from "@/context/CartContext";
 import { CartItem } from "@/components/cart/CartItem";
 import { CartSummary } from "@/components/cart/CartSummary";
+import { CrossSellSection } from "@/components/cart/CrossSellSection";
 
 export default function CartPage() {
   const { items, count } = useCart();
@@ -18,7 +19,7 @@ export default function CartPage() {
             href="/menu"
             className="text-primary/40 hover:text-primary transition-colors"
           >
-            <ArrowLeft size={20} />
+            <IconArrowLeft size={20} />
           </Link>
           <div>
             <h1 className="font-serif text-3xl md:text-4xl text-primary font-bold">
@@ -35,7 +36,7 @@ export default function CartPage() {
         {items.length === 0 ? (
           /* Empty state */
           <div className="flex flex-col items-center justify-center py-24 text-center gap-6">
-            <ShoppingBag size={56} className="text-primary/10" strokeWidth={1} />
+            <IconShoppingBag size={56} className="text-primary/10" strokeWidth={1} />
             <div>
               <p className="font-serif text-2xl text-primary/40 mb-2">
                 Nothing here yet
@@ -61,9 +62,8 @@ export default function CartPage() {
             </div>
 
             {/* Summary + Order */}
+            <CrossSellSection />
             <CartSummary />
-
-
 
             {/* Continue shopping */}
             <div className="mt-4 text-center">

@@ -1,4 +1,4 @@
-import { Loader2 } from "lucide-react";
+import { IconLoader } from "@/components/atoms/Icons";
 
 export default function MenuLoading() {
   return (

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Smartphone, Banknote, ShieldCheck } from "lucide-react";
+import { IconArrowLeft, IconArrowRight, IconSmartphone, IconBanknote, IconShieldCheck } from "@/components/atoms/Icons";
 import {  pageAnim, childAnim  } from "@/lib/animations";
 import type { PaymentMethod } from "@/lib/types";
 import { CheckoutOrderSummary } from "./CheckoutOrderSummary";
@@ -24,8 +24,8 @@ export function CheckoutStepPayment({ paymentMethod, setPaymentMethod, cart, car
           <h2 className="font-serif text-3xl md:text-4xl text-primary mb-3">Order Summary</h2>
           <p className="text-primary/50 text-sm">Review your items and choose payment method.</p>
         </div>
-        <button onClick={onBack} className="p-2 hover:bg-primary/5 rounded-full transition-colors group">
-          <ArrowLeft size={20} className="text-primary/40 group-hover:text-primary transition-colors" />
+        <button suppressHydrationWarning onClick={onBack} className="p-2 hover:bg-primary/5 rounded-full transition-colors group">
+          <IconArrowLeft size={20} className="text-primary/40 group-hover:text-primary transition-colors" />
         </button>
       </motion.div>
 
@@ -38,14 +38,14 @@ export function CheckoutStepPayment({ paymentMethod, setPaymentMethod, cart, car
           <div>
             <h3 className="font-serif text-xl text-primary mb-6">Payment Method</h3>
             <div className="space-y-4">
-              <button
+              <button suppressHydrationWarning
                 onClick={() => setPaymentMethod("upi")}
                 className={`w-full p-5 border-2 flex items-center gap-4 transition-all ${
                   paymentMethod === "upi" ? "border-[#C9A24A] bg-[#C9A24A]/5 shadow-[0_0_20px_rgba(201,162,74,0.15)]" : "border-primary/10 hover:border-primary/30"
                 }`}
               >
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center ${paymentMethod === "upi" ? "bg-[#C9A24A] text-white" : "bg-primary/5 text-primary/40"}`}>
-                  <Smartphone size={24} />
+                  <IconSmartphone size={24} />
                 </div>
                 <div className="text-left flex-1">
                   <p className={`font-bold ${paymentMethod === "upi" ? "text-primary" : "text-primary/70"}`}>Pay Online (UPI)</p>
@@ -56,14 +56,14 @@ export function CheckoutStepPayment({ paymentMethod, setPaymentMethod, cart, car
                 </div>
               </button>
 
-              <button
+              <button suppressHydrationWarning
                 onClick={() => setPaymentMethod("cod")}
                 className={`w-full p-5 border-2 flex items-center gap-4 transition-all ${
                   paymentMethod === "cod" ? "border-primary bg-primary/5 shadow-lg" : "border-primary/10 hover:border-primary/30"
                 }`}
               >
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center ${paymentMethod === "cod" ? "bg-primary text-white" : "bg-primary/5 text-primary/40"}`}>
-                  <Banknote size={24} />
+                  <IconBanknote size={24} />
                 </div>
                 <div className="text-left flex-1">
                   <p className={`font-bold ${paymentMethod === "cod" ? "text-primary" : "text-primary/70"}`}>Cash on Delivery</p>
@@ -77,15 +77,15 @@ export function CheckoutStepPayment({ paymentMethod, setPaymentMethod, cart, car
           </div>
 
           <div className="pt-4">
-            <button
+            <button suppressHydrationWarning
               onClick={() => handleSendWhatsApp(paymentMethod === "cod")}
               className="w-full flex items-center justify-between bg-[#C9A24A] text-white px-8 py-5 group hover:bg-[#0B2118] transition-all hover:shadow-xl hover:shadow-[#0B2118]/20 hover:-translate-y-1"
             >
               <span className="text-xs font-bold uppercase tracking-[0.2em]">{paymentMethod === "cod" ? "Place Order on WhatsApp" : "Proceed to QR Code"}</span>
-              <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform text-[#C9A24A]" />
+              <IconArrowRight size={20} className="group-hover:translate-x-2 transition-transform text-[#C9A24A]" />
             </button>
             <div className="flex items-center justify-center gap-2 mt-4 text-[10px] uppercase tracking-widest text-primary/40 font-bold">
-              <ShieldCheck size={14} /> Secure Checkout Process
+              <IconShieldCheck size={14} /> Secure Checkout Process
             </div>
           </div>
         </motion.div>

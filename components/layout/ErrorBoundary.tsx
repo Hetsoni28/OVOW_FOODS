@@ -34,7 +34,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <p className="text-sm text-primary/60 mb-6">
               {this.state.error?.message || "An unexpected error occurred."}
             </p>
-            <button
+            <button suppressHydrationWarning
               onClick={() => this.setState({ hasError: false })}
               className="bg-primary text-white px-6 py-3 text-xs uppercase tracking-widest font-bold"
             >

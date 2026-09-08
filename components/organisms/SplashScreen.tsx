@@ -9,7 +9,7 @@ import {
   animate,
 } from "framer-motion";
 import Image from "next/image";
-import { X } from "lucide-react";
+import { IconX } from "@/components/atoms/Icons";
 
 /* ─── Letter-by-letter reveal ─── */
 function SplitText({
@@ -323,7 +323,7 @@ export function SplashScreen() {
                 onClick={handleSplashEnd}
                 className="absolute top-6 right-6 md:top-8 md:right-8 z-[10000] text-white/40 hover:text-white/90 transition-all duration-300 flex items-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-2 md:px-5 md:py-2.5 rounded-full text-[9px] md:text-[10px] tracking-[0.2em] uppercase font-semibold backdrop-blur-lg border border-white/5 hover:border-white/20"
               >
-                Skip <X size={12} strokeWidth={2.5} />
+                Skip <IconX size={12} strokeWidth={2.5} />
               </motion.button>
             )}
           </AnimatePresence>

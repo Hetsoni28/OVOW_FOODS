@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronRight, Home } from "lucide-react";
+import { IconChevronRight, IconHome } from "@/components/atoms/Icons";
 import { motion } from "framer-motion";
 
 export function Breadcrumbs() {
@@ -31,7 +31,7 @@ export function Breadcrumbs() {
             href="/" 
             className={`hover:text-[#C9A24A] transition-colors flex items-center gap-1.5 ${isDarkHero ? "text-white" : "text-primary"}`}
           >
-            <Home size={12} strokeWidth={2} />
+            <IconHome size={12} strokeWidth={2} />
             <span className="sr-only">Home</span>
           </Link>
 
@@ -47,7 +47,7 @@ export function Breadcrumbs() {
 
             return (
               <div key={href} className="flex items-center gap-2">
-                <ChevronRight size={10} className={isDarkHero ? "text-white/40" : "text-primary/30"} strokeWidth={3} />
+                <IconChevronRight size={10} className={isDarkHero ? "text-white/40" : "text-primary/30"} strokeWidth={3} />
                 {isLast ? (
                   <span className="text-[#C9A24A]">{name}</span>
                 ) : (

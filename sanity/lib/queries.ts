@@ -20,11 +20,9 @@ export const ALL_PRODUCTS_QUERY = groq`*[_type == "product"] | order(sortOrder a
   isSpicy,
   isSwaminarayan,
   isBestSeller,
-  isSignature,
   signature,
   size,
-  servingSize,
-  "previewVideo": previewVideo.asset->url
+  servingSize
 }`
 
 // Full detail view: fetch everything
@@ -41,10 +39,8 @@ export const PRODUCT_BY_SLUG_QUERY = groq`*[_type == "product" && slug.current =
   isSpicy,
   isSwaminarayan,
   isBestSeller,
-  isSignature,
-  ingredients,
-  "previewVideo": previewVideo.asset->url,
-  "fullExperienceVideo": fullExperienceVideo.asset->url
+  signature,
+  servingSize
 }`
 
 export const RELATED_PRODUCTS_QUERY = groq`*[_type == "product" && category->name == $category && slug.current != $slug && available != false][0...3] {
@@ -54,8 +50,7 @@ export const RELATED_PRODUCTS_QUERY = groq`*[_type == "product" && category->nam
   price,
   "category": category->name,
   "image": image.asset->url + "?w=400&auto=format&q=70",
-  isSignature,
-  "previewVideo": previewVideo.asset->url
+  signature
 }`
 
 export const APPROVED_REVIEWS_QUERY = groq`*[_type == "review" && isApproved == true] | order(date desc) [0...20] {

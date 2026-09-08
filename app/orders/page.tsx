@@ -2,7 +2,7 @@
 
 import { useOrderHistory } from "@/hooks/useOrderHistory";
 import { motion } from "framer-motion";
-import { Receipt } from "lucide-react";
+import { IconReceipt } from "@/components/atoms/Icons";
 import { OrderEmptyState } from "@/components/organisms/OrderEmptyState";
 import { OrderCard, type OrderItem } from "@/components/organisms/OrderCard";
 
@@ -23,7 +23,7 @@ export default function OrdersPage() {
           className="mb-8"
         >
           <div className="inline-flex items-center gap-2 bg-[#C9A24A]/10 text-[#C9A24A] px-3 py-1.5 mb-4">
-            <Receipt size={14} />
+            <IconReceipt size={14} />
             <span className="text-[10px] font-bold uppercase tracking-widest">Order History</span>
           </div>
           <h1 className="font-serif text-3xl md:text-4xl text-primary font-bold mb-3">Past Orders</h1>

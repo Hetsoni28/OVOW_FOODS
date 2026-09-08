@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ShoppingBag } from "lucide-react";
+import { IconShoppingBag } from "@/components/atoms/Icons";
 import type { CartItem } from "@/types";
 import {  pageAnim, childAnim  } from "@/lib/animations";
 
@@ -19,7 +19,7 @@ export function CheckoutOrderSummary({ cart, cartTotal }: CheckoutOrderSummaryPr
       className="bg-primary/5 p-8 border border-primary/10"
     >
       <motion.div variants={childAnim} className="flex items-center gap-3 mb-8">
-        <ShoppingBag className="text-[#C9A24A]" />
+        <IconShoppingBag className="text-[#C9A24A]" />
         <h2 className="font-serif text-2xl text-primary">Your Order</h2>
       </motion.div>
       <div className="space-y-4 mb-8">

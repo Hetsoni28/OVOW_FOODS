@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ShoppingBag } from "lucide-react";
+import { IconX, IconShoppingBag } from "@/components/atoms/Icons";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { CartItem } from "./CartItem";
@@ -54,7 +54,7 @@ export function CartDrawer() {
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-primary/10">
               <div className="flex items-center gap-3">
-                <ShoppingBag size={18} className="text-primary" strokeWidth={1.5} />
+                <IconShoppingBag size={18} className="text-primary" strokeWidth={1.5} />
                 <h2 className="font-serif text-xl text-primary font-bold">
                   Your Order
                 </h2>
@@ -69,7 +69,7 @@ export function CartDrawer() {
                 className="text-primary/40 hover:text-primary transition-colors"
                 aria-label="Close cart"
               >
-                <X size={20} />
+                <IconX size={20} />
               </button>
             </div>
 
@@ -77,7 +77,7 @@ export function CartDrawer() {
             <div className="flex-1 overflow-y-auto px-6 py-2">
               {items.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full gap-5 text-center">
-                  <ShoppingBag size={48} className="text-primary/15" strokeWidth={1} />
+                  <IconShoppingBag size={48} className="text-primary/15" strokeWidth={1} />
                   <div>
                     <p className="font-serif text-xl text-primary/50 mb-1">
                       Your cart is empty

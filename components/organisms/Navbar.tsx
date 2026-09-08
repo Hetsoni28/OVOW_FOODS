@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShoppingBag, Menu } from "lucide-react";
+import { IconShoppingBag, IconMenu } from "@/components/atoms/Icons";
+import { motion } from "framer-motion";
 import { Logo } from "@/components/atoms/Logo";
 import { useCart } from "@/context/CartContext";
 import { MobileMenu } from "@/components/layout/MobileMenu";
@@ -26,6 +27,16 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const [isWiggling, setIsWiggling] = useState(false);
+
+  useEffect(() => {
+    if (count > 0 && mounted) {
+      setIsWiggling(true);
+      const timer = setTimeout(() => setIsWiggling(false), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [count, mounted]);
 
   const isHome = pathname === "/";
   const isTransparent = isHome && !isScrolled;
@@ -72,28 +83,38 @@ export function Navbar() {
           </Link>
 
           {/* Cart Icon */}
-          <button
+          <motion.button
             onClick={openCart}
             className="relative flex items-center gap-1.5 text-inherit hover:opacity-70 transition-opacity"
             aria-label="Open cart"
             suppressHydrationWarning
+            animate={isWiggling ? { 
+              rotate: [0, -15, 15, -15, 15, 0],
+              scale: [1, 1.2, 1]
+            } : { rotate: 0, scale: 1 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
           >
-            <ShoppingBag size={22} strokeWidth={1.5} />
+            <IconShoppingBag size={22} strokeWidth={1.5} />
             {mounted && count > 0 && (
-              <span className="absolute -top-2 -right-2 bg-[#C9A24A] text-white text-[9px] font-bold w-4.5 h-4.5 min-w-[18px] min-h-[18px] flex items-center justify-center leading-none px-1">
+              <motion.span 
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                key={count}
+                className="absolute -top-2 -right-2 bg-[#C9A24A] text-white text-[9px] font-bold w-4.5 h-4.5 min-w-[18px] min-h-[18px] flex items-center justify-center leading-none px-1"
+              >
                 {count > 99 ? "99+" : count}
-              </span>
+              </motion.span>
             )}
-          </button>
+          </motion.button>
 
           {/* Hamburger Menu (Mobile Only) */}
-          <button
+          <button suppressHydrationWarning
             onClick={() => setIsMobileMenuOpen(true)}
             className="md:hidden flex items-center justify-center w-12 h-12 -mr-3 text-inherit hover:opacity-70 transition-opacity"
             aria-label="Open menu"
             suppressHydrationWarning
           >
-            <Menu size={28} className="pointer-events-none" />
+            <IconMenu size={28} className="pointer-events-none" />
           </button>
         </div>
       </div>

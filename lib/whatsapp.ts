@@ -1,5 +1,6 @@
 import { COMPANY_CONFIG } from "./config";
 import { CartItem } from "@/types";
+import { CheckoutCustomerDetails } from "./types";
 
 function encodeMessage(msg: string): string {
   return encodeURIComponent(msg);
@@ -118,14 +119,6 @@ export function openWhatsAppBulkOrder(details: BulkInquiryDetails): void {
 
 // ── CHECKOUT ORDER MESSAGE ─────────────────────────────────────────────────────
 
-export interface CheckoutCustomerDetails {
-  name: string;
-  mobile: string;
-  address: string;
-  email?: string;
-  notes?: string;
-}
-
 export function buildCheckoutWhatsAppMessage(
   items: CartItem[],
   customer: CheckoutCustomerDetails,
@@ -137,27 +130,56 @@ export function buildCheckoutWhatsAppMessage(
       `  ${item.quantity} × ${item.name}${item.size ? ` (${item.size})` : ""}  →  ₹${(item.price * item.quantity).toLocaleString("en-IN")}`
   );
 
+  const isLater = customer.scheduleType === "later";
+  const isPorter = customer.deliveryMethod === "porter";
+
+  // Create a secure base64 payload containing the specific order details
+  // so the Action Page can display them dynamically without a database!
+  const payload = typeof window !== "undefined" ? btoa(encodeURIComponent(JSON.stringify({
+    n: customer.name,
+    p: customer.mobile,
+    a: customer.address,
+    t: total
+  }))) : "";
+
+  const actionLink = `${typeof window !== "undefined" ? window.location.origin : ""}/order-action/${orderRef}?d=${payload}`;
+
+  const deliveryLine = isPorter
+    ? `🚚 PORTER DELIVERY (Booked by OVOW)`
+    : `🛵 OVOW FREE DELIVERY`;
+
   return [
-    `Hello OVOW FOODS! 👋`,
+    `🟢 NEW OVOW ORDER`,
     ``,
-    `ORDER REFERENCE: ${orderRef}`,
+    `ORDER ID: ${orderRef}`,
+    ``,
+    `─── DELIVERY ────────────────────────────`,
+    deliveryLine,
+    isLater ? `⏰ SCHEDULED ORDER` : `🚨 ASAP`,
+    isLater ? `📅 Date: ${customer.scheduleDate}` : undefined,
+    isLater ? `🕒 Time: ${customer.scheduleTime}` : undefined,
+    ``,
+    `─── CUSTOMER ────────────────────────────`,
+    `Name: ${customer.name}`,
+    `Mobile: +91 ${customer.mobile}`,
+    `Address: ${customer.address}`,
+    customer.instructions ? `Notes: ${customer.instructions}` : undefined,
     ``,
     `─── ITEMS ───────────────────────────────`,
     ...lines,
     `─────────────────────────────────────────`,
-    ``,
+    `FOOD TOTAL: ₹${total.toLocaleString("en-IN")}`,
+    `DELIVERY: ₹0`,
+    `TAX: ₹0`,
     `TOTAL: ₹${total.toLocaleString("en-IN")}`,
     ``,
-    `─── CUSTOMER DETAILS ────────────────────`,
-    `Name: ${customer.name}`,
-    `Mobile: ${customer.mobile}`,
-    `Address: ${customer.address}`,
-    customer.email ? `Email: ${customer.email}` : "",
-    customer.notes ? `Notes: ${customer.notes}` : "",
+    `─── PAYMENT ─────────────────────────────`,
+    `Method: UPI`,
+    `Status: Customer marked payment as completed`,
+    `⚠️ Please verify UPI payment before fulfilling.`,
     ``,
-    `─── PAYMENT STATUS ──────────────────────`,
-    `Customer has marked payment as completed via UPI.`,
-    `Please verify the payment and confirm the order.`,
+    `BOOK PORTER:`,
+    actionLink,
     ``,
     `Thank you! 🙏`,
     `OVOW FOODS`,

@@ -1,12 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { IconArrowRight, IconChevronDown, IconChevronUp } from "@/components/atoms/Icons";
 import { useCart } from "@/context/CartContext";
 import { WhatsAppIcon } from "@/components/atoms/WhatsAppIcon";
 import { openWhatsAppOrder, CustomerDetails } from "@/lib/whatsapp";
 import { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
 import { COMPANY_CONFIG } from "@/lib/config";
 import { buildOrderMessage } from "@/lib/whatsapp";
 
@@ -42,9 +41,25 @@ export function CartSummary() {
 
   return (
     <div className="border-t border-primary/10 pt-4 mt-2">
-      {/* Subtotal */}
-      <div className="flex justify-between items-center mb-1">
-        <span className="text-xs uppercase tracking-widest text-primary/50">Subtotal</span>
+      {/* Breakdown */}
+      <div className="space-y-1.5 mb-3">
+        <div className="flex justify-between items-center">
+          <span className="text-xs text-primary/50">Food Total</span>
+          <span className="text-sm font-medium text-primary">₹{total.toLocaleString("en-IN")}</span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-xs text-primary/50">Delivery</span>
+          <span className="text-xs font-bold text-[#2E7D4F]">FREE · ₹0</span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-xs text-primary/50">Tax</span>
+          <span className="text-xs text-primary/40">₹0</span>
+        </div>
+      </div>
+
+      {/* Total */}
+      <div className="flex justify-between items-center border-t border-primary/10 pt-3 mb-1">
+        <span className="text-xs uppercase tracking-widest text-primary/50">Total</span>
         <span className="font-serif text-2xl text-primary font-bold">
           ₹{total.toLocaleString("en-IN")}
         </span>
@@ -57,7 +72,7 @@ export function CartSummary() {
         onClick={closeCart}
         className="w-full bg-[#C9A24A] text-white flex items-center justify-center gap-2.5 py-4 px-8 shadow-xl shadow-[#C9A24A]/20 text-xs font-bold uppercase tracking-[0.2em] hover:-translate-y-0.5 hover:bg-[#0B2118] hover:shadow-[#0B2118]/20 hover:shadow-2xl transition-all duration-300 mb-3"
       >
-        Proceed to Checkout <ArrowRight size={14} />
+        Proceed to Checkout <IconArrowRight size={14} />
       </Link>
 
       {/* Secondary: Quick WhatsApp (collapsible) */}
@@ -68,7 +83,7 @@ export function CartSummary() {
             onClick={() => setShowQuickOrder(v => !v)}
             className="w-full flex items-center justify-center gap-2 text-[11px] text-primary/40 hover:text-primary transition-colors py-1"
           >
-            {showQuickOrder ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+            {showQuickOrder ? <IconChevronUp size={12} /> : <IconChevronDown size={12} />}
             Quick order via WhatsApp
           </button>
 
@@ -110,17 +125,17 @@ export function CartSummary() {
           <p className="font-serif text-sm text-primary font-bold mb-2">Couldn't open WhatsApp?</p>
           <p className="text-xs text-primary/60 mb-3">Your order is saved here.</p>
           <div className="grid grid-cols-2 gap-2">
-            <button onClick={() => openWhatsAppOrder(items, details)} className="bg-[#25D366] text-white py-2 text-xs font-bold uppercase tracking-widest hover:bg-[#1DA851] transition-colors">
+            <button suppressHydrationWarning onClick={() => openWhatsAppOrder(items, details)} className="bg-[#25D366] text-white py-2 text-xs font-bold uppercase tracking-widest hover:bg-[#1DA851] transition-colors">
               Try Again
             </button>
-            <button onClick={handleCopyOrder} className="bg-white border border-primary/20 text-primary py-2 text-xs font-bold uppercase tracking-widest hover:bg-primary/5 transition-colors">
+            <button suppressHydrationWarning onClick={handleCopyOrder} className="bg-white border border-primary/20 text-primary py-2 text-xs font-bold uppercase tracking-widest hover:bg-primary/5 transition-colors">
               {copied ? "Copied!" : "Copy Order"}
             </button>
           </div>
           <a href={`tel:${COMPANY_CONFIG.phone.replace(/\s+/g, "")}`} className="flex items-center justify-center mt-2 w-full bg-primary text-white py-2 text-xs font-bold uppercase tracking-widest">
             Call OVOW
           </a>
-          <button onClick={() => { clearCart(); closeCart(); }} className="w-full text-center text-primary/40 hover:text-primary text-xs uppercase tracking-widest font-bold mt-3 transition-colors">
+          <button suppressHydrationWarning onClick={() => { clearCart(); closeCart(); }} className="w-full text-center text-primary/40 hover:text-primary text-xs uppercase tracking-widest font-bold mt-3 transition-colors">
             Clear Cart & Close
           </button>
         </div>

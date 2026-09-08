@@ -1,6 +1,6 @@
 "use client";
 
-import { ChefHat } from "lucide-react";
+import { IconChefHat } from "@/components/atoms/Icons";
 
 interface MenuEmptyStateProps {
   onClear: () => void;
@@ -10,7 +10,7 @@ export function MenuEmptyState({ onClear }: MenuEmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-32 text-center">
       <div className="w-20 h-20 rounded-full bg-primary/5 border border-primary/10 flex items-center justify-center mb-6">
-        <ChefHat size={32} className="text-[#C9A24A]" />
+        <IconChefHat size={32} className="text-[#C9A24A]" />
       </div>
       <p className="font-serif text-3xl md:text-4xl text-primary mb-4">
         No dishes found

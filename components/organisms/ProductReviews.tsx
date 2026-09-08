@@ -1,7 +1,7 @@
-﻿"use client";
+"use client";
 
 import { motion } from "framer-motion";
-import { Star, MessageSquare } from "lucide-react";
+import { IconStar, IconMessageSquare } from "@/components/atoms/Icons";
 import { fadeUp, staggerFast } from "@/lib/animations";
 
 type Review = {
@@ -23,7 +23,7 @@ export function ProductReviews({
     return (
       <section className="mt-20 md:mt-32 border-t border-primary/10 pt-16">
         <div className="flex items-center gap-3 mb-8">
-          <MessageSquare size={20} className="text-[#C9A24A]" />
+          <IconMessageSquare size={20} className="text-[#C9A24A]" />
           <h2 className="font-serif text-3xl md:text-4xl text-primary">
             Customer Reviews
           </h2>
@@ -43,7 +43,7 @@ export function ProductReviews({
       <div className="flex flex-col sm:flex-row sm:items-end gap-6 mb-12">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <MessageSquare size={20} className="text-[#C9A24A]" />
+            <IconMessageSquare size={20} className="text-[#C9A24A]" />
             <h2 className="font-serif text-3xl md:text-4xl text-primary">
               Customer Reviews
             </h2>
@@ -59,7 +59,7 @@ export function ProductReviews({
             </p>
             <div className="flex gap-0.5 mt-1">
               {[...Array(5)].map((_, i) => (
-                <Star
+                <IconStar
                   key={i}
                   size={12}
                   fill={i < Math.round(avg) ? "#C9A24A" : "transparent"}
@@ -94,10 +94,10 @@ export function ProductReviews({
             <div className="relative z-10">
               <div className="flex gap-1 mb-5 text-[#C9A24A]">
                 {[...Array(review.rating)].map((_, idx) => (
-                  <Star key={idx} size={14} fill="currentColor" />
+                  <IconStar key={idx} size={14} fill="currentColor" />
                 ))}
                 {[...Array(5 - review.rating)].map((_, idx) => (
-                  <Star key={`e-${idx}`} size={14} className="text-[#C9A24A]/30" />
+                  <IconStar key={`e-${idx}`} size={14} className="text-[#C9A24A]/30" />
                 ))}
               </div>
               <p className="font-serif text-xl leading-relaxed mb-8 text-primary/90">"{review.comment}"</p>

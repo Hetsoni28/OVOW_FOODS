@@ -29,6 +29,10 @@ const nextConfig: NextConfig = {
         hostname: 'cdn.sanity.io',
       },
     ],
+    // Fix: Sanity CDN (cdn.sanity.io) resolves to an IPv6 NAT64 address (64:ff9b::)
+    // which Next.js incorrectly flags as a private IP via SSRF protection.
+    // This is a known false-positive — cdn.sanity.io is a legitimate public CDN.
+    dangerouslyAllowLocalIP: true,
     // Cache optimized images for 1 year
     minimumCacheTTL: 31536000,
     // Common device widths for responsive images

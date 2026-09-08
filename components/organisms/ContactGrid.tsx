@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Phone, Mail, Clock, MapPin } from "lucide-react";
+import { IconPhone, IconMail, IconClock, IconMapPin } from "@/components/atoms/Icons";
 import { WhatsAppIcon } from "@/components/atoms/WhatsAppIcon";
 import { COMPANY_CONFIG } from "@/lib/config";
 import { fadeUp, stagger } from "@/lib/animations";
@@ -43,10 +43,10 @@ export function ContactGrid() {
         className="relative flex flex-col justify-end bg-white border border-primary/5 p-8 hover:border-[#C9A24A]/30 hover:shadow-[0_20px_40px_rgba(201,162,74,0.1)] transition-all duration-500 group overflow-hidden"
       >
         <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover:opacity-10 group-hover:scale-110 transition-all duration-700">
-          <Phone className="w-32 h-32 text-primary" />
+          <IconPhone className="w-32 h-32 text-primary" />
         </div>
         <div className="w-12 h-12 bg-[#F9F6F0] rounded-xl flex items-center justify-center mb-12 relative z-10 group-hover:-translate-y-2 group-hover:bg-[#C9A24A]/10 transition-all duration-500">
-          <Phone size={20} className="text-primary group-hover:text-[#C9A24A] transition-colors" />
+          <IconPhone size={20} className="text-primary group-hover:text-[#C9A24A] transition-colors" />
         </div>
         <div className="relative z-10">
           <h3 className="font-bold text-primary mb-1">Call Us</h3>
@@ -62,10 +62,10 @@ export function ContactGrid() {
         className="relative flex flex-col justify-end bg-white border border-primary/5 p-8 hover:border-primary/20 hover:shadow-[0_20px_40px_rgba(18,59,42,0.06)] transition-all duration-500 group overflow-hidden"
       >
         <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover:opacity-10 group-hover:scale-110 transition-all duration-700">
-          <Mail className="w-32 h-32 text-primary" />
+          <IconMail className="w-32 h-32 text-primary" />
         </div>
         <div className="w-12 h-12 bg-[#F9F6F0] rounded-xl flex items-center justify-center mb-12 relative z-10 group-hover:-translate-y-2 group-hover:bg-primary/5 transition-all duration-500">
-          <Mail size={20} className="text-primary" />
+          <IconMail size={20} className="text-primary" />
         </div>
         <div className="relative z-10">
           <h3 className="font-bold text-primary mb-1">Email</h3>
@@ -80,10 +80,10 @@ export function ContactGrid() {
         className="lg:col-span-2 relative flex flex-col justify-end bg-primary border border-primary/5 p-8 hover:shadow-2xl transition-all duration-500 group overflow-hidden"
       >
         <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-700">
-          <Clock className="w-48 h-48 text-white" />
+          <IconClock className="w-48 h-48 text-white" />
         </div>
         <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-16 relative z-10 group-hover:-translate-y-2 transition-transform duration-500">
-          <Clock size={24} className="text-[#C9A24A]" />
+          <IconClock size={24} className="text-[#C9A24A]" />
         </div>
         <div className="relative z-10">
           <h3 className="font-serif text-3xl md:text-4xl text-white mb-2">Opening Hours</h3>

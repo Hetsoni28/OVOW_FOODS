@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion } from "framer-motion";
-import { Play } from "lucide-react";
+import { IconPlay } from "@/components/atoms/Icons";
 import { LazyVideo } from "@/components/atoms/LazyVideo";
 import type { GalleryMedia } from "@/lib/types";
 
@@ -53,7 +53,7 @@ export function GalleryVideoItem({
         
         {/* Play Button */}
         <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl flex items-center justify-center mb-6 transform translate-y-0 opacity-100 md:translate-y-8 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 transition-all duration-500 delay-[50ms] ease-out">
-          <Play className="text-white fill-white ml-1" size={24} />
+          <IconPlay className="text-white fill-white ml-1" size={24} />
         </div>
         
         {/* Caption */}

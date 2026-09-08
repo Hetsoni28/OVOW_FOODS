@@ -1,6 +1,6 @@
 "use client";
 
-import { Check } from "lucide-react";
+import { IconCheck } from "@/components/atoms/Icons";
 
 const STEP_LABELS = ["Details", "Summary", "Pay", "Done"];
 
@@ -23,7 +23,7 @@ export function ProgressBar({ step }: { step: number }) {
                     : "border-primary/12 text-primary/20 bg-transparent"
                 }`}
               >
-                {done ? <Check size={14} strokeWidth={2.5} /> : n}
+                {done ? <IconCheck size={14} strokeWidth={2.5} /> : n}
               </div>
               <span
                 className={`text-[10px] font-bold uppercase tracking-widest absolute mt-12 transition-colors ${

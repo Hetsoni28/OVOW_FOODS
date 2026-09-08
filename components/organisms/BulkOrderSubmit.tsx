@@ -10,7 +10,7 @@ interface BulkOrderSubmitProps {
 export function BulkOrderSubmit({ isSubmitting, submitError }: BulkOrderSubmitProps) {
   return (
     <>
-      <button
+      <button suppressHydrationWarning
         type="submit"
         disabled={isSubmitting}
         suppressHydrationWarning

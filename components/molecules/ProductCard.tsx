@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Plus, Check, Star, Flame, ChefHat } from "lucide-react";
+import { IconPlus, IconCheck, IconStar, IconFlame, IconChefHat } from "@/components/atoms/Icons";
 import { useState } from "react";
 import { Product } from "@/types";
 import { useCart } from "@/context/CartContext";
@@ -56,12 +56,12 @@ export function ProductCard({ product }: { product: Product }) {
           )}
           {!isSoldOut && (product.isSignature || (product as any).signature) && (
             <span className="bg-[#C9A24A] text-white px-3 py-1.5 text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1.5 shadow-sm">
-              <Star size={10} fill="white" /> Signature
+              <IconStar size={10} fill="white" /> Signature
             </span>
           )}
           {!isSoldOut && (product.isBestseller || (product as any).isBestSeller) && (
             <span className="bg-white/95 backdrop-blur-md text-[#0B2118] px-3 py-1.5 text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1.5 shadow-sm">
-              <Flame size={10} className="text-[#C9A24A]" /> Bestseller
+              <IconFlame size={10} className="text-[#C9A24A]" /> Bestseller
             </span>
           )}
           {product.isSwaminarayan && (
@@ -84,7 +84,7 @@ export function ProductCard({ product }: { product: Product }) {
         <Link href={`/menu/${product.slug}`} className="flex-1 flex flex-col">
           <div className="flex items-center justify-between gap-4 mb-3">
             <span className="text-[9px] uppercase tracking-[0.25em] font-bold text-[#C9A24A] flex items-center gap-1.5">
-              <ChefHat size={12} /> {typeof product.category === 'string' ? product.category : product.category?.name || 'Dish'}
+              <IconChefHat size={12} /> {typeof product.category === 'string' ? product.category : product.category?.name || 'Dish'}
             </span>
             {hasDiscount && (
               <span className="bg-red-50 text-red-600 border border-red-100 text-[9px] font-bold px-2 py-0.5 uppercase tracking-widest">
@@ -126,7 +126,7 @@ export function ProductCard({ product }: { product: Product }) {
                   : "bg-white border-[#C9A24A] text-[#C9A24A] hover:bg-[#C9A24A] hover:text-white"
               }`}
             >
-              {added ? <Check size={16} strokeWidth={2.5} /> : <Plus size={16} />}
+              {added ? <IconCheck size={16} strokeWidth={2.5} /> : <IconPlus size={16} />}
             </button>
           </div>
         </Link>

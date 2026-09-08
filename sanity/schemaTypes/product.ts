@@ -55,50 +55,6 @@ export const productType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: 'previewVideo',
-      title: 'Preview Video (Short)',
-      type: 'file',
-      options: { accept: 'video/mp4' },
-      description: 'Short looping video for product cards',
-    }),
-    defineField({
-      name: 'fullExperienceVideo',
-      title: 'Full Experience Video',
-      type: 'file',
-      options: { accept: 'video/mp4' },
-      description: 'Cinematic video for the product detail page',
-    }),
-    defineField({
-      name: 'gallery',
-      title: 'Product Gallery',
-      type: 'array',
-      of: [{ type: 'image', options: { hotspot: true } }],
-    }),
-    defineField({
-      name: 'preparationStory',
-      title: 'Preparation Story',
-      type: 'text',
-      description: 'The story behind this dish for the product page',
-    }),
-    defineField({
-      name: 'ingredients',
-      title: 'Ingredients',
-      type: 'array',
-      of: [{ type: 'string' }],
-    }),
-    defineField({
-      name: 'spiceLevel',
-      title: 'Spice Level',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Mild', value: 'Mild' },
-          { title: 'Medium', value: 'Medium' },
-          { title: 'Hot', value: 'Hot' },
-        ],
-      },
-    }),
-    defineField({
       name: 'isSpicy',
       title: 'Is Spicy?',
       type: 'boolean',

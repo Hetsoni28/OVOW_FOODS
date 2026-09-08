@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { X } from "lucide-react";
+import { IconX } from "@/components/atoms/Icons";
 import { useEffect } from "react";
 import { InstallAppButton } from "@/components/atoms/InstallAppButton";
 
@@ -59,7 +59,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             className="p-2 text-primary hover:opacity-70 transition-opacity"
             aria-label="Close menu"
           >
-            <X size={24} />
+            <IconX size={24} />
           </button>
         </div>
 

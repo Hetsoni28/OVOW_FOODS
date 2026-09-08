@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { SlidersHorizontal, X } from "lucide-react";
+import { IconSlidersHorizontal, IconX } from "@/components/atoms/Icons";
 import { ProductCard } from "@/components/molecules/ProductCard";
 import { MenuFilterBar } from "@/components/organisms/MenuFilterBar";
 import { MenuEmptyState } from "@/components/organisms/MenuEmptyState";
@@ -53,11 +53,12 @@ export function MenuClient({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between py-6 gap-4">
           <div className="flex items-center gap-4">
             <p className="text-[10px] uppercase tracking-[0.25em] font-bold text-primary/50 flex items-center gap-2">
-              <SlidersHorizontal size={12} className="text-[#C9A24A]" />
+              <IconSlidersHorizontal size={12} className="text-[#C9A24A]" />
               {filteredProducts.length} DISH{filteredProducts.length !== 1 && "ES"}
             </p>
             {/* Swaminarayan Filter Toggle */}
             <button
+              suppressHydrationWarning
               onClick={() => setSwaminarayanOnly(!swaminarayanOnly)}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-300 text-[10px] font-bold tracking-widest uppercase ${
                 swaminarayanOnly
@@ -74,7 +75,7 @@ export function MenuClient({
               onClick={handleClear}
               className="text-[10px] uppercase tracking-widest font-bold text-[#C9A24A] hover:text-primary transition-colors flex items-center gap-1.5 self-start sm:self-center"
             >
-              <X size={12} /> Clear filters
+              <IconX size={12} /> Clear filters
             </button>
           )}
         </div>

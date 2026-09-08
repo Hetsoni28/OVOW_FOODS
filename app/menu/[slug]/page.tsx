@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, Leaf, UtensilsCrossed, Flame } from "lucide-react";
+import { IconArrowLeft, IconCheckCircle, IconLeaf, IconUtensilsCrossed, IconFlame } from "@/components/atoms/Icons";
 import { client } from "@/sanity/lib/client";
 import { PRODUCT_BY_SLUG_QUERY, ALL_PRODUCTS_QUERY, RELATED_PRODUCTS_QUERY, PRODUCT_REVIEWS_QUERY } from "@/sanity/lib/queries";
 import { AddToCartBlock } from "./AddToCartBlock";
@@ -69,33 +69,25 @@ export default async function Product({
           href="/menu" 
           className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary/40 hover:text-primary transition-colors mb-8"
         >
-          <ArrowLeft size={16} /> Back to Menu
+          <IconArrowLeft size={16} /> Back to Menu
         </Link>
 
         {/* Product Split Section */}
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           
           {/* Left: Media Hero (Sticky) */}
-          <div className="lg:sticky lg:top-32 relative aspect-square lg:aspect-[4/5] overflow-hidden bg-primary/5 shadow-2xl rounded-none group">
-            {product.previewVideo || product.fullExperienceVideo ? (
-              <video
-                src={product.previewVideo || product.fullExperienceVideo}
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
-              />
-            ) : (
+          <div className="lg:sticky lg:top-32 aspect-square lg:aspect-[4/5] bg-primary/5 shadow-2xl rounded-none group">
+            <div className="relative w-full h-full overflow-hidden">
               <Image
                 src={product.image || "/placeholder-food.svg"}
                 alt={product.name}
                 fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover group-hover:scale-105 transition-transform duration-1000"
                 priority
               />
-            )}
-            
+            </div>
+
             {/* Subtle overlay gradient to ensure badge readability */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent pointer-events-none" />
 
@@ -106,7 +98,7 @@ export default async function Product({
               </div>
               {product.isSignature && (
                 <div className="backdrop-blur-md bg-[#C9A24A]/90 border border-[#C9A24A]/50 text-white px-5 py-2.5 text-[10px] sm:text-xs font-bold uppercase tracking-widest shadow-lg rounded-none flex items-center gap-2">
-                  <Flame size={14} className="text-white" /> Signature Dish
+                  <IconFlame size={14} className="text-white" /> Signature Dish
                 </div>
               )}
               {product.isSwaminarayan && (
@@ -121,22 +113,7 @@ export default async function Product({
           <ProductDetails product={product} />
         </div>
 
-        {/* Full Experience Video */}
-        {product.fullExperienceVideo && (
-          <div className="mt-20 md:mt-32 max-w-5xl mx-auto">
-            <h2 className="font-serif text-3xl md:text-5xl text-primary mb-10 text-center">
-              The full experience.
-            </h2>
-            <div className="relative aspect-video w-full overflow-hidden bg-black shadow-sm">
-              <video
-                src={product.fullExperienceVideo}
-                controls
-                playsInline
-                className="w-full h-full object-contain"
-              />
-            </div>
-          </div>
-        )}
+
 
         {/* You Might Also Like */}
         <div className="mt-32">

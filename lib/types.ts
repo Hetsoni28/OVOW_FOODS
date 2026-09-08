@@ -14,10 +14,13 @@ export type CheckoutCustomerDetails = {
   name: string;
   mobile: string;
   address: string;
-  instructions: string;
+  instructions?: string;
+  scheduleType: "asap" | "later";
+  scheduleDate?: string;
+  scheduleTime?: string;
+  deliveryMethod: "ovow" | "porter";
 };
 
 export type Details = CheckoutCustomerDetails;
 export type Errors = Partial<Record<keyof Details, string>>;
 export type PaymentMethod = "upi" | "cod";
-

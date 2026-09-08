@@ -1,6 +1,6 @@
 "use client";
 
-import { SlidersHorizontal } from "lucide-react";
+import { IconSlidersHorizontal } from "@/components/atoms/Icons";
 import { SearchBar } from "@/components/molecules/SearchBar";
 import type { Category } from "@/types";
 
@@ -64,7 +64,7 @@ export function MenuFilters({
       {/* Results Info */}
       <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-widest text-primary/50 mt-2">
         <div className="flex items-center gap-2">
-          <SlidersHorizontal size={14} />
+          <IconSlidersHorizontal size={14} />
           <span>
             {resultsCount} Item{resultsCount !== 1 && "s"}
           </span>

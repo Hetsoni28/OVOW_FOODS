@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useLayoutEffect } from "react";
-import { Download, X, Share } from "lucide-react";
+import { IconDownload, IconX, IconShare } from "@/components/atoms/Icons";
 import { createPortal } from "react-dom";
 
 const useIsomorphicLayoutEffect =
@@ -40,16 +40,16 @@ function InstallGuidePopup({
       {/* Card — max-height so it never hides behind nav bar on small phones */}
       <div className="relative w-full max-w-sm bg-[#0d2d20] rounded-2xl p-6 shadow-2xl border border-white/10 z-10 overflow-y-auto max-h-[85vh]">
         {/* X close button */}
-        <button
+        <button suppressHydrationWarning
           onClick={onClose}
           className="absolute top-4 right-4 text-white/50 hover:text-white"
         >
-          <X size={18} />
+          <IconX size={18} />
         </button>
 
         <div className="flex items-center gap-3 mb-5">
           <div className="w-10 h-10 bg-[#C9A24A]/20 flex items-center justify-center">
-            <Download size={18} className="text-[#C9A24A]" />
+            <IconDownload size={18} className="text-[#C9A24A]" />
           </div>
           <div>
             <p className="text-white font-bold text-sm">Install OVOW FOODS</p>
@@ -60,7 +60,7 @@ function InstallGuidePopup({
         <div className="space-y-4">
           {isIOS ? (
             <>
-              <Step n={1} title={<>Tap the Share button <Share size={14} className="text-[#C9A24A] inline" /></>} sub="At the bottom of your Safari browser" />
+              <Step n={1} title={<>Tap the Share button <IconShare size={14} className="text-[#C9A24A] inline" /></>} sub="At the bottom of your Safari browser" />
               <Step n={2} title='Tap "Add to Home Screen"' sub="Scroll down in the Share menu to find it" />
               <Step n={3} title='Tap "Add"' sub="OVOW FOODS will appear on your Home Screen!" />
             </>
@@ -75,13 +75,13 @@ function InstallGuidePopup({
 
         {/* Got it + Cancel buttons */}
         <div className="mt-6 flex gap-3">
-          <button
+          <button suppressHydrationWarning
             onClick={onClose}
             className="flex-1 border border-white/20 text-white/60 hover:text-white hover:border-white/40 font-semibold py-3 text-sm tracking-widest uppercase transition-colors"
           >
             Cancel
           </button>
-          <button
+          <button suppressHydrationWarning
             onClick={onClose}
             className="flex-1 bg-[#C9A24A] hover:bg-[#b8912e] text-white font-bold py-3 text-sm tracking-widest uppercase transition-colors"
           >
@@ -175,8 +175,8 @@ export function InstallAppButton() {
   if (isIOS) {
     return (
       <>
-        <button onClick={() => setShowPopup(true)} className={buttonCls}>
-          <Download size={14} /> Install App
+        <button suppressHydrationWarning onClick={() => setShowPopup(true)} className={buttonCls}>
+          <IconDownload size={14} /> Install App
         </button>
         {showPopup && <InstallGuidePopup isIOS onClose={() => setShowPopup(false)} />}
       </>
@@ -186,8 +186,8 @@ export function InstallAppButton() {
   // ── Android/Chrome native prompt ───────────────────────────────────────────
   if (installPrompt) {
     return (
-      <button onClick={handleAndroidInstall} className={buttonCls}>
-        <Download size={14} /> Install App
+      <button suppressHydrationWarning onClick={handleAndroidInstall} className={buttonCls}>
+        <IconDownload size={14} /> Install App
       </button>
     );
   }
@@ -197,8 +197,8 @@ export function InstallAppButton() {
     return (
       <>
         {/* Button is always visible; popup only opens on tap */}
-        <button onClick={() => setShowPopup(true)} className={buttonCls}>
-          <Download size={14} /> Install App
+        <button suppressHydrationWarning onClick={() => setShowPopup(true)} className={buttonCls}>
+          <IconDownload size={14} /> Install App
         </button>
         {showPopup && <InstallGuidePopup isIOS={false} onClose={() => setShowPopup(false)} />}
       </>

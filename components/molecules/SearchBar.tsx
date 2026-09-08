@@ -1,4 +1,4 @@
-import { Search, X } from "lucide-react";
+import { IconSearch, IconX } from "@/components/atoms/Icons";
 
 interface SearchBarProps {
   searchQuery: string;
@@ -16,7 +16,7 @@ export function SearchBar({ searchQuery, setSearchQuery }: SearchBarProps) {
         suppressHydrationWarning
         className="w-full bg-white border border-primary/10 pl-8 pr-8 py-2.5 text-sm font-medium text-primary focus:outline-none focus:border-[#C9A24A] transition-colors placeholder:text-primary/40 placeholder:font-normal"
       />
-      <Search
+      <IconSearch
         size={13}
         className="absolute left-2.5 top-1/2 -translate-y-1/2 text-primary/40 pointer-events-none"
       />
@@ -25,7 +25,7 @@ export function SearchBar({ searchQuery, setSearchQuery }: SearchBarProps) {
           onClick={() => setSearchQuery("")}
           className="absolute right-2.5 top-1/2 -translate-y-1/2 text-primary/40 hover:text-primary transition-colors"
         >
-          <X size={13} />
+          <IconX size={13} />
         </button>
       )}
     </div>

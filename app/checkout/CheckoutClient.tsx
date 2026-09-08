@@ -8,6 +8,7 @@ import { generateOrderRef } from "@/lib/order";
 import { buildCheckoutWhatsAppMessage } from "@/lib/whatsapp";
 import { COMPANY_CONFIG } from "@/lib/config";
 import { useOrderHistory } from "@/hooks/useOrderHistory";
+import { saveOrderToStorage } from "@/lib/storage";
 import { CheckoutEmptyState } from "@/components/organisms/CheckoutEmptyState";
 import { ProgressBar } from "@/components/organisms/ProgressBar";
 import { CheckoutStepDetails } from "@/components/organisms/CheckoutStepDetails";
@@ -22,7 +23,14 @@ export function CheckoutClient() {
   const [mounted, setMounted] = useState(false);
   
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
-  const [details, setDetails] = useState<Details>({ name: "", mobile: "", address: "", instructions: "" });
+  const [details, setDetails] = useState<Details>({ 
+    name: "", 
+    mobile: "", 
+    address: "", 
+    instructions: "",
+    scheduleType: "asap",
+    deliveryMethod: "porter",
+  });
   const [errors, setErrors] = useState<Errors>({});
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("upi");
   
@@ -37,6 +45,10 @@ export function CheckoutClient() {
     if (!details.name.trim()) e.name = "Name required";
     if (!details.mobile.trim() || !/^\d{10}$/.test(details.mobile)) e.mobile = "10 digits required";
     if (!details.address.trim()) e.address = "Address required";
+    if (details.scheduleType === "later") {
+      if (!details.scheduleDate) e.scheduleDate = "Date required";
+      if (!details.scheduleTime) e.scheduleTime = "Time required";
+    }
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -53,6 +65,48 @@ export function CheckoutClient() {
     setStep(2);
   };
 
+  const saveSnapshot = (method: "UPI" | "COD", confirmed: boolean) => {
+    const orderSnapshot = {
+      orderId,
+      createdAt: new Date().toISOString(),
+      customer: {
+        name: details.name,
+        phone: details.mobile,
+      },
+      delivery: {
+        address: details.address,
+        city: "Ahmedabad",
+        state: "Gujarat",
+        pincode: "XXXXXX",
+        instructions: details.instructions,
+        method: details.deliveryMethod === "porter" ? "PORTER" as const : "OVOW_FREE_DELIVERY" as const,
+      },
+      items: items.map(item => ({
+        productId: item._id || item.slug,
+        name: item.name,
+        quantity: item.quantity,
+        servingSize: item.servingSize,
+        unitPrice: item.price,
+        lineTotal: item.price * item.quantity
+      })),
+      pricing: {
+        subtotal: total,
+        deliveryFee: 0,
+        discount: 0,
+        tax: 0,
+        grandTotal: total
+      },
+      payment: {
+        method,
+        amount: total,
+        customerConfirmation: confirmed ? "CUSTOMER_MARKED_PAID" as const : "NOT_CONFIRMED" as const,
+        verification: "PENDING" as const,
+      },
+      orderStatus: "RECEIVED" as const
+    };
+    saveOrderToStorage(orderSnapshot);
+  };
+
   const handleProcessOrder = (isCod: boolean) => {
     addOrder({
       id: orderId,
@@ -62,6 +116,7 @@ export function CheckoutClient() {
     });
 
     if (isCod) {
+      saveSnapshot("COD", false);
       clearCart();
       setStep(4);
       const msg = buildCheckoutWhatsAppMessage(items, details, total, orderId);
@@ -72,6 +127,7 @@ export function CheckoutClient() {
   };
 
   const handleConfirmPayment = () => {
+    saveSnapshot("UPI", true);
     clearCart();
     setStep(4);
     const msg = buildCheckoutWhatsAppMessage(items, details, total, orderId);
@@ -99,7 +155,8 @@ export function CheckoutClient() {
               key="step1"
               details={details}
               errors={errors}
-              onChange={(k, v) => setDetails({ ...details, [k]: v })}
+              onChange={(k, v) => setDetails(prev => ({ ...prev, [k]: v }))}
+              onScheduleReset={() => setDetails(prev => ({ ...prev, scheduleType: "asap", scheduleDate: "", scheduleTime: "" }))}
               onNext={goToPayment}
             />
           )}

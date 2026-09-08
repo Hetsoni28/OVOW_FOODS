@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { client } from "@/sanity/lib/client";
 import { ALL_PRODUCTS_QUERY, ALL_CATEGORIES_QUERY } from "@/sanity/lib/queries";
 import type { Product, Category } from "@/types";
-
 import { LazyVideo } from "@/components/atoms/LazyVideo";
+import { DownloadMenuButton } from "@/components/atoms/DownloadMenuButton";
 
 export const metadata: Metadata = {
   title: "Menu",
@@ -72,6 +72,9 @@ export default async function Menu() {
           <p className="text-white/50 text-sm md:text-base max-w-md leading-relaxed">
             Curated cravings, crafted with love. Every dish tells a story.
           </p>
+          <div className="mt-6">
+            <DownloadMenuButton products={products} />
+          </div>
         </div>
 
         {/* Bottom fade into page */}

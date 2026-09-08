@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { fadeUp, staggerFast } from "@/lib/animations";
-import { Star } from "lucide-react";
+import { IconStar } from "@/components/atoms/Icons";
 import Link from "next/link";
 import { ReviewForm } from "@/components/organisms/ReviewForm";
 import { Button } from "@/components/atoms/Button";
@@ -65,10 +65,10 @@ export function ReviewsClient({ reviews }: { reviews: Review[] }) {
                 <div className="relative z-10">
                   <div className="flex gap-1 mb-6 text-[#C9A24A]">
                     {[...Array(review.rating)].map((_, idx) => (
-                      <Star key={idx} size={14} fill="currentColor" />
+                      <IconStar key={idx} size={14} fill="currentColor" />
                     ))}
                     {[...Array(5 - review.rating)].map((_, idx) => (
-                      <Star key={`empty-${idx}`} size={14} className="text-[#C9A24A]/30" />
+                      <IconStar key={`empty-${idx}`} size={14} className="text-[#C9A24A]/30" />
                     ))}
                   </div>
                   <p className="font-serif text-xl md:text-2xl leading-relaxed mb-8 text-primary/90">
