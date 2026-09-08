@@ -353,8 +353,9 @@ export function DownloadMenuButton({ products }: Props) {
         if (lower.includes("subji") || lower.includes("sabji")) return 1;
         if (lower.includes("biryani")) return 2;
         if (lower.includes("dal")) return 3;
-        if (lower.includes("dessert") || lower.includes("sweet")) return 4;
-        if (lower.includes("roti") || lower.includes("bread") || lower.includes("side") || lower.includes("raita")) return 5;
+        if (lower.includes("roti") || lower.includes("bread")) return 4;
+        if (lower.includes("dessert") || lower.includes("sweet")) return 5;
+        if (lower.includes("side") || lower.includes("said") || lower.includes("iatam") || lower.includes("raita")) return 6;
         return 99;
       };
 
