@@ -6,7 +6,6 @@ import { IconPlus, IconCheck, IconStar, IconFlame, IconChefHat } from "@/compone
 import { useState } from "react";
 import { Product } from "@/types";
 import { useCart } from "@/context/CartContext";
-import { useCart } from "@/context/CartContext";
 
 export function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
