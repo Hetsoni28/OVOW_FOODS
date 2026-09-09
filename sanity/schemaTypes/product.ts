@@ -68,6 +68,13 @@ export const productType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'thumbnail',
+      title: 'Product Thumbnail (for PDF Catalog)',
+      type: 'image',
+      options: { hotspot: true },
+      description: 'Upload a JPG/PNG photo of this dish. Used in the downloadable PDF catalog. Recommended: 800x533px (3:2 ratio).',
+    }),
+    defineField({
       name: 'isSpicy',
       title: 'Is Spicy?',
       type: 'boolean',

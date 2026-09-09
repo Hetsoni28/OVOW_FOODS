@@ -18,6 +18,7 @@ export interface Product {
   ingredients?: string;
   allergens?: string;
   previewVideo?: string;
+  thumbnailUrl?: string;
   video?: {
     asset?: {
       url: string;

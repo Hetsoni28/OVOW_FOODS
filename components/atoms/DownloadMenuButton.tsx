@@ -54,6 +54,38 @@ function logoToBase64(): Promise<string> {
   });
 }
 
+// ─── Thumbnail Image Loader (fast, reliable — no CORS issues with Sanity CDN) ─
+function loadImageFromUrl(url: string): Promise<string> {
+  return new Promise((resolve) => {
+    if (!url) { resolve(""); return; }
+    // Append w=800 for Sanity image CDN optimisation
+    const src = url.includes("cdn.sanity.io") ? `${url}?w=800&auto=format` : url;
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    const timeout = setTimeout(() => resolve(""), 8000);
+    img.onload = () => {
+      clearTimeout(timeout);
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = 400;
+        canvas.height = 266;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) { resolve(""); return; }
+        ctx.fillStyle = "#F9F6F0";
+        ctx.fillRect(0, 0, 400, 266);
+        // Cover-fit: fill canvas without letterboxing
+        const scale = Math.max(400 / img.naturalWidth, 266 / img.naturalHeight);
+        const dw = img.naturalWidth * scale;
+        const dh = img.naturalHeight * scale;
+        ctx.drawImage(img, (400 - dw) / 2, (266 - dh) / 2, dw, dh);
+        resolve(canvas.toDataURL("image/jpeg", 0.85));
+      } catch { resolve(""); }
+    };
+    img.onerror = () => { clearTimeout(timeout); resolve(""); };
+    img.src = src;
+  });
+}
+
 // ─── Video Frame Extractor ────────────────────────────────────────────────────
 async function extractVideoFrame(url: string): Promise<string> {
   if (!url) return "";
@@ -355,23 +387,38 @@ export function DownloadMenuButton({ products }: Props) {
       for (const p of products) {
         count++;
         setLoadingText(`Processing images (${count}/${products.length})...`);
-        const videoUrl = p.video?.asset?.url || p.previewVideo;
         
+        // Priority 1: Use static thumbnail image (fast, reliable, no CORS issues)
+        if (p.thumbnailUrl) {
+          const imgB64 = await loadImageFromUrl(p.thumbnailUrl);
+          if (imgB64) {
+            productImages[p._id!] = imgB64;
+            continue; // Got a good image, skip video processing
+          }
+        }
+        
+        // Priority 2: Extract a frame from the product video (slower, may fail on CORS)
+        const videoUrl = p.video?.asset?.url || p.previewVideo;
         if (videoUrl) {
           const imgB64 = await extractVideoFrame(videoUrl);
           if (imgB64) {
             productImages[p._id!] = imgB64;
+            continue;
           }
         }
+        
+        // Priority 3: Branded OVOW placeholder (always works)
+        // (filled in the next step below)
       }
 
-      // 2. Guarantee no blank images by generating an elegant branded placeholder
+      // Guarantee no blank images — use the elegant branded placeholder for anything still missing
       const placeholderB64 = await generatePlaceholder(logoB64);
       for (const p of products) {
         if (!productImages[p._id!]) {
           productImages[p._id!] = placeholderB64;
         }
       }
+
 
       const doc = new jsPDF({ unit: "mm", format: "a4" });
       const pdf = new OvowPDF(doc);

@@ -19,6 +19,7 @@ export const ALL_PRODUCTS_QUERY = groq`*[_type == "product"] | order(sortOrder a
   available,
   "category": category->name,
   "previewVideo": video.asset->url,
+  "thumbnailUrl": thumbnail.asset->url,
   isSpicy,
   isSwaminarayan,
   isBestSeller,
@@ -40,6 +41,7 @@ export const PRODUCT_BY_SLUG_QUERY = groq`*[_type == "product" && slug.current =
   available,
   "category": category->name,
   "previewVideo": video.asset->url,
+  "thumbnailUrl": thumbnail.asset->url,
   isSpicy,
   isSwaminarayan,
   isBestSeller,
@@ -68,6 +70,7 @@ export const HOME_FEATURED_PRODUCTS_QUERY = groq`*[_type == "product" && availab
   available,
   "category": category->name,
   "previewVideo": video.asset->url,
+  "thumbnailUrl": thumbnail.asset->url,
   signature,
   isBestSeller,
   servingSize
