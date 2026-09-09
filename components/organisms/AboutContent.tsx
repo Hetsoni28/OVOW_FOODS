@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, Variants } from "framer-motion";
+import Link from "next/link";
 import { IconCheck, IconChefHat, IconShoppingBag, IconPhone, IconFlame } from "@/components/atoms/Icons";
 
 const staggerFast: Variants = {
@@ -101,9 +102,12 @@ export function AboutContent() {
               ))}
             </ul>
             <p className="pt-4 font-bold text-primary/90">For Catering & Bulk Orders, Advance Booking is Recommended.</p>
-            <p className="flex items-center gap-2 text-sm font-bold tracking-widest uppercase text-primary/60">
+            <p className="flex items-center gap-2 text-sm font-bold tracking-widest uppercase text-primary/60 mb-6">
               <IconPhone size={16} /> Catering Enquiries: <a href="https://wa.me/917567566214" className="text-[#C9A24A] hover:underline">756 756 6214</a>
             </p>
+            <Link href="/party-bulk-orders" className="inline-flex items-center justify-center bg-primary text-white px-6 py-3 text-xs font-bold tracking-widest uppercase hover:bg-[#C9A24A] transition-colors shadow-sm">
+              Explore Bulk Orders
+            </Link>
           </motion.div>
         </motion.section>
 
