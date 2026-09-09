@@ -12,6 +12,7 @@ import { FloatingCartBar } from "@/components/layout/FloatingCartBar";
 import { ErrorBoundary } from "@/components/layout/ErrorBoundary";
 import { MotionProvider } from "@/components/layout/MotionProvider";
 import { SmoothScrollProvider } from "@/components/layout/SmoothScrollProvider";
+import { HideOnStudio } from "@/components/layout/HideOnStudio";
 
 import { SplashScreen } from "@/components/organisms/SplashScreen";
 
@@ -159,19 +160,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
         <SmoothScrollProvider>
-          <SplashScreen />
+          <HideOnStudio>
+            <SplashScreen />
+          </HideOnStudio>
           <MotionProvider>
             <CartProvider>
-              <Navbar />
-              <Breadcrumbs />
-              <CartDrawer />
+              <HideOnStudio>
+                <Navbar />
+                <Breadcrumbs />
+                <CartDrawer />
+              </HideOnStudio>
               <ErrorBoundary>
                 <main className="flex-1 pb-16 md:pb-0">{children}</main>
-                <Footer />
+                <HideOnStudio>
+                  <Footer />
+                </HideOnStudio>
               </ErrorBoundary>
-              <FloatingCartBar />
-              <MobileBottomBar />
-              <FloatingWhatsApp />
+              <HideOnStudio>
+                <FloatingCartBar />
+                <MobileBottomBar />
+                <FloatingWhatsApp />
+              </HideOnStudio>
             </CartProvider>
           </MotionProvider>
         </SmoothScrollProvider>
