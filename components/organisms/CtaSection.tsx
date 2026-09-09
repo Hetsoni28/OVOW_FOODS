@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/atoms/Button";
 import { motion } from "framer-motion";
 
 export function CtaSection() {
@@ -44,12 +43,12 @@ export function CtaSection() {
                   suppressHydrationWarning
                   className="flex-1 border border-white/20 bg-transparent px-6 py-4 text-sm text-white placeholder:text-white/30 focus:border-tertiary focus:outline-none transition-colors text-center sm:text-left"
                 />
-                <Button
+                <Link
                   href="/party-bulk-orders"
-                  className="whitespace-nowrap px-10 py-4 text-xs font-bold uppercase tracking-widest bg-[#C9A24A] text-white hover:bg-white hover:text-[#0B2118] border-none"
+                  className="inline-flex items-center justify-center whitespace-nowrap px-10 py-4 text-xs font-bold uppercase tracking-widest bg-[#C9A24A] text-white hover:bg-white hover:text-[#0B2118] transition-colors"
                 >
                   Inquire Now
-                </Button>
+                </Link>
               </div>
             </motion.div>
           </div>
