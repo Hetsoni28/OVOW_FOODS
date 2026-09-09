@@ -31,6 +31,7 @@ export function AddToCartBlock({ product }: { product: Product }) {
 
     setTimeout(() => {
       setAdded(false);
+      setQuantity(1);
       openCart();
     }, 800);
   };
