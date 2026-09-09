@@ -118,9 +118,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Raw splash cover — green background before JS loads, prevents hero flash on first visit. */}
         <div
           id="splash-cover"
+          suppressHydrationWarning
           style={{
             position: "fixed",
-            inset: 0,
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
             zIndex: 9998,
             backgroundColor: "#0d2d20",
             pointerEvents: "none",
