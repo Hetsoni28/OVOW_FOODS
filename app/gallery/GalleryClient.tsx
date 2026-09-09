@@ -7,6 +7,7 @@ import { GalleryHeader } from "@/components/organisms/GalleryHeader";
 import { GalleryFilters } from "@/components/organisms/GalleryFilters";
 import { GalleryVideoItem } from "@/components/organisms/GalleryVideoItem";
 import { GalleryLightbox } from "@/components/organisms/GalleryLightbox";
+import { CustomerPhotoWall } from "@/components/organisms/CustomerPhotoWall";
 import type { GalleryMedia } from "@/lib/types";
 
 const CATEGORIES = ["All", "Food", "Events", "Packaging", "Behind the Scenes"];
@@ -45,6 +46,9 @@ export function GalleryClient({ initialImages }: { initialImages: GalleryMedia[]
           No videos found in this category yet.
         </motion.div>
       )}
+
+      {/* UGC Wall */}
+      <CustomerPhotoWall />
 
       <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="mt-40 mb-20 text-center">
         <p className="font-serif text-3xl md:text-5xl mb-8">Ready to taste it?</p>

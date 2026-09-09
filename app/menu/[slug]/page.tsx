@@ -9,6 +9,7 @@ import { ProductCard } from "@/components/molecules/ProductCard";
 import { RelatedProductsRow } from "@/components/organisms/RelatedProductsRow";
 import { ProductDetails } from "@/components/organisms/ProductDetails";
 import { ProductReviews } from "@/components/organisms/ProductReviews";
+import { ReminderButton } from "@/components/organisms/ReminderModal";
 import type { Metadata } from "next";
 import type { Product } from "@/types";
 
@@ -140,6 +141,13 @@ export default async function Product({
           {/* Right: Product Details */}
           <ProductDetails product={product} />
         </div>
+
+        {/* Pre-Order Reminder Button */}
+        {!isSoldOut && (
+          <div className="mt-10 flex justify-center">
+            <ReminderButton productName={product.name} productPrice={product.price} />
+          </div>
+        )}
 
         {/* You Might Also Like */}
         <RelatedProductsRow products={relatedProducts} allProducts={allProducts} />

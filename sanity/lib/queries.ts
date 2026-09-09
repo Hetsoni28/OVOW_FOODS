@@ -25,7 +25,9 @@ export const ALL_PRODUCTS_QUERY = groq`*[_type == "product"] | order(sortOrder a
   isBestSeller,
   signature,
   size,
-  servingSize
+  servingSize,
+  "avgRating": math::avg(*[_type == "review" && isApproved == true && product._ref == ^._id].rating),
+  "reviewCount": count(*[_type == "review" && isApproved == true && product._ref == ^._id])
 }`
 
 // Full detail view: fetch everything

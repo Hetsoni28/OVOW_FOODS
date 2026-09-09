@@ -93,6 +93,19 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
             {product.name}
           </h3>
           
+          {/* Star Rating */}
+          {(product as any).avgRating && (product as any).reviewCount > 0 && (
+            <div className="flex items-center gap-1.5 mb-2">
+              <span className="text-[#C9A24A] text-xs">★</span>
+              <span className="text-xs font-bold text-primary tabular-nums">
+                {Number((product as any).avgRating).toFixed(1)}
+              </span>
+              <span className="text-[10px] text-primary/40">
+                ({(product as any).reviewCount})
+              </span>
+            </div>
+          )}
+          
           {product.description && (
             <p className="hidden md:block text-xs md:text-sm text-primary/60 line-clamp-2 leading-relaxed mb-4">
               {product.description}

@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { IconSlidersHorizontal, IconX } from "@/components/atoms/Icons";
 import { ProductCard } from "@/components/molecules/ProductCard";
+import { SmartSearchBar } from "@/components/molecules/SmartSearchBar";
 import { MenuFilterBar } from "@/components/organisms/MenuFilterBar";
 import { MenuEmptyState } from "@/components/organisms/MenuEmptyState";
 import type { Product, Category } from "@/types";
@@ -138,14 +139,21 @@ export function MenuClient({
               Swaminarayan Only
             </button>
           </div>
-          {(searchQuery || activeCategory !== "All" || swaminarayanOnly) && (
-            <button suppressHydrationWarning
-              onClick={handleClear}
-              className="text-[10px] uppercase tracking-widest font-bold text-[#C9A24A] hover:text-primary transition-colors flex items-center gap-1.5 self-start sm:self-center"
-            >
-              <IconX size={12} /> Clear filters
-            </button>
-          )}
+          <div className="flex items-center gap-3">
+            {(searchQuery || activeCategory !== "All" || swaminarayanOnly) && (
+              <button suppressHydrationWarning
+                onClick={handleClear}
+                className="text-[10px] uppercase tracking-widest font-bold text-[#C9A24A] hover:text-primary transition-colors flex items-center gap-1.5 self-start sm:self-center"
+              >
+                <IconX size={12} /> Clear filters
+              </button>
+            )}
+            <SmartSearchBar
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder="Search biryani, paneer..."
+            />
+          </div>
         </div>
 
         {filteredProducts.length > 0 ? (
