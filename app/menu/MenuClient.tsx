@@ -152,24 +152,7 @@ export function MenuClient({
           <>
             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8 lg:gap-12">
               {paginatedProducts.map((p) => {
-                let fallbackVideo = undefined;
-                if (!p.previewVideo) {
-                  // 1. Find another product in the exact same category that DOES have a video
-                  let relatedProduct = products.find(
-                    (rp) => rp.category === p.category && rp.previewVideo
-                  );
-                  
-                  // 2. If no video in this category, just find ANY video from any product
-                  if (!relatedProduct) {
-                    relatedProduct = products.find((rp) => rp.previewVideo);
-                  }
-
-                  if (relatedProduct) {
-                    fallbackVideo = relatedProduct.previewVideo;
-                  }
-                }
-
-                return <ProductCard key={p.slug} product={p} fallbackVideo={fallbackVideo} />;
+                return <ProductCard key={p.slug} product={p} fallbackVideo={undefined} />;
               })}
             </div>
             

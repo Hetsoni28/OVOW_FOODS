@@ -115,6 +115,40 @@ async function extractVideoFrame(url: string): Promise<string> {
   });
 }
 
+// ─── Placeholder Generator ────────────────────────────────────────────────────
+async function generatePlaceholder(logoB64: string): Promise<string> {
+  return new Promise((resolve) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 400;
+    canvas.height = 266;
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      // Dark green brand color
+      ctx.fillStyle = "#0B2118";
+      ctx.fillRect(0, 0, 400, 266);
+      
+      if (logoB64) {
+        const img = new Image();
+        img.onload = () => {
+          // Draw logo at 100x100 in center
+          const dw = 100;
+          const dh = 100;
+          const dx = (400 - dw) / 2;
+          const dy = (266 - dh) / 2;
+          ctx.drawImage(img, dx, dy, dw, dh);
+          resolve(canvas.toDataURL("image/jpeg", 0.8));
+        };
+        img.onerror = () => resolve(canvas.toDataURL("image/jpeg", 0.8));
+        img.src = logoB64;
+      } else {
+        resolve(canvas.toDataURL("image/jpeg", 0.8));
+      }
+    } else {
+      resolve("");
+    }
+  });
+}
+
 // ─── PDF Builder class ────────────────────────────────────────────────────────
 class OvowPDF {
   private doc: import("jspdf").jsPDF;
@@ -316,26 +350,13 @@ export function DownloadMenuButton({ products }: Props) {
       const productImages: Record<string, string> = {};
       let count = 0;
       
+      const logoB64 = await logoToBase64();
+      
       for (const p of products) {
         count++;
         setLoadingText(`Processing images (${count}/${products.length})...`);
-        let videoUrl = p.video?.asset?.url || p.previewVideo;
+        const videoUrl = p.video?.asset?.url || p.previewVideo;
         
-        // 1. Fallback for missing video URL
-        if (!videoUrl) {
-          const pCat = typeof p.category === "string" ? p.category : p.category?.name;
-          let relatedProduct = products.find(rp => {
-            const rpCat = typeof rp.category === "string" ? rp.category : rp.category?.name;
-            return rpCat === pCat && (rp.video?.asset?.url || rp.previewVideo);
-          });
-          if (!relatedProduct) {
-            relatedProduct = products.find(rp => rp.video?.asset?.url || rp.previewVideo);
-          }
-          if (relatedProduct) {
-            videoUrl = relatedProduct.video?.asset?.url || relatedProduct.previewVideo;
-          }
-        }
-
         if (videoUrl) {
           const imgB64 = await extractVideoFrame(videoUrl);
           if (imgB64) {
@@ -344,26 +365,13 @@ export function DownloadMenuButton({ products }: Props) {
         }
       }
 
-      // 2. Guarantee no blank images (if extractVideoFrame failed due to CORS/timeout)
-      const anyGoodImage = Object.values(productImages).find(img => img.length > 100);
+      // 2. Guarantee no blank images by generating an elegant branded placeholder
+      const placeholderB64 = await generatePlaceholder(logoB64);
       for (const p of products) {
         if (!productImages[p._id!]) {
-          const pCat = typeof p.category === "string" ? p.category : p.category?.name;
-          const sibling = products.find(rp => {
-            const rpCat = typeof rp.category === "string" ? rp.category : rp.category?.name;
-            return rpCat === pCat && productImages[rp._id!];
-          });
-          
-          if (sibling && productImages[sibling._id!]) {
-            productImages[p._id!] = productImages[sibling._id!];
-          } else if (anyGoodImage) {
-            productImages[p._id!] = anyGoodImage;
-          }
+          productImages[p._id!] = placeholderB64;
         }
       }
-
-      setLoadingText("Building Catalog...");
-      const logoB64 = await logoToBase64();
 
       const doc = new jsPDF({ unit: "mm", format: "a4" });
       const pdf = new OvowPDF(doc);
