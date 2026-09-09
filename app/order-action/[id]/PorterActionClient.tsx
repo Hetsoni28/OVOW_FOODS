@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { IconCheckCircle, IconTruck, IconAlertCircle, IconCopy, IconNavigation, IconLoader, IconExternalLink } from "@/components/atoms/Icons";
+import { IconCheckCircle, IconTruck, IconAlertCircle, IconCopy, IconNavigation, IconLoader, IconExternalLink, IconMessageSquare } from "@/components/atoms/Icons";
 
 interface PorterData {
   order_id: string;
@@ -14,7 +14,7 @@ interface PorterData {
   estimated_pickup: string;
 }
 
-export function PorterActionClient({ orderRef, phone }: { orderRef: string; phone?: string }) {
+export function PorterActionClient({ orderRef, phone, customerName }: { orderRef: string; phone?: string; customerName?: string }) {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [data, setData] = useState<PorterData | null>(null);
   const [copiedPhone, setCopiedPhone] = useState(false);
@@ -80,21 +80,62 @@ export function PorterActionClient({ orderRef, phone }: { orderRef: string; phon
             </div>
           </div>
 
-          <a 
-            href={data.tracking_url}
-            target="_blank"
-            rel="noreferrer"
-            className="w-full bg-green-600 hover:bg-green-700 text-white p-4 rounded-lg font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-2 transition-colors"
-          >
-            Track Delivery <IconExternalLink size={14} />
-          </a>
+          <div className="space-y-2 mt-4">
+            <a 
+              href={data.tracking_url}
+              target="_blank"
+              rel="noreferrer"
+              className="w-full bg-green-600 hover:bg-green-700 text-white p-4 rounded-lg font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-2 transition-colors"
+            >
+              Track Delivery <IconExternalLink size={14} />
+            </a>
+            
+            {/* Notify Customer with Tracking Link */}
+            {phone && (
+              <button
+                onClick={() => handleNotifyCustomer(data.tracking_url)}
+                className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white p-4 rounded-lg font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-2 transition-colors"
+              >
+                <IconMessageSquare size={16} />
+                Send Tracking to Customer
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );
   }
 
+  const handleNotifyCustomer = (trackingUrl?: string) => {
+    if (!phone) return;
+    const msg = [
+      `✨ *OVOW FOODS | ORDER CONFIRMED* ✨`,
+      `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+      `Hello ${customerName || "there"}! 👋`,
+      ``,
+      `Great news! We have received your order *${orderRef}* and it has been *ACCEPTED*! 🟢`,
+      ``,
+      `Our chefs are preparing your world-class meal right now. 👨‍🍳🔥`,
+      trackingUrl ? `\n*🚚 TRACK YOUR DELIVERY:*\n${trackingUrl}\n` : `We will deliver it to you shortly.`,
+      ``,
+      `Thank you for choosing OVOW FOODS! 🌿`
+    ].join("\n");
+    
+    window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`, "_blank");
+  };
+
   return (
     <div className="pt-4 space-y-3">
+      {/* Accept & Notify Customer Button */}
+      {phone && (
+        <button
+          onClick={() => handleNotifyCustomer()}
+          className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white p-4 rounded-xl font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 transition-colors shadow-lg shadow-[#25D366]/20"
+        >
+          <IconMessageSquare size={18} />
+          Accept Order & Notify Customer
+        </button>
+      )}
       {/* Copy phone button */}
       {phone && (
         <button

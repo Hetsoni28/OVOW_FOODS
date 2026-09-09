@@ -92,8 +92,8 @@ export default async function OrderActionPage({
             </div>
           </div>
 
-          {/* Interactive Porter booking — client component */}
-          <PorterActionClient orderRef={orderRef} phone={orderData.p} />
+          {/* Interactive Actions — client component */}
+          <PorterActionClient orderRef={orderRef} phone={orderData.p} customerName={orderData.n} />
 
         </div>
       </div>
