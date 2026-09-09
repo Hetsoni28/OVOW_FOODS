@@ -64,24 +64,30 @@ export function Footer() {
             OVOW FOODS
           </h2>
         </div>
-        <div className="flex flex-wrap justify-center gap-6 text-sm opacity-70">
-          <Link href="/about" className="hover:opacity-100 transition-opacity">
-            About
+        <div className="flex flex-wrap justify-center gap-8 text-sm opacity-80 uppercase tracking-widest font-medium">
+          <Link href="/about" className="hover:text-[#C9A24A] hover:opacity-100 transition-colors">
+            About Us
           </Link>
-          <Link href="/menu" className="hover:opacity-100 transition-opacity">
-            Menu
+          <Link href="/privacy-policy" className="hover:text-[#C9A24A] hover:opacity-100 transition-colors">
+            Privacy Policy
           </Link>
-          <Link href="/gallery" className="hover:opacity-100 transition-opacity">
-            Gallery
+          <Link href="/terms-and-conditions" className="hover:text-[#C9A24A] hover:opacity-100 transition-colors">
+            Terms & Conditions
           </Link>
-          <Link href="/reviews" className="hover:opacity-100 transition-opacity">
-            Reviews
+          <Link href="/contact" className="hover:text-[#C9A24A] hover:opacity-100 transition-colors">
+            Contact Us
           </Link>
-          <Link href="/party-bulk-orders" className="hover:opacity-100 transition-opacity">
-            Bulk Order
+        </div>
+
+        <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 mt-12 w-full max-w-4xl mx-auto px-4">
+          <Link href="/menu" className="flex-1 min-w-[200px] bg-[#C9A24A] text-white px-6 py-4 text-xs font-bold tracking-widest uppercase hover:bg-white hover:text-[#0B2118] transition-colors shadow-sm border border-[#C9A24A]">
+            Order Now
           </Link>
-          <Link href="/contact" className="hover:opacity-100 transition-opacity">
-            Contact
+          <Link href="/menu" className="flex-1 min-w-[200px] border border-white/30 text-white px-6 py-4 text-xs font-bold tracking-widest uppercase hover:bg-white hover:text-[#0B2118] hover:border-white transition-colors shadow-sm">
+            Pre-Order Now
+          </Link>
+          <Link href="/party-bulk-orders" className="flex-1 min-w-[200px] border border-white/30 text-white px-6 py-4 text-xs font-bold tracking-widest uppercase hover:bg-white hover:text-[#0B2118] hover:border-white transition-colors shadow-sm">
+            Catering / Bulk Order
           </Link>
         </div>
       </div>
