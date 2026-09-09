@@ -53,7 +53,7 @@ export function Navbar() {
     >
       {/* Background Gradient for Transparent State — Ensures readability over bright images */}
       <div 
-        className={`absolute top-0 left-0 right-0 h-[160px] bg-gradient-to-b from-black/80 via-black/30 to-transparent -z-10 transition-opacity duration-300 pointer-events-none ${
+        className={`absolute top-0 left-0 right-0 h-[160px] bg-gradient-to-b from-primary/90 via-primary/50 to-primary/0 -z-10 transition-opacity duration-300 pointer-events-none ${
           isTransparent ? "opacity-100" : "opacity-0"
         }`} 
         aria-hidden="true" 
