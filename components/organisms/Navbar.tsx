@@ -39,13 +39,13 @@ export function Navbar() {
   }, [count, mounted]);
 
   const isHome = pathname === "/";
-  const isTransparent = isHome && !isScrolled;
+  const isMenu = pathname === "/menu";
+  const isDarkHero = isHome || isMenu;
+  const isTransparent = isDarkHero && !isScrolled;
 
   return (
     <nav suppressHydrationWarning
-      className={`w-full z-50 transition-all duration-300 ${
-        isHome ? "fixed top-0" : "sticky top-0"
-      } ${
+      className={`w-full z-50 transition-all duration-300 fixed top-0 ${
         isTransparent
           ? "bg-transparent text-white border-transparent shadow-none"
           : "bg-[#F9F6F0] text-primary border-b border-primary/10 shadow-sm"

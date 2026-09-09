@@ -62,8 +62,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
-        {/* Preload hero video — browser starts downloading immediately with page HTML */}
-        <link rel="preload" as="video" href="/videos/hero-bg.mp4" type="video/mp4" />
+        {/* Preload hero images — browser starts downloading immediately with page HTML to prevent dark flashes */}
+        <link rel="preload" as="image" href="/images/hero-bg-poster.jpg" />
+        <link rel="preload" as="image" href="/images/hero-poster.jpg" />
         {/* Preload logo — ensures splash screen logo shows instantly, zero blank flash */}
         <link rel="preload" as="image" href="/logo/ovow-foods-logo.png" />
         <script
