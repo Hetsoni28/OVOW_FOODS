@@ -5,21 +5,18 @@ import { COMPANY_CONFIG } from "./config";
  * Standard UPI deep-link format per NPCI spec.
  */
 export function buildUpiUri(amount: number, orderRef: string): string {
-  // UPI apps are notoriously strict. URLSearchParams encodes '@' as '%40'
-  // and spaces as '+', which causes apps like GPay to drop the intent completely.
-  // We must leave 'pa' unencoded (so '@' remains) and use '%20' for spaces.
+  // We must use raw string concatenation because URLSearchParams encodes '@' as '%40'
+  // which breaks many UPI apps.
+  // We MUST NOT include 'mc' or 'tr' because for merchant accounts (@okbizaxis), 
+  // GPay will expect a cryptographic 'sign' parameter if it sees 'mc'. If missing, 
+  // it blocks auto-filling the amount for security.
   const pa = COMPANY_CONFIG.upiId.trim();
   const pn = encodeURIComponent("OVOW FOODS");
-  const am = amount.toFixed(2); // UPI requires 2 decimal places
+  const am = amount.toFixed(2);
   const cu = "INR";
   const tn = encodeURIComponent(`Order ${orderRef}`);
-  
-  // For Merchant UPI IDs (like @okbizaxis), many UPI apps (GPay, PhonePe) will refuse 
-  // to pre-fill the amount unless 'mc' (Merchant Code) and 'tr' (Transaction Ref) are provided.
-  const mc = "5812"; // Standard MCC for Restaurants/Eateries
-  const tr = encodeURIComponent(orderRef);
 
-  return `upi://pay?pa=${pa}&pn=${pn}&mc=${mc}&tr=${tr}&am=${am}&cu=${cu}&tn=${tn}`;
+  return `upi://pay?pa=${pa}&pn=${pn}&am=${am}&cu=${cu}&tn=${tn}`;
 }
 
 /**
