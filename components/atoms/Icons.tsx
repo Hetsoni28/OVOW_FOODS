@@ -72,10 +72,38 @@ export function IconCheckCircle({ size = 20, className, ...p }: IconProps) {
 export function IconChili({ size = 20, className, ...p }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} {...p}>
-      {/* Green Stem */}
-      <path d="M14 4C14 4 14.5 2.5 16 2" stroke="#2E7D4F" strokeWidth="2" strokeLinecap="round" />
-      {/* Red Body */}
-      <path d="M13 6C13 6 10 4 8 5C5 6 4 9 5 13C6 18 10 21 16 22C19 22.5 21 20 20 17C18.5 13 15 10 13 6Z" fill="#DC2626" />
+      {/* Curved green stem */}
+      <path
+        d="M12 4C12 4 12 2.5 13.5 2C14.5 1.5 15.5 2 15.5 2"
+        stroke="#16a34a"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        fill="none"
+      />
+      {/* Green calyx / cap at base of stem */}
+      <path
+        d="M10.5 6.5C10.5 6.5 11.5 5 13 5C13.8 5 14.5 5.5 14.5 5.5"
+        stroke="#16a34a"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        fill="none"
+      />
+      {/* Red chili body - elongated curved pepper shape pointing down-right */}
+      <path
+        d="M13 6C13.5 6 14.5 6.5 15 7.5C16 9.5 16 12 15 14.5C14 17 12.5 19 11 20C9.5 21 8 21 7.5 20C7 19 7.5 17.5 9 16C10.5 14.5 11.5 12.5 11.5 10.5C11.5 8.5 11 7 11 7C11 7 12 6 13 6Z"
+        fill="#dc2626"
+        stroke="#b91c1c"
+        strokeWidth="0.5"
+      />
+      {/* Highlight line for realism */}
+      <path
+        d="M12.5 8C12.5 8 13.5 9.5 13.5 12"
+        stroke="#ef4444"
+        strokeWidth="0.8"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.7"
+      />
     </svg>
   );
 }
@@ -576,15 +604,6 @@ export function IconTrash({ size = 20, className, ...p }: IconProps) {
   );
 }
 
-export function IconArrowRight({ size = 20, className, ...p }: IconProps) {
-  return (
-    <svg {...defaults(size)} className={className} {...p}>
-      <line x1="5" y1="12" x2="19" y2="12" />
-      <polyline points="12 5 19 12 12 19" />
-    </svg>
-  );
-}
-
 export function IconSparkles({ size = 20, className, ...p }: IconProps) {
   return (
     <svg {...defaults(size)} className={className} {...p}>
@@ -594,4 +613,3 @@ export function IconSparkles({ size = 20, className, ...p }: IconProps) {
     </svg>
   );
 }
-
