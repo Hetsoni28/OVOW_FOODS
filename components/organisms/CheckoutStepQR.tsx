@@ -126,30 +126,34 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
             </div>
           </div>
 
-          {/* Action buttons */}
-          <div className="flex gap-4">
-            <a
-              href={upiUri}
-              className="flex-1 bg-white border-2 border-primary text-primary py-3.5 text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-colors text-center"
-            >
-              Open UPI App
-            </a>
-            <button suppressHydrationWarning
-              onClick={onConfirmPayment}
-              className="flex-1 bg-[#C9A24A] text-white py-3.5 text-xs font-bold uppercase tracking-widest hover:bg-[#0B2118] transition-colors shadow-lg shadow-[#0B2118]/20"
-            >
-              ✓ I Have Paid
-            </button>
-          </div>
-
           {/* Warning */}
-          <div className="flex items-start gap-3 bg-red-50 p-4 border border-red-100">
-            <IconAlertTriangle size={18} className="text-red-500 shrink-0 mt-0.5" />
-            <p className="text-xs text-red-800 leading-relaxed">
-              <strong>Do not close this page</strong> until you click &ldquo;I Have Paid&rdquo; after successful payment.
+          <div className="flex flex-col gap-3 bg-red-50 p-4 border border-red-100 rounded-lg">
+            <div className="flex items-start gap-3">
+              <IconAlertTriangle size={18} className="text-red-500 shrink-0 mt-0.5" />
+              <p className="text-xs text-red-800 leading-relaxed font-bold uppercase tracking-wider">
+                📸 Screenshot Compulsory!
+              </p>
+            </div>
+            <p className="text-xs text-red-700 leading-relaxed pl-7">
+              You <strong>must</strong> take a screenshot of your successful payment. You will need to attach this screenshot in the WhatsApp message on the next step to confirm your order.
             </p>
           </div>
 
+          {/* Action buttons */}
+          <div className="flex gap-4 pt-2">
+            <a
+              href={upiUri}
+              className="flex-1 flex flex-col items-center justify-center bg-white border-2 border-primary text-primary py-3 px-2 text-xs font-bold tracking-wider hover:bg-primary hover:text-white transition-colors text-center"
+            >
+              <span>1. Open UPI App</span>
+            </a>
+            <button suppressHydrationWarning
+              onClick={onConfirmPayment}
+              className="flex-1 flex flex-col items-center justify-center bg-[#C9A24A] text-white py-3 px-2 text-xs font-bold tracking-wider hover:bg-[#0B2118] transition-colors shadow-lg shadow-[#0B2118]/20"
+            >
+              <span>2. I Have Screenshot</span>
+            </button>
+          </div>
         </motion.div>
       </div>
     </motion.div>

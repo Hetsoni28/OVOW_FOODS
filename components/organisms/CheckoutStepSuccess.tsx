@@ -48,10 +48,10 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
         
         <button suppressHydrationWarning
           onClick={() => handleSendWhatsApp(false)}
-          className="w-full flex items-center justify-center gap-3 bg-[#25D366] text-white px-8 py-5 text-xs font-bold uppercase tracking-[0.2em] hover:bg-[#1DA851] transition-colors shadow-lg shadow-[#25D366]/20"
+          className="w-full flex items-center justify-center gap-3 bg-[#25D366] text-white px-6 py-5 text-xs font-bold uppercase tracking-[0.1em] hover:bg-[#1DA851] transition-colors shadow-lg shadow-[#25D366]/20"
         >
-          <WhatsAppIcon className="w-5 h-5" />
-          Send Receipt on WhatsApp
+          <WhatsAppIcon className="w-5 h-5 flex-shrink-0" />
+          <span>Send Order & Attach Screenshot</span>
         </button>
         
         <Link href="/menu" className="w-full flex items-center justify-center gap-3 bg-transparent border-2 border-primary/20 text-primary px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] hover:bg-primary/5 transition-colors">
