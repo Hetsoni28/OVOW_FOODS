@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { SearchBar } from "@/components/molecules/SearchBar";
 import type { Category } from "@/types";
 
 interface MenuFilterBarProps {
@@ -33,11 +32,6 @@ export function MenuFilterBar({ categories, activeCategory, setActiveCategory, s
   return (
     <div className="sticky top-[73px] md:top-[81px] z-40 bg-[#F8F4EA]/95 backdrop-blur-xl border-b border-primary/5 py-4 px-4 md:px-8 shadow-sm">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center gap-4">
-        {/* Search */}
-        <div className="w-full md:w-64 shrink-0">
-          <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-        </div>
-
         {/* Custom Select Dropdown */}
         <div className="relative w-full md:w-80" ref={dropdownRef}>
           <button suppressHydrationWarning
