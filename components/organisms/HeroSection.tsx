@@ -8,7 +8,7 @@ import { LazyVideo } from "@/components/atoms/LazyVideo";
 
 export function HeroSection() {
   return (
-    <section className="relative text-white text-center min-h-[85vh] flex flex-col pt-[140px] md:pt-[180px] items-center overflow-hidden bg-primary">
+    <section className="relative text-white text-center min-h-screen flex items-center justify-center overflow-hidden bg-primary">
 
       {/*
         TWO-LAYER BACKGROUND — 100% reliable on all devices:
@@ -40,7 +40,7 @@ export function HeroSection() {
       <div className="absolute inset-0 bg-black/50 z-[2]" />
 
       <motion.div
-        className="container-x relative z-10 flex flex-col items-center pb-24"
+        className="container-x relative z-10 flex flex-col items-center pt-24 pb-32"
         variants={staggerFast}
         initial="hidden"
         animate="visible"
