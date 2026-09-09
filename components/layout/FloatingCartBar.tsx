@@ -41,7 +41,6 @@ export function FloatingCartBar() {
             </span>
             <span className="text-sm font-bold text-[#C9A24A] flex items-center gap-1.5">
               <span>Rs. {total}</span>
-              <span className="text-white/20 text-[10px]">plus taxes</span>
             </span>
           </div>
 
