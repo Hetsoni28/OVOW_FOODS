@@ -25,7 +25,7 @@ export function buildOrderMessage(
 ): string {
   const lines = items.map(
     (item) =>
-      `  • ${item.name} (${item.size}) × ${item.quantity}  ₹${(
+      `🔹 *${item.quantity}x* ${item.name} ${item.size ? `(${item.size})` : ""} — ₹${(
         item.price * item.quantity
       ).toLocaleString("en-IN")}`
   );
@@ -36,27 +36,27 @@ export function buildOrderMessage(
   );
 
   return [
-    `Hello OVOW FOODS! 👋`,
+    `✨ *NEW DIRECT ORDER | OVOW FOODS* ✨`,
+    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
     ``,
-    `I'd like to place an order:`,
-    ``,
+    `*📦 ORDER SUMMARY*`,
     ...lines,
+    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `💰 *Subtotal:* ₹${subtotal.toLocaleString("en-IN")}`,
+    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
     ``,
-    `─────────────────────`,
-    `Subtotal: ₹${subtotal.toLocaleString("en-IN")}`,
-    `─────────────────────`,
+    `*👤 CUSTOMER DETAILS*`,
+    `👤 *Name:* ${customer.name}`,
+    `📱 *Mobile:* ${customer.mobile}`,
+    `📍 *Delivery Address:* ${customer.address}`,
+    customer.notes ? `📝 *Notes:* ${customer.notes}` : "",
     ``,
-    `📋 My Details:`,
-    `Name: ${customer.name}`,
-    `Mobile: ${customer.mobile}`,
-    `Delivery Address: ${customer.address}`,
-    customer.notes ? `Notes: ${customer.notes}` : "",
-    ``,
-    `Thank you! 🙏`,
+    `🌿 *Thank you for choosing OVOW FOODS!*`,
   ]
     .filter((l) => l !== undefined)
     .join("\n");
 }
+
 
 export function openWhatsAppOrder(
   items: CartItem[],
@@ -72,8 +72,8 @@ export function openWhatsAppOrder(
 
 export function openWhatsAppInquiry(context?: string): void {
   const message = context
-    ? `Hello OVOW FOODS! 👋\n\nI'd like to know more about: ${context}`
-    : `Hello OVOW FOODS! 👋\n\nI'd like to know more about your menu and ordering.`;
+    ? `✨ *INQUIRY | OVOW FOODS* ✨\n\nHello! 👋\nI'd like to know more about: *${context}*`
+    : `✨ *INQUIRY | OVOW FOODS* ✨\n\nHello! 👋\nI'd like to know more about your menu and ordering.`;
   window.open(buildWhatsAppUrl(message), "_blank");
 }
 
@@ -93,25 +93,27 @@ export interface BulkInquiryDetails {
 
 export function openWhatsAppBulkOrder(details: BulkInquiryDetails): void {
   const message = [
-    `Hello OVOW FOODS! 👋`,
+    `🎉 *NEW BULK/PARTY INQUIRY | OVOW FOODS* 🎉`,
+    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
     ``,
-    `I'd like to enquire about a bulk/party order:`,
+    `*📅 EVENT DETAILS*`,
+    `✨ *Occasion:* ${details.eventType}`,
+    `📆 *Date:* ${details.eventDate}`,
+    `👥 *Guests:* ${details.guestCount}`,
+    `📍 *Location:* ${details.location}`,
+    details.budget ? `💰 *Budget:* ${details.budget}` : "",
     ``,
-    `📅 Event: ${details.eventType}`,
-    `📆 Date: ${details.eventDate}`,
-    `👥 Guests: ${details.guestCount}`,
-    `📍 Location: ${details.location}`,
-    details.preferredItems ? `🍱 Preferred Items: ${details.preferredItems}` : "",
-    details.budget ? `💰 Budget: ${details.budget}` : "",
-    details.notes ? `📝 Notes: ${details.notes}` : "",
+    `*🍽️ FOOD PREFERENCES*`,
+    details.preferredItems ? `🍱 *Items:* ${details.preferredItems}` : "Not specified yet",
+    details.notes ? `📝 *Notes:* ${details.notes}` : "",
     ``,
-    `📋 My Details:`,
-    `Name: ${details.name}`,
-    `Mobile: ${details.mobile}`,
+    `*👤 CONTACT INFO*`,
+    `👤 *Name:* ${details.name}`,
+    `📱 *Mobile:* ${details.mobile}`,
     ``,
-    `Please contact me to discuss further. Thank you! 🙏`,
+    `🌿 *Looking forward to hosting an amazing event with OVOW FOODS!*`,
   ]
-    .filter((l) => l !== undefined)
+    .filter((l) => l !== undefined && l !== "")
     .join("\n");
 
   window.open(buildWhatsAppUrl(message), "_blank");
@@ -127,7 +129,7 @@ export function buildCheckoutWhatsAppMessage(
 ): string {
   const lines = items.map(
     (item) =>
-      `  ${item.quantity} × ${item.name}${item.size ? ` (${item.size})` : ""}  →  ₹${(item.price * item.quantity).toLocaleString("en-IN")}`
+      `🔹 *${item.quantity}x* ${item.name} ${item.size ? `(${item.size})` : ""} → ₹${(item.price * item.quantity).toLocaleString("en-IN")}`
   );
 
   const isLater = customer.scheduleType === "later";
@@ -145,44 +147,43 @@ export function buildCheckoutWhatsAppMessage(
   const actionLink = `${typeof window !== "undefined" ? window.location.origin : ""}/order-action/${orderRef}?d=${payload}`;
 
   const deliveryLine = isPorter
-    ? `🚚 PORTER DELIVERY (Booked by OVOW)`
-    : `🛵 OVOW FREE DELIVERY`;
+    ? `🟢 *PORTER DELIVERY* (Needs Booking)`
+    : `🛵 *OVOW DIRECT DELIVERY*`;
 
   return [
-    `🟢 NEW OVOW ORDER`,
+    `🌟 *NEW PREMIUM ORDER | OVOW FOODS* 🌟`,
+    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `🆔 *ORDER ID:* ${orderRef}`,
     ``,
-    `ORDER ID: ${orderRef}`,
-    ``,
-    `─── DELIVERY ────────────────────────────`,
+    `*🚚 DELIVERY INFO*`,
     deliveryLine,
-    isLater ? `⏰ SCHEDULED ORDER` : `🚨 ASAP`,
-    isLater ? `📅 Date: ${customer.scheduleDate}` : undefined,
-    isLater ? `🕒 Time: ${customer.scheduleTime}` : undefined,
+    isLater ? `⏰ *SCHEDULED FOR:* ${customer.scheduleDate} @ ${customer.scheduleTime}` : `🚀 *DELIVERY:* ASAP`,
     ``,
-    `─── CUSTOMER ────────────────────────────`,
-    `Name: ${customer.name}`,
-    `Mobile: +91 ${customer.mobile}`,
-    `Address: ${customer.address}`,
-    customer.instructions ? `Notes: ${customer.instructions}` : undefined,
+    `*👤 CUSTOMER DETAILS*`,
+    `👤 *Name:* ${customer.name}`,
+    `📱 *Mobile:* +91 ${customer.mobile}`,
+    `📍 *Address:* ${customer.address}`,
+    customer.instructions ? `📝 *Instructions:* ${customer.instructions}` : undefined,
     ``,
-    `─── ITEMS ───────────────────────────────`,
+    `*📦 ORDER SUMMARY*`,
     ...lines,
-    `─────────────────────────────────────────`,
-    `FOOD TOTAL: ₹${total.toLocaleString("en-IN")}`,
-    `DELIVERY: ₹0`,
-    `TAX: ₹0`,
-    `TOTAL: ₹${total.toLocaleString("en-IN")}`,
+    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `🍱 *FOOD TOTAL:* ₹${total.toLocaleString("en-IN")}`,
+    `🛵 *DELIVERY:* ₹0`,
+    `🔖 *TAX:* ₹0`,
+    `══════════════════════════════════`,
+    `🎯 *GRAND TOTAL: ₹${total.toLocaleString("en-IN")}*`,
+    `══════════════════════════════════`,
     ``,
-    `─── PAYMENT ─────────────────────────────`,
-    `Method: UPI`,
-    `Status: Customer marked payment as completed`,
-    `⚠️ Please verify UPI payment before fulfilling.`,
+    `*💳 PAYMENT STATUS*`,
+    `✅ *Method:* UPI / Online`,
+    `⚠️ _Please verify payment in merchant app before fulfilling._`,
     ``,
-    `BOOK PORTER:`,
+    `*🔗 ACTION LINK*`,
+    `👉 Book Porter & Manage Order:`,
     actionLink,
     ``,
-    `Thank you! 🙏`,
-    `OVOW FOODS`,
+    `🌿 *Thank you for dining with OVOW FOODS!*`,
   ]
     .filter((l) => l !== undefined)
     .join("\n");

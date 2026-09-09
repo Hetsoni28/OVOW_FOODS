@@ -47,12 +47,15 @@ export function ReminderButton({ productName, productPrice }: ReminderModalProps
   function handleConfirm() {
     const dayLabel = getDateLabel(DAY_OPTIONS[selectedDay]);
     const message = encodeURIComponent(
-      `🍽️ *Pre-Order Request — OVOW FOODS*\n\n` +
-      `Hi! I'd like to Pre-Order:\n` +
-      `*${productName}* — ₹${productPrice}\n\n` +
-      `📅 *Requested Date:* ${dayLabel}\n` +
-      `🕐 *Requested Time:* ${selectedTime}\n\n` +
-      `Please confirm availability. Thank you!`
+      `🌟 *NEW PRE-ORDER REQUEST | OVOW FOODS* 🌟\n` +
+      `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+      `*📦 REQUESTED ITEM*\n` +
+      `🔹 *1x* ${productName} — ₹${productPrice}\n\n` +
+      `*⏰ REQUESTED SCHEDULE*\n` +
+      `📅 *Date:* ${dayLabel}\n` +
+      `🕒 *Time:* ${selectedTime}\n\n` +
+      `*Please confirm if this slot is available and share payment details!*\n\n` +
+      `🌿 *Thank you for choosing OVOW FOODS!*`
     );
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
     window.open(url, "_blank");
