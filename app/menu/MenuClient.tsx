@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { IconSlidersHorizontal, IconX } from "@/components/atoms/Icons";
 import { ProductCard } from "@/components/molecules/ProductCard";
 import { MenuFilterBar } from "@/components/organisms/MenuFilterBar";
@@ -18,6 +18,7 @@ export function MenuClient({
   const [searchQuery, setSearchQuery] = useState("");
   const [swaminarayanOnly, setSwaminarayanOnly] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const isFirstRender = useRef(true);
   
   const ITEMS_PER_PAGE = 8;
 
@@ -90,10 +91,24 @@ export function MenuClient({
 
   useEffect(() => {
     setCurrentPage(1);
+
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    // When filters change, automatically scroll up to the menu grid
+    // so the user doesn't get stuck at the bottom of the page.
+    const filterContainer = document.getElementById("menu-grid-top");
+    if (filterContainer) {
+      // Offset by 120px to account for the sticky navbar and filter bar height
+      const y = filterContainer.getBoundingClientRect().top + window.scrollY - 120;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
   }, [activeCategory, searchQuery, swaminarayanOnly]);
 
   return (
-    <div className="min-h-screen text-primary pb-20">
+    <div className="min-h-screen text-primary pb-20" id="menu-grid-top">
       <MenuFilterBar 
         categories={categories} 
         activeCategory={activeCategory} 
