@@ -39,9 +39,6 @@ export function HeroSection() {
       {/* Dark overlay for text readability */}
       <div className="absolute inset-0 bg-black/50 z-[2]" />
 
-      {/* Top gradient to ensure Navbar is ALWAYS readable even if the image top is bright */}
-      <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-black/70 to-transparent z-[3] pointer-events-none" />
-
       <motion.div
         className="container-x relative z-10 flex flex-col items-center pt-24 pb-32"
         variants={staggerFast}

@@ -47,10 +47,18 @@ export function Navbar() {
     <nav suppressHydrationWarning
       className={`w-full z-50 transition-all duration-300 fixed top-0 ${
         isTransparent
-          ? "bg-transparent text-white border-transparent shadow-none"
+          ? "text-white border-transparent shadow-none"
           : "bg-[#F9F6F0] text-primary border-b border-primary/10 shadow-sm"
       }`}
     >
+      {/* Background Gradient for Transparent State — Ensures readability over bright images */}
+      <div 
+        className={`absolute top-0 left-0 right-0 h-[160px] bg-gradient-to-b from-black/80 via-black/30 to-transparent -z-10 transition-opacity duration-300 pointer-events-none ${
+          isTransparent ? "opacity-100" : "opacity-0"
+        }`} 
+        aria-hidden="true" 
+      />
+
       <div className={`container-x flex items-center justify-between transition-all duration-300 ${isTransparent ? "py-5" : "py-3"}`}>
         {/* Logo + Brand */}
         <Link href="/" className="flex items-center gap-3">
