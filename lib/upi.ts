@@ -13,8 +13,13 @@ export function buildUpiUri(amount: number, orderRef: string): string {
   const am = amount.toFixed(2); // UPI requires 2 decimal places
   const cu = "INR";
   const tn = encodeURIComponent(`Order ${orderRef}`);
+  
+  // For Merchant UPI IDs (like @okbizaxis), many UPI apps (GPay, PhonePe) will refuse 
+  // to pre-fill the amount unless 'mc' (Merchant Code) and 'tr' (Transaction Ref) are provided.
+  const mc = "5812"; // Standard MCC for Restaurants/Eateries
+  const tr = encodeURIComponent(orderRef);
 
-  return `upi://pay?pa=${pa}&pn=${pn}&am=${am}&cu=${cu}&tn=${tn}`;
+  return `upi://pay?pa=${pa}&pn=${pn}&mc=${mc}&tr=${tr}&am=${am}&cu=${cu}&tn=${tn}`;
 }
 
 /**
