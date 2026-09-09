@@ -42,7 +42,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
               : i
           )
         : [...state.items, { ...action.product, quantity: 1 }];
-      return { ...state, items, isOpen: true };
+      return { ...state, items };
     }
 
     case "REMOVE_ITEM":

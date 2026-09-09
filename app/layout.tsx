@@ -8,6 +8,7 @@ import { CartDrawer } from "@/components/cart/CartDrawer";
 import { FloatingWhatsApp } from "@/components/ui/FloatingWhatsApp";
 import { Breadcrumbs } from "@/components/molecules/Breadcrumbs";
 import { MobileBottomBar } from "@/components/layout/MobileBottomBar";
+import { FloatingCartBar } from "@/components/layout/FloatingCartBar";
 import { ErrorBoundary } from "@/components/layout/ErrorBoundary";
 import { MotionProvider } from "@/components/layout/MotionProvider";
 import { SmoothScrollProvider } from "@/components/layout/SmoothScrollProvider";
@@ -150,6 +151,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <main className="flex-1 pb-16 md:pb-0">{children}</main>
                 <Footer />
               </ErrorBoundary>
+              <FloatingCartBar />
               <MobileBottomBar />
               <FloatingWhatsApp />
             </CartProvider>
