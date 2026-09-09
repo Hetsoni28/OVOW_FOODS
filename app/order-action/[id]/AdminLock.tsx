@@ -1,26 +1,27 @@
 "use client";
 
-import { useState } from "react";
-import { IconAlertCircle } from "@/components/atoms/Icons";
+import { useState, useTransition } from "react";
+import { IconAlertCircle, IconLoader } from "@/components/atoms/Icons";
+import { verifyAdminPin } from "./actions";
 
 export function AdminLock({ children }: { children: React.ReactNode }) {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
-
-  // In a real app, this would be an env variable. 
-  // For this serverless setup, we hardcode a PIN that the merchant knows.
-  const ADMIN_PIN = "7566"; 
+  const [isPending, startTransition] = useTransition();
 
   const handleUnlock = (e: React.FormEvent) => {
     e.preventDefault();
-    if (pin === ADMIN_PIN) {
-      setIsUnlocked(true);
-      setError(false);
-    } else {
-      setError(true);
-      setPin("");
-    }
+    startTransition(async () => {
+      const isValid = await verifyAdminPin(pin);
+      if (isValid) {
+        setIsUnlocked(true);
+        setError(false);
+      } else {
+        setError(true);
+        setPin("");
+      }
+    });
   };
 
   if (isUnlocked) {
@@ -62,9 +63,10 @@ export function AdminLock({ children }: { children: React.ReactNode }) {
         </div>
         <button
           type="submit"
-          className="w-full bg-[#0B2118] hover:bg-[#153a2b] text-[#C9A24A] p-4 rounded-xl font-bold uppercase tracking-widest text-sm transition-colors"
+          disabled={isPending || pin.length < 4}
+          className="w-full bg-[#0B2118] hover:bg-[#153a2b] text-[#C9A24A] p-4 rounded-xl font-bold uppercase tracking-widest text-sm flex justify-center items-center gap-2 transition-colors disabled:opacity-50"
         >
-          Unlock Portal
+          {isPending ? <IconLoader size={18} /> : "Unlock Portal"}
         </button>
       </form>
     </div>
