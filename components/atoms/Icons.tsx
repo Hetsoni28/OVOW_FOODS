@@ -575,3 +575,23 @@ export function IconTrash({ size = 20, className, ...p }: IconProps) {
     </svg>
   );
 }
+
+export function IconArrowRight({ size = 20, className, ...p }: IconProps) {
+  return (
+    <svg {...defaults(size)} className={className} {...p}>
+      <line x1="5" y1="12" x2="19" y2="12" />
+      <polyline points="12 5 19 12 12 19" />
+    </svg>
+  );
+}
+
+export function IconSparkles({ size = 20, className, ...p }: IconProps) {
+  return (
+    <svg {...defaults(size)} className={className} {...p}>
+      <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z" />
+      <path d="M5 17l.75 2.25L8 20l-2.25.75L5 23l-.75-2.25L2 20l2.25-.75L5 17z" />
+      <path d="M19 3l.6 1.8L21.4 5.4l-1.8.6L19 8l-.6-1.8L16.6 5.4l1.8-.6L19 3z" />
+    </svg>
+  );
+}
+

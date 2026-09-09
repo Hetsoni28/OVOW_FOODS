@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { IconReceipt } from "@/components/atoms/Icons";
 import { OrderEmptyState } from "@/components/organisms/OrderEmptyState";
 import { OrderCard, type OrderItem } from "@/components/organisms/OrderCard";
+import { OrderSuggestionsSection } from "@/components/organisms/OrderSuggestionsSection";
 
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
@@ -49,6 +50,9 @@ export default function OrdersPage() {
             ))}
           </div>
         )}
+
+        {/* Smart Suggestions Section */}
+        <OrderSuggestionsSection />
       </div>
     </div>
   );

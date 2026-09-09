@@ -6,6 +6,7 @@ import { client } from "@/sanity/lib/client";
 import { PRODUCT_BY_SLUG_QUERY, ALL_PRODUCTS_QUERY, RELATED_PRODUCTS_QUERY, PRODUCT_REVIEWS_QUERY } from "@/sanity/lib/queries";
 import { AddToCartBlock } from "./AddToCartBlock";
 import { ProductCard } from "@/components/molecules/ProductCard";
+import { RelatedProductsRow } from "@/components/organisms/RelatedProductsRow";
 import { ProductDetails } from "@/components/organisms/ProductDetails";
 import { ProductReviews } from "@/components/organisms/ProductReviews";
 import type { Metadata } from "next";
@@ -141,22 +142,7 @@ export default async function Product({
         </div>
 
         {/* You Might Also Like */}
-        <div className="mt-32">
-          <h2 className="font-serif text-3xl md:text-4xl text-primary mb-10">
-            You might also like
-          </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {relatedProducts.map((p) => {
-              let relatedFallback = undefined;
-              if (!p.previewVideo) {
-                let rp = allProducts.find((ap) => ap.category === p.category && ap.previewVideo);
-                if (!rp) rp = allProducts.find((ap) => ap.previewVideo);
-                if (rp) relatedFallback = rp.previewVideo;
-              }
-              return <ProductCard key={p.slug} product={p} fallbackVideo={relatedFallback} />;
-            })}
-          </div>
-        </div>
+        <RelatedProductsRow products={relatedProducts} />
 
         {/* Product Reviews */}
         <ProductReviews reviews={productReviews} productName={product.name} />
