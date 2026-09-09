@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { IconX, IconBell } from "@/components/atoms/Icons";
+import { IconX, IconBell, IconCalendar } from "@/components/atoms/Icons";
 
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
@@ -148,14 +148,19 @@ export function ReminderButton({ productName, productPrice }: ReminderModalProps
                 </div>
 
                 {/* Summary */}
-                <div className="bg-white/5 border border-white/10 px-4 py-3 rounded-sm">
-                  <p className="text-xs text-white/60">
-                    📅 <span className="text-white font-medium">{getDateLabel(DAY_OPTIONS[selectedDay])}</span> at{" "}
-                    <span className="text-white font-medium">{selectedTime}</span>
-                  </p>
-                  <p className="text-[10px] text-white/40 mt-1">
-                    We'll send your Pre-Order request via WhatsApp
-                  </p>
+                <div className="bg-white/5 border border-white/10 px-4 py-3 rounded-sm flex items-start gap-3">
+                  <div className="mt-0.5 text-[#C9A24A]">
+                    <IconCalendar size={16} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-white/60">
+                      <span className="text-white font-medium">{getDateLabel(DAY_OPTIONS[selectedDay])}</span> at{" "}
+                      <span className="text-white font-medium">{selectedTime}</span>
+                    </p>
+                    <p className="text-[10px] text-white/40 mt-1">
+                      We'll send your Pre-Order request via WhatsApp
+                    </p>
+                  </div>
                 </div>
 
                 {/* Confirm Button */}
