@@ -319,10 +319,46 @@ export function DownloadMenuButton({ products }: Props) {
       for (const p of products) {
         count++;
         setLoadingText(`Processing images (${count}/${products.length})...`);
-        const videoUrl = p.video?.asset?.url || p.previewVideo;
+        let videoUrl = p.video?.asset?.url || p.previewVideo;
+        
+        // 1. Fallback for missing video URL
+        if (!videoUrl) {
+          const pCat = typeof p.category === "string" ? p.category : p.category?.name;
+          let relatedProduct = products.find(rp => {
+            const rpCat = typeof rp.category === "string" ? rp.category : rp.category?.name;
+            return rpCat === pCat && (rp.video?.asset?.url || rp.previewVideo);
+          });
+          if (!relatedProduct) {
+            relatedProduct = products.find(rp => rp.video?.asset?.url || rp.previewVideo);
+          }
+          if (relatedProduct) {
+            videoUrl = relatedProduct.video?.asset?.url || relatedProduct.previewVideo;
+          }
+        }
+
         if (videoUrl) {
           const imgB64 = await extractVideoFrame(videoUrl);
-          productImages[p._id!] = imgB64;
+          if (imgB64) {
+            productImages[p._id!] = imgB64;
+          }
+        }
+      }
+
+      // 2. Guarantee no blank images (if extractVideoFrame failed due to CORS/timeout)
+      const anyGoodImage = Object.values(productImages).find(img => img.length > 100);
+      for (const p of products) {
+        if (!productImages[p._id!]) {
+          const pCat = typeof p.category === "string" ? p.category : p.category?.name;
+          const sibling = products.find(rp => {
+            const rpCat = typeof rp.category === "string" ? rp.category : rp.category?.name;
+            return rpCat === pCat && productImages[rp._id!];
+          });
+          
+          if (sibling && productImages[sibling._id!]) {
+            productImages[p._id!] = productImages[sibling._id!];
+          } else if (anyGoodImage) {
+            productImages[p._id!] = anyGoodImage;
+          }
         }
       }
 
