@@ -4,7 +4,8 @@ export const COMPANY_CONFIG = {
   phone: "+91 75675 66214",  // Replace with real phone
   email: "hello@ovowfoods.com", // Replace with real email
   name: "OVOW FOODS",
-  upiId: process.env.NEXT_PUBLIC_UPI_ID || "your-upi-id@bank",
+  // Hardcoded to prevent errors from accidentally duplicated Vercel environment variables
+  upiId: "7567561239@okbizaxis",
   instagram: "https://instagram.com/ovowfoods",
   facebook: "https://www.facebook.com/share/1EWiUiZRps/",
   address: "Ahmedabad, Gujarat", 
