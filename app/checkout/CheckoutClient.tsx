@@ -37,6 +37,7 @@ export function CheckoutClient() {
   const [orderId, setOrderId] = useState("");
   const [upiUri, setUpiUri] = useState("");
   const [qrUrl, setQrUrl] = useState("");
+  const [finalCart, setFinalCart] = useState<{items: CartItem[], total: number} | null>(null);
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -117,9 +118,12 @@ export function CheckoutClient() {
 
     if (isCod) {
       saveSnapshot("COD", false);
+      setFinalCart({ items: [...items], total });
+      const currentItems = [...items];
+      const currentTotal = total;
       clearCart();
       setStep(4);
-      const msg = buildCheckoutWhatsAppMessage(items, details, total, orderId);
+      const msg = buildCheckoutWhatsAppMessage(currentItems, details, currentTotal, orderId);
       window.open(`https://wa.me/${COMPANY_CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
     } else {
       setStep(3); // Go to QR code for UPI, wait for user to confirm payment
@@ -128,9 +132,12 @@ export function CheckoutClient() {
 
   const handleConfirmPayment = () => {
     saveSnapshot("UPI", true);
+    setFinalCart({ items: [...items], total });
+    const currentItems = [...items];
+    const currentTotal = total;
     clearCart();
     setStep(4);
-    const msg = buildCheckoutWhatsAppMessage(items, details, total, orderId);
+    const msg = buildCheckoutWhatsAppMessage(currentItems, details, currentTotal, orderId);
     window.open(`https://wa.me/${COMPANY_CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
@@ -187,9 +194,10 @@ export function CheckoutClient() {
             <CheckoutStepSuccess
               key="step4"
               orderId={orderId}
-              cartTotal={total}
+              cartTotal={finalCart?.total || 0}
               handleSendWhatsApp={() => {
-                const msg = buildCheckoutWhatsAppMessage(items, details, total, orderId);
+                if (!finalCart) return;
+                const msg = buildCheckoutWhatsAppMessage(finalCart.items, details, finalCart.total, orderId);
                 window.open(`https://wa.me/${COMPANY_CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
               }}
             />

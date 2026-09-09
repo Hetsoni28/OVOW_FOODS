@@ -10,7 +10,7 @@ function buildWhatsAppUrl(message: string): string {
   return `https://wa.me/${COMPANY_CONFIG.whatsapp}?text=${encodeMessage(message)}`;
 }
 
-// \u2500\u2500 ORDER \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ── ORDER ──────────────────────────────────────────────────────────────────────
 
 export interface CustomerDetails {
   name: string;
@@ -25,7 +25,7 @@ export function buildOrderMessage(
 ): string {
   const lines = items.map(
     (item) =>
-      `\ud83d\udd39 *${item.quantity}x* ${item.name} ${item.size ? `(${item.size})` : ""} \u2014 \u20b9${(
+      `🔹 *${item.quantity}x* ${item.name} ${item.size ? `(${item.size})` : ""} — ₹${(
         item.price * item.quantity
       ).toLocaleString("en-IN")}`
   );
@@ -36,22 +36,22 @@ export function buildOrderMessage(
   );
 
   return [
-    `\u2728 *NEW DIRECT ORDER | OVOW FOODS* \u2728`,
-    `\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501`,
+    `✨ *NEW DIRECT ORDER | OVOW FOODS* ✨`,
+    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
     ``,
-    `*\ud83d\udce6 ORDER SUMMARY*`,
+    `*📦 ORDER SUMMARY*`,
     ...lines,
-    `\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501`,
-    `\ud83d\udcb0 *Subtotal:* \u20b9${subtotal.toLocaleString("en-IN")}`,
-    `\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501`,
+    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `💰 *Subtotal:* ₹${subtotal.toLocaleString("en-IN")}`,
+    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
     ``,
-    `*\ud83d\udc64 CUSTOMER DETAILS*`,
-    `\ud83d\udc64 *Name:* ${customer.name}`,
-    `\ud83d\udcf1 *Mobile:* ${customer.mobile}`,
-    `\ud83d\udccd *Delivery Address:* ${customer.address}`,
-    customer.notes ? `\ud83d\udcdd *Notes:* ${customer.notes}` : "",
+    `*👤 CUSTOMER DETAILS*`,
+    `👤 *Name:* ${customer.name}`,
+    `📱 *Mobile:* ${customer.mobile}`,
+    `📍 *Delivery Address:* ${customer.address}`,
+    customer.notes ? `📝 *Notes:* ${customer.notes}` : "",
     ``,
-    `\ud83c\udf3f *Thank you for choosing OVOW FOODS!*`,
+    `🌿 *Thank you for choosing OVOW FOODS!*`,
   ]
     .filter((l) => l !== undefined)
     .join("\n");
@@ -68,16 +68,16 @@ export function openWhatsAppOrder(
   window.open(url, "_blank");
 }
 
-// \u2500\u2500 GENERAL INQUIRY \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ── GENERAL INQUIRY ───────────────────────────────────────────────────────────
 
 export function openWhatsAppInquiry(context?: string): void {
   const message = context
-    ? `\u2728 *INQUIRY | OVOW FOODS* \u2728\n\nHello! \ud83d\udc4b\nI'd like to know more about: *${context}*`
-    : `\u2728 *INQUIRY | OVOW FOODS* \u2728\n\nHello! \ud83d\udc4b\nI'd like to know more about your menu and ordering.`;
+    ? `✨ *INQUIRY | OVOW FOODS* ✨\n\nHello! 👋\nI'd like to know more about: *${context}*`
+    : `✨ *INQUIRY | OVOW FOODS* ✨\n\nHello! 👋\nI'd like to know more about your menu and ordering.`;
   window.open(buildWhatsAppUrl(message), "_blank");
 }
 
-// \u2500\u2500 BULK ORDER INQUIRY \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ── BULK ORDER INQUIRY ────────────────────────────────────────────────────────
 
 export interface BulkInquiryDetails {
   name: string;
@@ -93,25 +93,25 @@ export interface BulkInquiryDetails {
 
 export function openWhatsAppBulkOrder(details: BulkInquiryDetails): void {
   const message = [
-    `\ud83c\udf89 *NEW BULK/PARTY INQUIRY | OVOW FOODS* \ud83c\udf89`,
-    `\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501`,
+    `🎉 *NEW BULK/PARTY INQUIRY | OVOW FOODS* 🎉`,
+    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
     ``,
-    `*\ud83d\udcc5 EVENT DETAILS*`,
-    `\u2728 *Occasion:* ${details.eventType}`,
-    `\ud83d\udcc6 *Date:* ${details.eventDate}`,
-    `\ud83d\udc65 *Guests:* ${details.guestCount}`,
-    `\ud83d\udccd *Location:* ${details.location}`,
-    details.budget ? `\ud83d\udcb0 *Budget:* ${details.budget}` : "",
+    `*📅 EVENT DETAILS*`,
+    `✨ *Occasion:* ${details.eventType}`,
+    `📆 *Date:* ${details.eventDate}`,
+    `👥 *Guests:* ${details.guestCount}`,
+    `📍 *Location:* ${details.location}`,
+    details.budget ? `💰 *Budget:* ${details.budget}` : "",
     ``,
-    `*\ud83c\udf7d\ufe0f FOOD PREFERENCES*`,
-    details.preferredItems ? `\ud83c\udf71 *Items:* ${details.preferredItems}` : "Not specified yet",
-    details.notes ? `\ud83d\udcdd *Notes:* ${details.notes}` : "",
+    `*🍽️ FOOD PREFERENCES*`,
+    details.preferredItems ? `🍱 *Items:* ${details.preferredItems}` : "Not specified yet",
+    details.notes ? `📝 *Notes:* ${details.notes}` : "",
     ``,
-    `*\ud83d\udc64 CONTACT INFO*`,
-    `\ud83d\udc64 *Name:* ${details.name}`,
-    `\ud83d\udcf1 *Mobile:* ${details.mobile}`,
+    `*👤 CONTACT INFO*`,
+    `👤 *Name:* ${details.name}`,
+    `📱 *Mobile:* ${details.mobile}`,
     ``,
-    `\ud83c\udf3f *Looking forward to hosting an amazing event with OVOW FOODS!*`,
+    `🌿 *Looking forward to hosting an amazing event with OVOW FOODS!*`,
   ]
     .filter((l) => l !== undefined && l !== "")
     .join("\n");
@@ -119,7 +119,7 @@ export function openWhatsAppBulkOrder(details: BulkInquiryDetails): void {
   window.open(buildWhatsAppUrl(message), "_blank");
 }
 
-// \u2500\u2500 CHECKOUT ORDER MESSAGE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ── CHECKOUT ORDER MESSAGE ─────────────────────────────────────────────────────
 
 export function buildCheckoutWhatsAppMessage(
   items: CartItem[],
@@ -129,7 +129,7 @@ export function buildCheckoutWhatsAppMessage(
 ): string {
   const lines = items.map(
     (item) =>
-      `\ud83d\udd39 *${item.quantity}x* ${item.name} ${item.size ? `(${item.size})` : ""} \u2192 \u20b9${(item.price * item.quantity).toLocaleString("en-IN")}`
+      `🔹 *${item.quantity}x* ${item.name} ${item.size ? `(${item.size})` : ""} → ₹${(item.price * item.quantity).toLocaleString("en-IN")}`
   );
 
   const isLater = customer.scheduleType === "later";
@@ -147,46 +147,46 @@ export function buildCheckoutWhatsAppMessage(
   const actionLink = `${typeof window !== "undefined" ? window.location.origin : ""}/order-action/${orderRef}?d=${payload}`;
 
   const deliveryLine = isPorter
-    ? `\ud83d\udfe2 *PORTER DELIVERY* (Needs Booking)`
-    : `\ud83d\udef5 *OVOW DIRECT DELIVERY*`;
+    ? `🟢 *PORTER DELIVERY* (Needs Booking)`
+    : `🛵 *OVOW DIRECT DELIVERY*`;
 
   return [
-    `\ud83c\udf1f *NEW PREMIUM ORDER | OVOW FOODS* \ud83c\udf1f`,
-    `\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501`,
-    `\ud83c\udd94 *ORDER ID:* ${orderRef}`,
+    `🌟 *NEW PREMIUM ORDER | OVOW FOODS* 🌟`,
+    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `🆔 *ORDER ID:* ${orderRef}`,
     ``,
-    `*\ud83d\ude9a DELIVERY INFO*`,
+    `*🚚 DELIVERY INFO*`,
     deliveryLine,
-    isLater ? `\u23f0 *SCHEDULED FOR:* ${customer.scheduleDate} @ ${customer.scheduleTime}` : `\ud83d\ude80 *DELIVERY:* ASAP`,
+    isLater ? `⏰ *SCHEDULED FOR:* ${customer.scheduleDate} @ ${customer.scheduleTime}` : `🚀 *DELIVERY:* ASAP`,
     ``,
-    `*\ud83d\udc64 CUSTOMER DETAILS*`,
-    `\ud83d\udc64 *Name:* ${customer.name}`,
-    `\ud83d\udcf1 *Mobile:* +91 ${customer.mobile}`,
-    `\ud83d\udccd *Address:* ${customer.address}`,
-    customer.instructions ? `\ud83d\udcdd *Instructions:* ${customer.instructions}` : undefined,
+    `*👤 CUSTOMER DETAILS*`,
+    `👤 *Name:* ${customer.name}`,
+    `📱 *Mobile:* +91 ${customer.mobile}`,
+    `📍 *Address:* ${customer.address}`,
+    customer.instructions ? `📝 *Instructions:* ${customer.instructions}` : undefined,
     ``,
-    `*\ud83d\udce6 ORDER SUMMARY*`,
+    `*📦 ORDER SUMMARY*`,
     ...lines,
-    `\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501`,
-    `\ud83c\udf71 *FOOD TOTAL:* \u20b9${total.toLocaleString("en-IN")}`,
-    `\ud83d\udef5 *DELIVERY:* \u20b90`,
-    `\ud83d\udd16 *TAX:* \u20b90`,
-    `\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550`,
-    `\ud83c\udfaf *GRAND TOTAL: \u20b9${total.toLocaleString("en-IN")}*`,
-    `\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550`,
+    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `🍱 *FOOD TOTAL:* ₹${total.toLocaleString("en-IN")}`,
+    `🛵 *DELIVERY:* ₹0`,
+    `🔖 *TAX:* ₹0`,
+    `══════════════════════════════════`,
+    `🎯 *GRAND TOTAL: ₹${total.toLocaleString("en-IN")}*`,
+    `══════════════════════════════════`,
     ``,
-    `*\ud83d\udcb3 PAYMENT STATUS*`,
-    `\u2705 *Method:* UPI / Online`,
-    `\u26a0\ufe0f _Please verify payment in merchant app before fulfilling._`,
+    `*💳 PAYMENT STATUS*`,
+    `✅ *Method:* UPI / Online`,
+    `⚠️ _Please verify payment in merchant app before fulfilling._`,
     ``,
-    `\ud83d\udcf8 *PAYMENT SCREENSHOT REQUIRED*`,
+    `📸 *PAYMENT SCREENSHOT REQUIRED*`,
     `_Please attach your payment screenshot to this message before hitting send!_`,
     ``,
-    `*\ud83d\udd17 ACTION LINK*`,
-    `\ud83d\udc49 Book Porter & Manage Order:`,
+    `*🔗 ACTION LINK*`,
+    `👉 Book Porter & Manage Order:`,
     actionLink,
     ``,
-    `\ud83c\udf3f *Thank you for dining with OVOW FOODS!*`,
+    `🌿 *Thank you for dining with OVOW FOODS!*`,
   ]
     .filter((l) => l !== undefined)
     .join("\n");
