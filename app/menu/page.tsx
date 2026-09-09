@@ -20,7 +20,7 @@ export default async function Menu() {
   return (
     <div className="min-h-screen bg-[#F8F4EA]">
       {/* ── Cinematic Hero Banner ── */}
-      <section className="relative h-[40vh] md:h-[52vh] flex items-end overflow-hidden bg-[#0B2118]">
+      <section className="relative min-h-[45vh] md:min-h-[55vh] flex flex-col justify-center pt-[100px] overflow-hidden bg-[#0B2118]">
         {/* Layer 1: Static image fallback */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -61,7 +61,7 @@ export default async function Menu() {
         <div className="absolute left-8 md:left-16 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#C9A24A]/40 to-transparent" />
 
         {/* Hero Content */}
-        <div className="relative z-10 container-x pb-10 md:pb-14 w-full">
+        <div className="relative z-10 container-x pb-8 w-full">
           <p className="text-[#C9A24A] text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] mb-3">
             ✦ Pure Vegetarian · Premium Quality
           </p>
