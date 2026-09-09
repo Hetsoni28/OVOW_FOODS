@@ -1,19 +1,12 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { IconArrowLeft } from "@/components/atoms/Icons";
+import { IconArrowLeft, IconCheck } from "@/components/atoms/Icons";
+import { Reveal } from "@/components/atoms/Reveal";
 
 export const metadata: Metadata = {
   title: "Terms & Conditions | OVOW FOODS",
   description: "Terms and Conditions for OVOW FOODS",
 };
-
-"use client";
-
-import Link from "next/link";
-import { IconArrowLeft, IconCheck } from "@/components/atoms/Icons";
-import { motion } from "framer-motion";
-
-const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
 export default function TermsAndConditionsPage() {
   return (
@@ -24,11 +17,7 @@ export default function TermsAndConditionsPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#C9A24A]/10 to-transparent"></div>
         
         <div className="container-x relative z-10 max-w-3xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: EASE }}
-          >
+          <Reveal>
             <Link
               href="/"
               className="inline-flex items-center gap-2 text-[#C9A24A]/70 hover:text-[#C9A24A] transition-colors mb-8 text-xs uppercase tracking-widest font-bold bg-[#C9A24A]/10 px-4 py-2 rounded-full border border-[#C9A24A]/20"
@@ -41,18 +30,13 @@ export default function TermsAndConditionsPage() {
             <p className="text-[#F9F6F0]/70 max-w-lg mx-auto leading-relaxed text-sm md:text-base">
               By accessing or using the OVOW FOODS website, application or direct ordering service, you agree to these terms.
             </p>
-          </motion.div>
+          </Reveal>
         </div>
       </div>
 
       {/* Content Section */}
       <div className="container-x max-w-4xl mx-auto -mt-24 relative z-20 pb-32">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2, ease: EASE }}
-          className="bg-white p-8 md:p-16 shadow-2xl shadow-primary/5 border border-primary/10 rounded-sm"
-        >
+        <Reveal delay={0.2} className="bg-white p-8 md:p-16 shadow-2xl shadow-primary/5 border border-primary/10 rounded-sm">
           <div className="prose prose-lg prose-primary max-w-none text-primary/80">
             <p className="text-sm font-bold uppercase tracking-widest text-[#C9A24A] text-center mb-12">
               Last Updated: [Date]
@@ -177,7 +161,7 @@ export default function TermsAndConditionsPage() {
               </div>
             </Section>
           </div>
-        </motion.div>
+        </Reveal>
       </div>
     </div>
   );
