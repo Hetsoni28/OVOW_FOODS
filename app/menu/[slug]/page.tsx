@@ -142,7 +142,7 @@ export default async function Product({
         </div>
 
         {/* You Might Also Like */}
-        <RelatedProductsRow products={relatedProducts} />
+        <RelatedProductsRow products={relatedProducts} allProducts={allProducts} />
 
         {/* Product Reviews */}
         <ProductReviews reviews={productReviews} productName={product.name} />

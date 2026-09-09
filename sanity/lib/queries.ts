@@ -54,8 +54,10 @@ export const RELATED_PRODUCTS_QUERY = groq`*[_type == "product" && category->nam
   name,
   "slug": slug.current,
   price,
+  available,
   "category": category->name,
   "previewVideo": video.asset->url,
+  "thumbnailUrl": thumbnail.asset->url,
   signature,
   isBestSeller
 }`
