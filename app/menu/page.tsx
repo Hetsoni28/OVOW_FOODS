@@ -20,7 +20,7 @@ export default async function Menu() {
   return (
     <div className="min-h-screen bg-[#F8F4EA]">
       {/* ── Cinematic Hero Banner ── */}
-      <section className="relative min-h-[45vh] md:min-h-[55vh] flex flex-col justify-center pt-[100px] overflow-hidden bg-[#0B2118]">
+      <section className="relative min-h-[45vh] md:min-h-[55vh] flex flex-col pt-[130px] md:pt-[160px] pb-12 overflow-hidden bg-[#0B2118]">
         {/* Layer 1: Static image fallback */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
