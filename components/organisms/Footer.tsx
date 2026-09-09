@@ -80,13 +80,13 @@ export function Footer() {
         </div>
 
         <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 mt-12 w-full max-w-4xl mx-auto px-4">
-          <Link href="/menu" className="flex-1 min-w-[200px] bg-[#C9A24A] text-white px-6 py-4 text-xs font-bold tracking-widest uppercase hover:bg-[#1D5A40] hover:border-[#1D5A40] transition-colors shadow-sm border border-[#C9A24A]">
+          <Link href="/menu" className="flex-1 min-w-[200px] bg-[#C9A24A] text-white px-6 py-4 text-xs font-bold tracking-widest uppercase hover:bg-[#1D5A40] hover:border-[#1D5A40] hover:text-[#C9A24A] transition-colors shadow-sm border border-[#C9A24A]">
             Order Now
           </Link>
-          <Link href="/menu" className="flex-1 min-w-[200px] border border-white/30 text-white px-6 py-4 text-xs font-bold tracking-widest uppercase hover:bg-[#1D5A40] hover:border-[#1D5A40] transition-colors shadow-sm">
+          <Link href="/menu" className="flex-1 min-w-[200px] bg-[#C9A24A] text-white px-6 py-4 text-xs font-bold tracking-widest uppercase hover:bg-[#1D5A40] hover:border-[#1D5A40] hover:text-[#C9A24A] transition-colors shadow-sm border border-[#C9A24A]">
             Pre-Order Now
           </Link>
-          <Link href="/party-bulk-orders" className="flex-1 min-w-[200px] border border-white/30 text-white px-6 py-4 text-xs font-bold tracking-widest uppercase hover:bg-[#1D5A40] hover:border-[#1D5A40] transition-colors shadow-sm">
+          <Link href="/party-bulk-orders" className="flex-1 min-w-[200px] bg-[#C9A24A] text-white px-6 py-4 text-xs font-bold tracking-widest uppercase hover:bg-[#1D5A40] hover:border-[#1D5A40] hover:text-[#C9A24A] transition-colors shadow-sm border border-[#C9A24A]">
             Catering / Bulk Order
           </Link>
         </div>
