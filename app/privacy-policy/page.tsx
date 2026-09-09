@@ -18,12 +18,6 @@ export default function PrivacyPolicyPage() {
         
         <div className="container-x relative z-10 max-w-3xl mx-auto text-center">
           <Reveal>
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-[#C9A24A]/70 hover:text-[#C9A24A] transition-colors mb-8 text-xs uppercase tracking-widest font-bold bg-[#C9A24A]/10 px-4 py-2 rounded-full border border-[#C9A24A]/20"
-            >
-              <IconArrowLeft size={16} /> Back to Home
-            </Link>
             <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl text-white mb-6">
               Privacy Policy
             </h1>
