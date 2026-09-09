@@ -161,13 +161,20 @@ export function ReminderButton({ productName, productPrice }: ReminderModalProps
                 {/* Confirm Button */}
                 <button
                   onClick={handleConfirm}
-                  className={`w-full py-4 font-bold uppercase tracking-widest text-sm transition-all duration-300 ${
+                  className={`w-full py-4 font-bold uppercase tracking-widest text-sm transition-all duration-300 flex items-center justify-center gap-2 ${
                     sent
                       ? "bg-[#1D5A40] text-white"
                       : "bg-[#C9A24A] hover:bg-white text-[#0B2118]"
                   }`}
                 >
-                  {sent ? "✓ Opening WhatsApp..." : "🔔 Send Pre-Order Request"}
+                  {sent ? (
+                    "✓ Opening WhatsApp..."
+                  ) : (
+                    <>
+                      <IconBell size={18} />
+                      Send Pre-Order Request
+                    </>
+                  )}
                 </button>
               </div>
             </motion.div>
