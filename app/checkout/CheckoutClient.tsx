@@ -16,6 +16,7 @@ import { CheckoutStepPayment } from "@/components/organisms/CheckoutStepPayment"
 import { CheckoutStepQR } from "@/components/organisms/CheckoutStepQR";
 import { CheckoutStepSuccess } from "@/components/organisms/CheckoutStepSuccess";
 import type { Details, Errors, PaymentMethod } from "@/lib/types";
+import type { CartItem } from "@/types";
 
 export function CheckoutClient() {
   const { items, total, clearCart } = useCart();
