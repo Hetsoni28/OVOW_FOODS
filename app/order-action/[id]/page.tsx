@@ -1,5 +1,6 @@
 import { IconCheckCircle, IconTruck, IconMapPin } from "@/components/atoms/Icons";
 import { PorterActionClient } from "./PorterActionClient";
+import { AdminLock } from "./AdminLock";
 
 export default async function OrderActionPage({ 
   params,
@@ -38,64 +39,66 @@ export default async function OrderActionPage({
           <p className="text-white/60 text-xs mt-1 tracking-widest uppercase">Admin Action Portal</p>
         </div>
 
-        <div className="p-6 space-y-6">
-          
-          {/* Order Summary */}
-          <div className="space-y-4">
-            <div className="flex justify-between items-start pb-4 border-b border-gray-100">
-              <div>
-                <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">Order Ref</p>
-                <p className="font-bold text-gray-900">{orderRef}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">Total</p>
-                <p className="font-bold text-gray-900 text-lg">₹{Number(orderData.t).toLocaleString("en-IN")}</p>
-              </div>
-            </div>
-
-            {/* Payment Status */}
-            <div className="flex items-center gap-3 p-3 bg-green-50 text-green-800 rounded-lg border border-green-100">
-              <IconCheckCircle size={18} className="text-green-600" />
-              <div>
-                <p className="text-sm font-bold">Payment Marked Completed</p>
-                <p className="text-xs text-green-700/80">Please verify UPI transaction before booking.</p>
-              </div>
-            </div>
-
-            {/* Delivery Details */}
-            <div className="space-y-3 pt-2">
-              <div className="flex items-center justify-between">
-                <p className="text-xs text-gray-400 uppercase tracking-widest">Delivery Method</p>
-                <div className="flex items-center gap-1.5 text-xs font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded border border-blue-100">
-                  <IconTruck size={14} /> PORTER
+        <AdminLock>
+          <div className="p-6 space-y-6">
+            
+            {/* Order Summary */}
+            <div className="space-y-4">
+              <div className="flex justify-between items-start pb-4 border-b border-gray-100">
+                <div>
+                  <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">Order Ref</p>
+                  <p className="font-bold text-gray-900">{orderRef}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">Total</p>
+                  <p className="font-bold text-gray-900 text-lg">₹{Number(orderData.t).toLocaleString("en-IN")}</p>
                 </div>
               </div>
 
-              <div className="bg-gray-50 p-4 rounded-lg border border-gray-100 space-y-3">
-                {/* Address */}
-                <div className="flex gap-3">
-                  <IconMapPin size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm font-bold text-gray-900">{orderData.n}</p>
-                    <p className="text-sm text-gray-600 mt-1 leading-relaxed">
-                      {orderData.a}
-                    </p>
+              {/* Payment Status */}
+              <div className="flex items-center gap-3 p-3 bg-green-50 text-green-800 rounded-lg border border-green-100">
+                <IconCheckCircle size={18} className="text-green-600" />
+                <div>
+                  <p className="text-sm font-bold">Payment Marked Completed</p>
+                  <p className="text-xs text-green-700/80">Please verify UPI transaction before booking.</p>
+                </div>
+              </div>
+
+              {/* Delivery Details */}
+              <div className="space-y-3 pt-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-gray-400 uppercase tracking-widest">Delivery Method</p>
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded border border-blue-100">
+                    <IconTruck size={14} /> PORTER
                   </div>
                 </div>
-                
-                {/* Contact — copy handled in client */}
-                <div className="pt-3 border-t border-gray-200">
-                  <p className="text-xs text-gray-500">Contact</p>
-                  <p className="text-sm font-bold text-gray-900">+91 {orderData.p}</p>
+
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-100 space-y-3">
+                  {/* Address */}
+                  <div className="flex gap-3">
+                    <IconMapPin size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-sm font-bold text-gray-900">{orderData.n}</p>
+                      <p className="text-sm text-gray-600 mt-1 leading-relaxed">
+                        {orderData.a}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {/* Contact — copy handled in client */}
+                  <div className="pt-3 border-t border-gray-200">
+                    <p className="text-xs text-gray-500">Contact</p>
+                    <p className="text-sm font-bold text-gray-900">+91 {orderData.p}</p>
+                  </div>
                 </div>
               </div>
             </div>
+
+            {/* Interactive Actions — client component */}
+            <PorterActionClient orderRef={orderRef} phone={orderData.p} customerName={orderData.n} />
+
           </div>
-
-          {/* Interactive Actions — client component */}
-          <PorterActionClient orderRef={orderRef} phone={orderData.p} customerName={orderData.n} />
-
-        </div>
+        </AdminLock>
       </div>
     </div>
   );
