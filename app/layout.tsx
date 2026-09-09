@@ -113,7 +113,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body
-        className={`${playfair.variable} ${manrope.variable} font-sans flex min-h-screen flex-col`}
+        className={`${playfair.variable} ${manrope.variable} font-sans flex min-h-screen flex-col overflow-x-hidden`}
         suppressHydrationWarning
       >
         {/* Raw splash cover — green background before JS loads, prevents hero flash on first visit. */}

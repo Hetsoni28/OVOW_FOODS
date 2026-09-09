@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Order } from "@/types";
 import { getOrderFromStorage } from "@/lib/storage";
 import { Logo } from "@/components/atoms/Logo";
-import { IconCheckCircle, IconDownload, IconChevronLeft, IconMapPin, IconReceiptText } from "@/components/atoms/Icons";
+import { IconCheckCircle, IconDownload, IconChevronLeft, IconMapPin, IconReceiptText, IconClock } from "@/components/atoms/Icons";
 import Link from "next/link";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -227,14 +227,14 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
                     {order.payment.verification === "VERIFIED" ? (
                       <IconCheckCircle size={18} className="text-green-600" />
                     ) : (
-                      <div className="w-4 h-4 rounded-full border-2 border-[#C9A24A] border-t-transparent animate-spin" />
+                      <IconClock size={18} className="text-[#C9A24A]" />
                     )}
                   </div>
                   <div>
                     <p className="font-bold text-primary mb-0.5">{order.payment.method} — ₹{order.payment.amount}</p>
                     <p className={`text-xs ${order.payment.verification === "VERIFIED" ? "text-green-600" : "text-[#C9A24A]"}`}>
                       {order.payment.customerConfirmation === "CUSTOMER_MARKED_PAID" 
-                        ? "Payment submitted — verification pending" 
+                        ? "Payment submitted (Under verification)" 
                         : "Payment pending"}
                     </p>
                   </div>

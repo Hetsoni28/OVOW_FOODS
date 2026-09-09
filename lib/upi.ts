@@ -1,18 +1,20 @@
-﻿import { COMPANY_CONFIG } from "./config";
+import { COMPANY_CONFIG } from "./config";
 
 /**
  * Builds a UPI payment URI with the dynamic order amount.
  * Standard UPI deep-link format per NPCI spec.
  */
 export function buildUpiUri(amount: number, orderRef: string): string {
-  const params = new URLSearchParams({
-    pa: COMPANY_CONFIG.upiId,
-    pn: "OVOW FOODS",
-    am: amount.toFixed(2),   // UPI requires 2 decimal places
-    cu: "INR",
-    tn: `OVOW Order ${orderRef}`,
-  });
-  return `upi://pay?${params.toString()}`;
+  // UPI apps are notoriously strict. URLSearchParams encodes '@' as '%40'
+  // and spaces as '+', which causes apps like GPay to drop the intent completely.
+  // We must leave 'pa' unencoded (so '@' remains) and use '%20' for spaces.
+  const pa = COMPANY_CONFIG.upiId.trim();
+  const pn = encodeURIComponent("OVOW FOODS");
+  const am = amount.toFixed(2); // UPI requires 2 decimal places
+  const cu = "INR";
+  const tn = encodeURIComponent(`Order ${orderRef}`);
+
+  return `upi://pay?pa=${pa}&pn=${pn}&am=${am}&cu=${cu}&tn=${tn}`;
 }
 
 /**

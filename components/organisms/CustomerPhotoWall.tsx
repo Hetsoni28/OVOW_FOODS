@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { IconCamera, IconArrowRight, IconStar } from "@/components/atoms/Icons";
+import { IconCamera, IconArrowRight, IconStar, IconChefHat, IconSparkles, IconFlame } from "@/components/atoms/Icons";
 
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
@@ -9,10 +9,10 @@ const WHATSAPP_NUMBER = "917567566214";
 
 // Sample placeholder moments (shown when no user submissions yet)
 const SAMPLE_MOMENTS = [
-  { name: "Priya S.", caption: "The Dum Matka Biryani was absolutely divine! 🍛", emoji: "🌟", color: "from-[#C9A24A]/20 to-[#1D5A40]/10" },
-  { name: "Rahul M.", caption: "Best Paneer dish I've had in a long time!", emoji: "🧀", color: "from-[#1D5A40]/20 to-[#C9A24A]/10" },
-  { name: "Meera K.", caption: "Ordered for our office lunch — everyone loved it!", emoji: "🎉", color: "from-[#0B2118]/10 to-[#C9A24A]/20" },
-  { name: "Ankita P.", caption: "Pure vegetarian and pure delicious. OVOW wins! 🏆", emoji: "🏆", color: "from-[#C9A24A]/15 to-[#0B2118]/10" },
+  { name: "Priya S.", caption: "The Dum Matka Biryani was absolutely divine! 🍛", icon: <IconStar size={28} className="text-[#C9A24A]" />, color: "from-[#C9A24A]/20 to-[#1D5A40]/10" },
+  { name: "Rahul M.", caption: "Best Paneer dish I've had in a long time!", icon: <IconChefHat size={28} className="text-[#C9A24A]" />, color: "from-[#1D5A40]/20 to-[#C9A24A]/10" },
+  { name: "Meera K.", caption: "Ordered for our office lunch — everyone loved it!", icon: <IconSparkles size={28} className="text-[#C9A24A]" />, color: "from-[#0B2118]/10 to-[#C9A24A]/20" },
+  { name: "Ankita P.", caption: "Pure vegetarian and pure delicious. OVOW wins! 🏆", icon: <IconFlame size={28} className="text-[#C9A24A]" />, color: "from-[#C9A24A]/15 to-[#0B2118]/10" },
 ];
 
 export function CustomerPhotoWall() {
@@ -56,7 +56,7 @@ export function CustomerPhotoWall() {
             transition={{ duration: 0.5, delay: i * 0.08, ease: EASE }}
             className={`bg-gradient-to-br ${moment.color} border border-primary/8 p-5 md:p-6 rounded-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group`}
           >
-            <div className="text-4xl mb-4">{moment.emoji}</div>
+            <div className="mb-4">{moment.icon}</div>
             <p className="text-sm text-primary/80 leading-relaxed mb-3 italic">"{moment.caption}"</p>
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A24A]">— {moment.name}</span>

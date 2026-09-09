@@ -97,9 +97,9 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
 
             {/* UPI ID row */}
             <div className="flex items-center justify-between py-2 border-b border-primary/5">
-              <div>
+              <div className="min-w-0 flex-1 pr-2">
                 <p className="text-[10px] text-primary/40 uppercase tracking-widest">UPI ID</p>
-                <p className="font-bold text-primary text-sm tracking-wide">{COMPANY_CONFIG.upiId}</p>
+                <p className="font-bold text-primary text-sm tracking-wide break-all">{COMPANY_CONFIG.upiId}</p>
               </div>
               <button suppressHydrationWarning
                 onClick={copyUpi}
@@ -112,9 +112,9 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
 
             {/* Exact Amount row */}
             <div className="flex items-center justify-between py-2">
-              <div>
+              <div className="min-w-0 flex-1 pr-2">
                 <p className="text-[10px] text-primary/40 uppercase tracking-widest">Exact Amount</p>
-                <p className="font-bold text-primary text-sm">₹{cartTotal.toLocaleString("en-IN")}.00</p>
+                <p className="font-bold text-primary text-sm break-all">₹{cartTotal.toLocaleString("en-IN")}.00</p>
               </div>
               <button suppressHydrationWarning
                 onClick={copyAmount}
