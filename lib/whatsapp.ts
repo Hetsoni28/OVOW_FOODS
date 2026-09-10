@@ -125,7 +125,8 @@ export function buildCheckoutWhatsAppMessage(
   items: CartItem[],
   customer: CheckoutCustomerDetails,
   total: number,
-  orderRef: string
+  orderRef: string,
+  paymentMethod: "upi" | "cod" = "upi"
 ): string {
   const lines = items.map(
     (item) =>
@@ -134,6 +135,7 @@ export function buildCheckoutWhatsAppMessage(
 
   const isLater = customer.scheduleType === "later";
   const isPorter = customer.deliveryMethod === "porter";
+  const isUpi = paymentMethod === "upi";
 
   // Create a secure base64 payload containing the specific order details
   // so the Action Page can display them dynamically without a database!
@@ -176,12 +178,16 @@ export function buildCheckoutWhatsAppMessage(
     `══════════════════════════════════`,
     ``,
     `*💳 PAYMENT STATUS*`,
-    `✅ *Method:* UPI / Online`,
-    `⚠️ _Please verify payment in merchant app before fulfilling._`,
+    isUpi
+      ? `✅ *Method:* UPI / Online`
+      : `💵 *Method:* Cash on Delivery (COD)`,
+    isUpi
+      ? `⚠️ _Please verify payment in merchant app before fulfilling._`
+      : `⚠️ _Collect cash of ₹${total.toLocaleString("en-IN")} at delivery._`,
     ``,
-    `📸 *PAYMENT SCREENSHOT REQUIRED*`,
-    `_Please attach your payment screenshot to this message before hitting send!_`,
-    ``,
+    isUpi ? `📸 *PAYMENT SCREENSHOT REQUIRED*` : undefined,
+    isUpi ? `_Please attach your payment screenshot to this message before hitting send!_` : undefined,
+    isUpi ? `` : undefined,
     `*🔗 ACTION LINK*`,
     `👉 Book Porter & Manage Order:`,
     actionLink,

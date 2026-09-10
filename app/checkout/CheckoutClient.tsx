@@ -38,7 +38,7 @@ export function CheckoutClient() {
   const [orderId, setOrderId] = useState("");
   const [upiUri, setUpiUri] = useState("");
   const [qrUrl, setQrUrl] = useState("");
-  const [finalCart, setFinalCart] = useState<{items: CartItem[], total: number} | null>(null);
+  const [finalCart, setFinalCart] = useState<{items: CartItem[], total: number, method: "upi" | "cod"} | null>(null);
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -119,12 +119,12 @@ export function CheckoutClient() {
 
     if (isCod) {
       saveSnapshot("COD", false);
-      setFinalCart({ items: [...items], total });
+      setFinalCart({ items: [...items], total, method: "cod" });
       const currentItems = [...items];
       const currentTotal = total;
       clearCart();
       setStep(4);
-      const msg = buildCheckoutWhatsAppMessage(currentItems, details, currentTotal, orderId);
+      const msg = buildCheckoutWhatsAppMessage(currentItems, details, currentTotal, orderId, "cod");
       window.open(`https://wa.me/${COMPANY_CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
     } else {
       setStep(3); // Go to QR code for UPI, wait for user to confirm payment
@@ -133,12 +133,12 @@ export function CheckoutClient() {
 
   const handleConfirmPayment = () => {
     saveSnapshot("UPI", true);
-    setFinalCart({ items: [...items], total });
+    setFinalCart({ items: [...items], total, method: "upi" });
     const currentItems = [...items];
     const currentTotal = total;
     clearCart();
     setStep(4);
-    const msg = buildCheckoutWhatsAppMessage(currentItems, details, currentTotal, orderId);
+    const msg = buildCheckoutWhatsAppMessage(currentItems, details, currentTotal, orderId, "upi");
     window.open(`https://wa.me/${COMPANY_CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
@@ -198,7 +198,7 @@ export function CheckoutClient() {
               cartTotal={finalCart?.total || 0}
               handleSendWhatsApp={() => {
                 if (!finalCart) return;
-                const msg = buildCheckoutWhatsAppMessage(finalCart.items, details, finalCart.total, orderId);
+                const msg = buildCheckoutWhatsAppMessage(finalCart.items, details, finalCart.total, orderId, finalCart.method);
                 window.open(`https://wa.me/${COMPANY_CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
               }}
             />
