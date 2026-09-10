@@ -90,6 +90,27 @@ export function Footer() {
             Catering / Bulk Order
           </Link>
         </div>
+
+        {/* Developer Credit */}
+        <div className="mt-12 pt-6 border-t border-white/10 w-full flex flex-col items-center gap-1">
+          <p className="text-white/30 text-[10px] uppercase tracking-[0.25em] font-medium">
+            Crafted with ♥ for OVOW FOODS
+          </p>
+          <a
+            href="https://hetsoni28-portfolio.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center gap-2 text-white/40 hover:text-[#C9A24A] transition-all duration-300 text-[11px] font-bold uppercase tracking-[0.2em]"
+          >
+            <span className="inline-block transition-transform duration-300 group-hover:rotate-12">✦</span>
+            <span>Designed &amp; Developed by</span>
+            <span className="text-[#C9A24A]/70 group-hover:text-[#C9A24A] transition-colors duration-300 underline underline-offset-4 decoration-dotted">
+              Soni Het
+            </span>
+            <span className="inline-block transition-transform duration-300 group-hover:-rotate-12">✦</span>
+          </a>
+        </div>
+
       </div>
     </footer>
   );
