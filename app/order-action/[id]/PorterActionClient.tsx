@@ -49,6 +49,24 @@ export function PorterActionClient({ orderRef, phone, customerName }: { orderRef
     }
   };
 
+  const handleNotifyCustomer = (trackingUrl?: string) => {
+    if (!phone) return;
+    const msg = [
+      `✨ *OVOW FOODS | ORDER CONFIRMED* ✨`,
+      `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+      `Hello ${customerName || "there"}! 👋`,
+      ``,
+      `Great news! We have received your order *${orderRef}* and it has been *ACCEPTED*! 🟢`,
+      ``,
+      `Our chefs are preparing your world-class meal right now. 👨‍🍳🔥`,
+      trackingUrl ? `\n*🚚 TRACK YOUR DELIVERY:*\n${trackingUrl}\n` : `We will deliver it to you shortly.`,
+      ``,
+      `Thank you for choosing OVOW FOODS! 🌿`
+    ].join("\n");
+    
+    window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`, "_blank");
+  };
+
   if (status === "success" && data) {
     return (
       <div className="pt-4 space-y-4">
@@ -106,23 +124,7 @@ export function PorterActionClient({ orderRef, phone, customerName }: { orderRef
     );
   }
 
-  const handleNotifyCustomer = (trackingUrl?: string) => {
-    if (!phone) return;
-    const msg = [
-      `✨ *OVOW FOODS | ORDER CONFIRMED* ✨`,
-      `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
-      `Hello ${customerName || "there"}! 👋`,
-      ``,
-      `Great news! We have received your order *${orderRef}* and it has been *ACCEPTED*! 🟢`,
-      ``,
-      `Our chefs are preparing your world-class meal right now. 👨‍🍳🔥`,
-      trackingUrl ? `\n*🚚 TRACK YOUR DELIVERY:*\n${trackingUrl}\n` : `We will deliver it to you shortly.`,
-      ``,
-      `Thank you for choosing OVOW FOODS! 🌿`
-    ].join("\n");
-    
-    window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`, "_blank");
-  };
+
 
   return (
     <div className="pt-4 space-y-3">

@@ -9,7 +9,7 @@ import { WhatsAppIcon } from "@/components/atoms/WhatsAppIcon";
 interface CheckoutStepSuccessProps {
   orderId: string;
   cartTotal: number;
-  handleSendWhatsApp: (isCod: boolean) => void;
+  handleSendWhatsApp: () => void;
 }
 
 export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: CheckoutStepSuccessProps) {
@@ -47,7 +47,7 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
         </Link>
         
         <button suppressHydrationWarning
-          onClick={() => handleSendWhatsApp(false)}
+          onClick={() => handleSendWhatsApp()}
           className="w-full flex items-center justify-center gap-3 bg-[#25D366] text-white px-6 py-5 text-xs font-bold uppercase tracking-[0.1em] hover:bg-[#1DA851] transition-colors shadow-lg shadow-[#25D366]/20"
         >
           <WhatsAppIcon className="w-5 h-5 flex-shrink-0" />
