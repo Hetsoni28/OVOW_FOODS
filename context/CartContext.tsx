@@ -19,7 +19,7 @@ interface CartState {
 }
 
 type CartAction =
-  | { type: "ADD_ITEM"; product: CartItem }
+  | { type: "ADD_ITEM"; product: Omit<CartItem, "quantity"> }
   | { type: "REMOVE_ITEM"; slug: string; addonKey?: string }
   | { type: "INCREMENT"; slug: string; addonKey?: string }
   | { type: "DECREMENT"; slug: string; addonKey?: string }
@@ -95,7 +95,7 @@ interface CartContextValue {
   isOpen: boolean;
   total: number;
   count: number;
-  addItem: (product: CartItem) => void;
+  addItem: (product: Omit<CartItem, "quantity">) => void;
   removeItem: (slug: string) => void;
   increment: (slug: string) => void;
   decrement: (slug: string) => void;
@@ -123,7 +123,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (hydrated) saveCart(state.items);
   }, [state.items, hydrated]);
 
-  const addItem = useCallback((product: CartItem) => dispatch({ type: "ADD_ITEM", product }), []);
+  const addItem = useCallback((product: Omit<CartItem, "quantity">) => dispatch({ type: "ADD_ITEM", product }), []);
   const removeItem = useCallback((slug: string) => dispatch({ type: "REMOVE_ITEM", slug }), []);
   const increment = useCallback((slug: string) => dispatch({ type: "INCREMENT", slug }), []);
   const decrement = useCallback((slug: string) => dispatch({ type: "DECREMENT", slug }), []);
