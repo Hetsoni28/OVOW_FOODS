@@ -1,6 +1,12 @@
 import { client } from "@/sanity/lib/client";
 import { APPROVED_REVIEWS_QUERY } from "@/sanity/lib/queries";
 import { ReviewsClient } from "./ReviewsClient";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Customer Reviews",
+  description: "Real reviews from OVOW FOODS customers. See what people love about our premium vegetarian food in Ahmedabad.",
+};
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
