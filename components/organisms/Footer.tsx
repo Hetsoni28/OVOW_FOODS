@@ -91,24 +91,47 @@ export function Footer() {
           </Link>
         </div>
 
-        {/* Developer Credit */}
-        <div className="mt-12 pt-6 border-t border-white/10 w-full flex flex-col items-center gap-1">
-          <p className="text-white/30 text-[10px] uppercase tracking-[0.25em] font-medium">
-            Crafted with ♥ for OVOW FOODS
-          </p>
-          <a
-            href="https://hetsoni28-portfolio.vercel.app/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex items-center gap-2 text-white/40 hover:text-[#C9A24A] transition-all duration-300 text-[11px] font-bold uppercase tracking-[0.2em]"
-          >
-            <span className="inline-block transition-transform duration-300 group-hover:rotate-12">✦</span>
-            <span>Designed &amp; Developed by</span>
-            <span className="text-[#C9A24A]/70 group-hover:text-[#C9A24A] transition-colors duration-300 underline underline-offset-4 decoration-dotted">
-              Soni Het
-            </span>
-            <span className="inline-block transition-transform duration-300 group-hover:-rotate-12">✦</span>
-          </a>
+        {/* Developer Credit — Premium Bottom Bar */}
+        <div className="mt-16 w-full border-t border-white/[0.08]">
+          {/* Main Credit Bar */}
+          <div className="border-t border-white/[0.05] pt-5 pb-2 flex flex-col sm:flex-row items-center justify-between gap-4 px-2">
+            
+            {/* Copyright */}
+            <p className="text-white/25 text-[10px] tracking-widest uppercase font-medium order-2 sm:order-1">
+              &copy; {new Date().getFullYear()} OVOW Foods. All rights reserved.
+            </p>
+
+            {/* Designer Badge */}
+            <a
+              href="https://hetsoni28-portfolio.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-3 order-1 sm:order-2"
+            >
+              {/* Avatar */}
+              <div className="w-8 h-8 rounded-full bg-[#C9A24A]/20 border border-[#C9A24A]/30 flex items-center justify-center group-hover:bg-[#C9A24A]/30 group-hover:border-[#C9A24A]/60 transition-all duration-300">
+                <span className="text-[#C9A24A] text-[10px] font-black tracking-tight">SH</span>
+              </div>
+
+              {/* Text */}
+              <div className="flex flex-col text-left">
+                <span className="text-white/20 text-[8px] uppercase tracking-[0.25em] font-medium group-hover:text-white/40 transition-colors duration-300">
+                  Designed &amp; Developed by
+                </span>
+                <span className="text-[#C9A24A]/60 group-hover:text-[#C9A24A] transition-colors duration-300 text-[11px] font-bold uppercase tracking-[0.15em]">
+                  Soni Het
+                </span>
+              </div>
+
+              {/* Arrow */}
+              <svg
+                className="w-3 h-3 text-white/10 group-hover:text-[#C9A24A]/60 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M7 7h10v10" />
+              </svg>
+            </a>
+          </div>
         </div>
 
       </div>
