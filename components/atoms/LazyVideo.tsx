@@ -3,6 +3,7 @@
 /**
  * LazyVideo — Universal video component for OVOW FOODS
  *
+ * ✅ Shimmer skeleton shown while video is loading/buffering
  * ✅ poster image shows INSTANTLY on all devices (src set in HTML, not JS)
  * ✅ preload="none" — browser knows the src but won't download until .load() is called
  * ✅ Only plays when scrolled into view (IntersectionObserver)
@@ -14,7 +15,7 @@
  *   <LazyVideo src="/videos/my-video.mp4" poster="/images/thumb.jpg" controls loop={false} />
  */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface LazyVideoProps {
   src: string;
@@ -45,6 +46,7 @@ export function LazyVideo({
 }: LazyVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const loadedRef = useRef(false);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -79,20 +81,37 @@ export function LazyVideo({
   const videoSrc = src.includes('#t=') ? src : `${src}#t=0.5`;
 
   return (
-    <video
-      ref={videoRef}
-      src={videoSrc}
-      poster={poster}
-      loop={loop}
-      muted={muted}
-      playsInline
-      controls={controls}
-      preload="none"
-      disablePictureInPicture
-      disableRemotePlayback
-      onCanPlay={onCanPlay}
-      className={className}
-      style={{ objectFit }}
-    />
+    <div className="relative w-full h-full">
+      {/* ── Shimmer Skeleton (shows until video is ready) ── */}
+      {!isReady && (
+        <div className="absolute inset-0 z-10 bg-gradient-to-br from-primary/8 via-primary/5 to-[#C9A24A]/5 overflow-hidden">
+          <div className="absolute inset-0 skeleton-shimmer" />
+          {/* Food icon hint */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-3xl opacity-10 select-none">🍽️</span>
+          </div>
+        </div>
+      )}
+
+      {/* ── Actual Video ── */}
+      <video
+        ref={videoRef}
+        src={videoSrc}
+        poster={poster}
+        loop={loop}
+        muted={muted}
+        playsInline
+        controls={controls}
+        preload="none"
+        disablePictureInPicture
+        disableRemotePlayback
+        onCanPlay={() => {
+          setIsReady(true);
+          onCanPlay?.();
+        }}
+        className={`${className} transition-opacity duration-500 ${isReady ? "opacity-100" : "opacity-0"}`}
+        style={{ objectFit }}
+      />
+    </div>
   );
 }
