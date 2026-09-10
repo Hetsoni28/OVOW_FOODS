@@ -47,7 +47,7 @@ export function HeroSection() {
       >
         <motion.h1
           variants={fadeUpSlow}
-          className="font-serif text-5xl md:text-7xl lg:text-[100px] leading-[1.1] tracking-tight max-w-5xl"
+          className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl xl:text-[96px] leading-[1.1] tracking-tight max-w-5xl text-center"
         >
           CURATING THE
           <br />

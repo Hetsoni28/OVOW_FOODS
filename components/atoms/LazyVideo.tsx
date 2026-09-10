@@ -4,15 +4,11 @@
  * LazyVideo — Universal video component for OVOW FOODS
  *
  * ✅ Shimmer skeleton shown while video is loading/buffering
- * ✅ poster image shows INSTANTLY on all devices (src set in HTML, not JS)
+ * ✅ Skeleton fades OUT (video is always rendered, not hidden — more reliable)
  * ✅ preload="none" — browser knows the src but won't download until .load() is called
  * ✅ Only plays when scrolled into view (IntersectionObserver)
  * ✅ Pauses when scrolled off-screen (saves battery + data)
  * ✅ Works on mobile, desktop, Low Power Mode, slow connections
- *
- * Usage:
- *   <LazyVideo src="/videos/my-video.mp4" className="w-full h-full object-cover" />
- *   <LazyVideo src="/videos/my-video.mp4" poster="/images/thumb.jpg" controls loop={false} />
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -25,9 +21,7 @@ interface LazyVideoProps {
   controls?: boolean;
   muted?: boolean;
   objectFit?: "cover" | "contain";
-  /** How much of the element must be visible before playing (0–1) */
   threshold?: number;
-  /** Preload video this many px before it enters view */
   rootMargin?: string;
   onCanPlay?: () => void;
 }
@@ -46,7 +40,7 @@ export function LazyVideo({
 }: LazyVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const loadedRef = useRef(false);
-  const [isReady, setIsReady] = useState(false);
+  const [skeletonVisible, setSkeletonVisible] = useState(true);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -56,16 +50,12 @@ export function LazyVideo({
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // First time entering view — trigger actual download
             if (!loadedRef.current) {
               video.load();
               loadedRef.current = true;
             }
-            video.play().catch(() => {
-              // Autoplay blocked (Low Power Mode / browser policy) — poster stays visible
-            });
+            video.play().catch(() => {});
           } else {
-            // Left viewport — pause to save resources
             if (!video.paused) video.pause();
           }
         });
@@ -77,23 +67,11 @@ export function LazyVideo({
     return () => observer.disconnect();
   }, [threshold, rootMargin]);
 
-  // Use 0.5s instead of 0.001s to avoid blank frames if the video fades in from white/black
   const videoSrc = src.includes('#t=') ? src : `${src}#t=0.5`;
 
   return (
-    <div className="relative w-full h-full">
-      {/* ── Shimmer Skeleton (shows until video is ready) ── */}
-      {!isReady && (
-        <div className="absolute inset-0 z-10 bg-gradient-to-br from-primary/8 via-primary/5 to-[#C9A24A]/5 overflow-hidden">
-          <div className="absolute inset-0 skeleton-shimmer" />
-          {/* Food icon hint */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-3xl opacity-10 select-none">🍽️</span>
-          </div>
-        </div>
-      )}
-
-      {/* ── Actual Video ── */}
+    <>
+      {/* ── Video (always rendered, always visible) ── */}
       <video
         ref={videoRef}
         src={videoSrc}
@@ -106,12 +84,27 @@ export function LazyVideo({
         disablePictureInPicture
         disableRemotePlayback
         onCanPlay={() => {
-          setIsReady(true);
+          setSkeletonVisible(false);
           onCanPlay?.();
         }}
-        className={`${className} transition-opacity duration-500 ${isReady ? "opacity-100" : "opacity-0"}`}
+        className={className}
         style={{ objectFit }}
       />
-    </div>
+
+      {/* ── Shimmer Skeleton overlay (fades OUT once video is ready) ── */}
+      {skeletonVisible && (
+        <div
+          className="absolute inset-0 z-10 pointer-events-none overflow-hidden transition-opacity duration-500"
+          style={{
+            background: "linear-gradient(135deg, rgba(18,59,42,0.08) 0%, rgba(201,162,74,0.05) 100%)",
+          }}
+        >
+          <div className="absolute inset-0 skeleton-shimmer" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-3xl opacity-10 select-none">🍽️</span>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
