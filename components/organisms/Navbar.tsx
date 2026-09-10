@@ -51,13 +51,16 @@ export function Navbar() {
           : "bg-[#F9F6F0] text-primary border-b border-primary/10 shadow-sm"
       }`}
     >
-      {/* Background Gradient for Transparent State — Ensures readability over bright images */}
-      <div 
-        className={`absolute top-0 left-0 right-0 h-[160px] bg-gradient-to-b from-primary/90 via-primary/50 to-primary/0 -z-10 transition-opacity duration-300 pointer-events-none ${
-          isTransparent ? "opacity-100" : "opacity-0"
-        }`} 
-        aria-hidden="true" 
-      />
+      {/* Background scrim — ensures nav text is always readable over the hero image */}
+      {isTransparent && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute top-0 left-0 right-0 h-[200px] -z-10"
+          style={{
+            background: "linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0) 100%)",
+          }}
+        />
+      )}
 
       <div className={`container-x flex items-center justify-between transition-all duration-300 ${isTransparent ? "py-5" : "py-3"}`}>
         {/* Logo + Brand */}
