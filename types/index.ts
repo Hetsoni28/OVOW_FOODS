@@ -34,10 +34,14 @@ export interface Product {
   available?: boolean;
   isAvailable?: boolean; // Legacy
   sortOrder?: number;
+  includedRaita?: boolean; // If true, customer can opt-in for free Raita
 }
 
 export interface CartItem extends Product {
   quantity: number;
+  addons?: {
+    wantsRaita?: boolean; // Customer chose to include free Raita
+  };
 }
 
 export type OrderStatus =

@@ -23,11 +23,14 @@ export function buildOrderMessage(
   items: CartItem[],
   customer: CustomerDetails
 ): string {
-  const lines = items.map(
-    (item) =>
-      `🔹 *${item.quantity}x* ${item.name} ${item.size ? `(${item.size})` : ""} — ₹${(
+  const lines = items.flatMap(
+    (item) => {
+      const main = `🔹 *${item.quantity}x* ${item.name} ${item.size ? `(${item.size})` : ""} — ₹${(
         item.price * item.quantity
-      ).toLocaleString("en-IN")}`
+      ).toLocaleString("en-IN")}`;
+      const raita = item.addons?.wantsRaita ? `   ↳ 🥣 Raita (FREE)` : null;
+      return raita ? [main, raita] : [main];
+    }
   );
 
   const subtotal = items.reduce(
@@ -128,9 +131,12 @@ export function buildCheckoutWhatsAppMessage(
   orderRef: string,
   paymentMethod: "upi" | "cod" = "upi"
 ): string {
-  const lines = items.map(
-    (item) =>
-      `🔹 *${item.quantity}x* ${item.name} ${item.size ? `(${item.size})` : ""} → ₹${(item.price * item.quantity).toLocaleString("en-IN")}`
+  const lines = items.flatMap(
+    (item) => {
+      const main = `🔹 *${item.quantity}x* ${item.name} ${item.size ? `(${item.size})` : ""} → ₹${(item.price * item.quantity).toLocaleString("en-IN")}`;
+      const raita = item.addons?.wantsRaita ? `   ↳ 🥣 Raita (FREE)` : null;
+      return raita ? [main, raita] : [main];
+    }
   );
 
   const isLater = customer.scheduleType === "later";

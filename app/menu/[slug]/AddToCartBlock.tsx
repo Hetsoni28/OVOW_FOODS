@@ -11,6 +11,7 @@ export function AddToCartBlock({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [floatingPop, setFloatingPop] = useState<number | null>(null);
+  const [wantsRaita, setWantsRaita] = useState(true); // default ON — free, so most will want it
 
   const isSoldOut = product.available === false;
 
@@ -20,15 +21,15 @@ export function AddToCartBlock({ product }: { product: Product }) {
   const handleAdd = () => {
     if (isSoldOut) return;
     for (let i = 0; i < quantity; i++) {
-      addItem(product);
+      addItem({
+        ...product,
+        addons: product.includedRaita ? { wantsRaita } : undefined,
+      });
     }
     setAdded(true);
-    setFloatingPop(quantity); // Trigger floating animation
-    
-    setTimeout(() => {
-      setFloatingPop(null);
-    }, 1000);
+    setFloatingPop(quantity);
 
+    setTimeout(() => setFloatingPop(null), 1000);
     setTimeout(() => {
       setAdded(false);
       setQuantity(1);
@@ -41,15 +42,12 @@ export function AddToCartBlock({ product }: { product: Product }) {
     return (
       <div className="mt-12 pt-8 border-t border-primary/10">
         <div className="flex flex-col gap-4">
-          {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-red-50 border border-red-200 px-4 py-2 w-fit">
             <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
             <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-red-500">
               Currently Unavailable
             </span>
           </div>
-
-          {/* Message */}
           <div className="bg-primary/[0.03] border border-primary/[0.08] p-5">
             <div className="flex items-start gap-3">
               <IconBellOff size={18} className="text-primary/30 mt-0.5 flex-shrink-0" />
@@ -63,8 +61,6 @@ export function AddToCartBlock({ product }: { product: Product }) {
               </div>
             </div>
           </div>
-
-          {/* Disabled button */}
           <button
             disabled
             className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-primary/5 text-primary/25 cursor-not-allowed border border-primary/[0.08]"
@@ -82,6 +78,73 @@ export function AddToCartBlock({ product }: { product: Product }) {
   // ── AVAILABLE STATE ────────────────────────────────────────────────────────
   return (
     <div className="mt-12 pt-8 border-t border-primary/10">
+
+      {/* ── FREE RAITA ADD-ON ─── */}
+      {product.includedRaita && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-6"
+        >
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/40 mb-3">
+            Add-ons
+          </p>
+          <button
+            onClick={() => setWantsRaita((v) => !v)}
+            className={`w-full flex items-center gap-4 p-4 border-2 transition-all duration-300 text-left group ${
+              wantsRaita
+                ? "border-[#C9A24A] bg-[#C9A24A]/5 shadow-[0_0_20px_rgba(201,162,74,0.12)]"
+                : "border-primary/10 hover:border-primary/30 bg-white"
+            }`}
+          >
+            {/* Custom Checkbox */}
+            <div
+              className={`w-6 h-6 flex-shrink-0 border-2 flex items-center justify-center transition-all duration-200 ${
+                wantsRaita
+                  ? "border-[#C9A24A] bg-[#C9A24A]"
+                  : "border-primary/20 bg-white group-hover:border-primary/40"
+              }`}
+            >
+              <AnimatePresence>
+                {wantsRaita && (
+                  <motion.div
+                    key="check"
+                    initial={{ scale: 0, rotate: -90 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    exit={{ scale: 0 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                  >
+                    <IconCheck size={14} strokeWidth={3} className="text-white" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Label */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className={`font-bold text-sm ${wantsRaita ? "text-primary" : "text-primary/70"}`}>
+                  🥣 Add Raita
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 bg-green-100 text-green-700 border border-green-200">
+                  FREE
+                </span>
+              </div>
+              <p className="text-xs text-primary/50 mt-0.5">
+                Freshly prepared boondi raita — the perfect companion to your biryani
+              </p>
+            </div>
+
+            {/* Price */}
+            <span className={`text-base font-serif font-bold flex-shrink-0 ${wantsRaita ? "text-green-600" : "text-primary/30"}`}>
+              ₹0
+            </span>
+          </button>
+        </motion.div>
+      )}
+
+      {/* ── QUANTITY + ADD BUTTON ─── */}
       <div className="flex flex-col sm:flex-row items-center gap-4 lg:gap-5">
 
         {/* Quantity Selector */}

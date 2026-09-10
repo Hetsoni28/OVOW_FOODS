@@ -26,6 +26,7 @@ export const ALL_PRODUCTS_QUERY = groq`*[_type == "product"] | order(sortOrder a
   signature,
   size,
   servingSize,
+  includedRaita,
   "avgRating": math::avg(*[_type == "review" && isApproved == true && product._ref == ^._id].rating),
   "reviewCount": count(*[_type == "review" && isApproved == true && product._ref == ^._id])
 }`
@@ -48,7 +49,8 @@ export const PRODUCT_BY_SLUG_QUERY = groq`*[_type == "product" && slug.current =
   isSwaminarayan,
   isBestSeller,
   signature,
-  servingSize
+  servingSize,
+  includedRaita
 }`
 
 export const RELATED_PRODUCTS_QUERY = groq`*[_type == "product" && category->name == $category && slug.current != $slug && available != false][0...3] {

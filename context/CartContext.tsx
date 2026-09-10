@@ -19,10 +19,10 @@ interface CartState {
 }
 
 type CartAction =
-  | { type: "ADD_ITEM"; product: Product }
-  | { type: "REMOVE_ITEM"; slug: string }
-  | { type: "INCREMENT"; slug: string }
-  | { type: "DECREMENT"; slug: string }
+  | { type: "ADD_ITEM"; product: CartItem }
+  | { type: "REMOVE_ITEM"; slug: string; addonKey?: string }
+  | { type: "INCREMENT"; slug: string; addonKey?: string }
+  | { type: "DECREMENT"; slug: string; addonKey?: string }
   | { type: "CLEAR" }
   | { type: "OPEN_DRAWER" }
   | { type: "CLOSE_DRAWER" }
@@ -34,13 +34,18 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       return { ...state, items: action.items };
 
     case "ADD_ITEM": {
-      const existing = state.items.find((i) => i.slug === action.product.slug);
+      // Build a composite key so Biryani+Raita and Biryani (no Raita) are separate items
+      const addonKey = action.product.addons?.wantsRaita ? "raita" : "";
+      const existing = state.items.find(
+        (i) => i.slug === action.product.slug && (i.addons?.wantsRaita ? "raita" : "") === addonKey
+      );
       const items = existing
-        ? state.items.map((i) =>
-            i.slug === action.product.slug
+        ? state.items.map((i) => {
+            const iAddonKey = i.addons?.wantsRaita ? "raita" : "";
+            return i.slug === action.product.slug && iAddonKey === addonKey
               ? { ...i, quantity: i.quantity + 1 }
-              : i
-          )
+              : i;
+          })
         : [...state.items, { ...action.product, quantity: 1 }];
       return { ...state, items };
     }
@@ -90,7 +95,7 @@ interface CartContextValue {
   isOpen: boolean;
   total: number;
   count: number;
-  addItem: (product: Product) => void;
+  addItem: (product: CartItem) => void;
   removeItem: (slug: string) => void;
   increment: (slug: string) => void;
   decrement: (slug: string) => void;
@@ -118,7 +123,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (hydrated) saveCart(state.items);
   }, [state.items, hydrated]);
 
-  const addItem = useCallback((product: Product) => dispatch({ type: "ADD_ITEM", product }), []);
+  const addItem = useCallback((product: CartItem) => dispatch({ type: "ADD_ITEM", product }), []);
   const removeItem = useCallback((slug: string) => dispatch({ type: "REMOVE_ITEM", slug }), []);
   const increment = useCallback((slug: string) => dispatch({ type: "INCREMENT", slug }), []);
   const decrement = useCallback((slug: string) => dispatch({ type: "DECREMENT", slug }), []);

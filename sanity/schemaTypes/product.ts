@@ -106,6 +106,13 @@ export const productType = defineType({
       initialValue: false,
     }),
     defineField({
+      name: 'includedRaita',
+      title: '🥣 Includes Free Raita?',
+      type: 'boolean',
+      description: 'Turn ON to offer a free Raita add-on with this item (e.g. Biryani). Customer can opt-in when ordering.',
+      initialValue: false,
+    }),
+    defineField({
       name: 'available',
       title: 'Is Available?',
       type: 'boolean',
