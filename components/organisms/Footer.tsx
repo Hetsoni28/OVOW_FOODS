@@ -5,12 +5,12 @@ import { COMPANY_CONFIG } from "@/lib/config";
 
 export function Footer() {
   return (
-    <footer className="bg-primary py-16 text-white text-center mt-auto">
+    <footer className="bg-primary py-8 text-white text-center mt-auto">
       <div className="container-x flex flex-col items-center">
         
         {/* Shop Info Bar */}
-        <div className="w-full max-w-6xl mb-16">
-          <div className="border border-tertiary py-6 px-4 md:px-8 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-0">
+        <div className="w-full max-w-6xl mb-8">
+          <div className="border border-tertiary py-4 px-4 md:px-8 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
             
             {/* Phone */}
             <a href={`tel:${COMPANY_CONFIG.phone.replace(/\s+/g, '')}`} className="flex items-center gap-4 hover:opacity-80 transition-opacity">
@@ -58,13 +58,13 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mb-8 flex flex-col items-center gap-4">
-          <Logo className="h-20 w-20 md:h-24 md:w-24 mx-auto" />
-          <h2 className="font-serif text-4xl md:text-5xl font-bold tracking-tight">
+        <div className="mb-4 flex flex-col items-center gap-2">
+          <Logo className="h-12 w-12 md:h-14 md:w-14 mx-auto" />
+          <h2 className="font-serif text-2xl md:text-3xl font-bold tracking-tight">
             OVOW FOODS
           </h2>
         </div>
-        <div className="flex flex-wrap justify-center gap-8 text-sm opacity-80 uppercase tracking-widest font-medium">
+        <div className="flex flex-wrap justify-center gap-5 text-xs opacity-70 uppercase tracking-widest font-medium">
           <Link href="/about" className="hover:text-[#C9A24A] hover:opacity-100 transition-colors">
             About Us
           </Link>
@@ -79,20 +79,20 @@ export function Footer() {
           </Link>
         </div>
 
-        <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 mt-12 w-full max-w-4xl mx-auto px-4">
-          <Link href="/menu" className="flex-1 min-w-[200px] bg-[#C9A24A] text-white px-6 py-4 text-xs font-bold tracking-widest uppercase hover:bg-[#1D5A40] hover:border-[#1D5A40] hover:text-[#C9A24A] transition-colors shadow-sm border border-[#C9A24A]">
+        <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 mt-6 w-full max-w-4xl mx-auto px-4">
+          <Link href="/menu" className="flex-1 min-w-[160px] bg-[#C9A24A] text-white px-5 py-3 text-xs font-bold tracking-widest uppercase hover:bg-[#1D5A40] hover:border-[#1D5A40] hover:text-[#C9A24A] transition-colors shadow-sm border border-[#C9A24A]">
             Order Now
           </Link>
-          <Link href="/menu" className="flex-1 min-w-[200px] bg-[#C9A24A] text-white px-6 py-4 text-xs font-bold tracking-widest uppercase hover:bg-[#1D5A40] hover:border-[#1D5A40] hover:text-[#C9A24A] transition-colors shadow-sm border border-[#C9A24A]">
+          <Link href="/menu" className="flex-1 min-w-[160px] bg-[#C9A24A] text-white px-5 py-3 text-xs font-bold tracking-widest uppercase hover:bg-[#1D5A40] hover:border-[#1D5A40] hover:text-[#C9A24A] transition-colors shadow-sm border border-[#C9A24A]">
             Pre-Order Now
           </Link>
-          <Link href="/party-bulk-orders" className="flex-1 min-w-[200px] bg-[#C9A24A] text-white px-6 py-4 text-xs font-bold tracking-widest uppercase hover:bg-[#1D5A40] hover:border-[#1D5A40] hover:text-[#C9A24A] transition-colors shadow-sm border border-[#C9A24A]">
+          <Link href="/party-bulk-orders" className="flex-1 min-w-[160px] bg-[#C9A24A] text-white px-5 py-3 text-xs font-bold tracking-widest uppercase hover:bg-[#1D5A40] hover:border-[#1D5A40] hover:text-[#C9A24A] transition-colors shadow-sm border border-[#C9A24A]">
             Catering / Bulk Order
           </Link>
         </div>
 
         {/* Developer Credit — Premium Bottom Bar */}
-        <div className="mt-16 w-full border-t border-white/[0.08]">
+        <div className="mt-8 w-full border-t border-white/[0.08]">
           {/* Main Credit Bar */}
           <div className="border-t border-white/[0.05] pt-5 pb-2 flex flex-col sm:flex-row items-center justify-between gap-4 px-2">
             
