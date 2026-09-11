@@ -56,6 +56,7 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
               🧒 Kids Special
             </span>
           )}
+          {isSoldOut && (
             <span className="bg-black/80 text-white px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold shadow-sm backdrop-blur-sm flex items-center gap-1.5">
               <IconStatusSoldOut size={10} /> Sold Out
             </span>
