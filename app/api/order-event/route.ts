@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "next-sanity";
 
-// Write client — needs a token with write access
+// Write client — uses the existing SANITY_API_TOKEN already set in Vercel
 const writeClient = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
   apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || "2024-01-01",
-  token: process.env.SANITY_API_WRITE_TOKEN, // server-only secret
+  token: process.env.SANITY_API_TOKEN, // already configured in Vercel ✅
   useCdn: false,
 });
 
