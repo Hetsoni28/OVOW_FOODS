@@ -33,16 +33,20 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
       const original = receiptRef.current;
 
       // Clone off-screen so we don't mess with the visible UI
+      // Use 900px width → forces Tailwind md: breakpoints to apply (≥768px)
       const clone = original.cloneNode(true) as HTMLElement;
       clone.style.cssText = [
         "position:fixed",
         "top:-9999px",
         "left:0",
-        "width:800px",
+        "width:900px",       // wide enough for md: breakpoints
+        "min-width:900px",
+        "max-width:900px",
         "padding:48px",
         "background:#ffffff",
         "overflow:visible",
         "box-shadow:none",
+        "z-index:-1",
       ].join(";");
 
       // ── Strip CSS that html2canvas cannot render ──────────────────────
@@ -70,6 +74,13 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
         useCORS: true,
         backgroundColor: "#FFFFFF",
         logging: false,
+        // ✅ KEY FIX: Tell html2canvas the "viewport" is 900px wide so
+        // Tailwind md: responsive classes (grid-cols-2, etc.) trigger properly
+        // even on a narrow mobile screen.
+        windowWidth: 900,
+        windowHeight: 9999,  // prevent vertical clipping
+        scrollY: 0,
+        scrollX: 0,
       });
 
       document.body.removeChild(clone);
