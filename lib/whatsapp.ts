@@ -25,7 +25,7 @@ export function buildOrderMessage(
 ): string {
   const lines = items.flatMap(
     (item) => {
-      const main = `🔹 *${item.quantity}x* ${item.name} ${item.size ? `(${item.size})` : ""} — ₹${(
+      const main = `▪ *${item.quantity}x* ${item.name} ${item.size ? `(${item.size})` : ""} — ₹${(
         item.price * item.quantity
       ).toLocaleString("en-IN")}`;
       const swami = item.variant === 'swaminarayan' ? `   ↳ 🌿 *Swaminarayan Style* (No onion/garlic)` : null;
@@ -40,10 +40,10 @@ export function buildOrderMessage(
   );
 
   return [
-    `✨ *NEW DIRECT ORDER | OVOW FOODS* ✨`,
+    `✅ *NEW ORDER | OVOW FOODS*`,
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
     ``,
-    `*📦 ORDER SUMMARY*`,
+    `*🍽 ORDER ITEMS*`,
     ...lines,
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
     `💰 *Subtotal:* ₹${subtotal.toLocaleString("en-IN")}`,
@@ -52,7 +52,7 @@ export function buildOrderMessage(
     `*👤 CUSTOMER DETAILS*`,
     `👤 *Name:* ${customer.name}`,
     `📱 *Mobile:* ${customer.mobile}`,
-    `📍 *Delivery Address:* ${customer.address}`,
+    `📍 *Address:* ${customer.address}`,
     customer.notes ? `📝 *Notes:* ${customer.notes}` : "",
     ``,
     `🌿 *Thank you for choosing OVOW FOODS!*`,
@@ -134,7 +134,7 @@ export function buildCheckoutWhatsAppMessage(
 ): string {
   const lines = items.flatMap(
     (item) => {
-      const main = `🔹 *${item.quantity}x* ${item.name} ${item.size ? `(${item.size})` : ""} → ₹${(item.price * item.quantity).toLocaleString("en-IN")}`;
+      const main = `▪ *${item.quantity}x* ${item.name} ${item.size ? `(${item.size})` : ""} → ₹${(item.price * item.quantity).toLocaleString("en-IN")}`;
       const swami = item.variant === 'swaminarayan' ? `   ↳ 🌿 *Swaminarayan Style* (No onion/garlic)` : null;
       const raita = item.addons?.wantsRaita ? `   ↳ 🥣 Raita (FREE)` : null;
       return [main, swami, raita].filter(Boolean) as string[];
@@ -157,13 +157,13 @@ export function buildCheckoutWhatsAppMessage(
   const actionLink = `${typeof window !== "undefined" ? window.location.origin : ""}/order-action/${orderRef}?d=${payload}`;
 
   const deliveryLine = isPorter
-    ? `🟢 *PORTER DELIVERY* (Needs Booking)`
+    ? `💚 *PORTER DELIVERY* (Needs Booking)`
     : `🛵 *OVOW DIRECT DELIVERY*`;
 
   return [
-    `🌟 *NEW PREMIUM ORDER | OVOW FOODS* 🌟`,
+    `✅ *NEW ORDER | OVOW FOODS*`,
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
-    `🆔 *ORDER ID:* ${orderRef}`,
+    `🗒 *ORDER ID:* ${orderRef}`,
     ``,
     `*🚚 DELIVERY INFO*`,
     deliveryLine,
@@ -175,14 +175,14 @@ export function buildCheckoutWhatsAppMessage(
     `📍 *Address:* ${customer.address}`,
     customer.instructions ? `📝 *Instructions:* ${customer.instructions}` : undefined,
     ``,
-    `*📦 ORDER SUMMARY*`,
+    `*🍽 ORDER ITEMS*`,
     ...lines,
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
     `🍱 *FOOD TOTAL:* ₹${total.toLocaleString("en-IN")}`,
     `🛵 *DELIVERY:* ₹0`,
-    `🔖 *TAX:* ₹0`,
+    `🏷 *TAX:* ₹0`,
     `══════════════════════════════════`,
-    `🎯 *GRAND TOTAL: ₹${total.toLocaleString("en-IN")}*`,
+    `✅ *GRAND TOTAL: ₹${total.toLocaleString("en-IN")}*`,
     `══════════════════════════════════`,
     ``,
     `*💳 PAYMENT STATUS*`,
