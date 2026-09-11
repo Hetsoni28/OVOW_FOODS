@@ -783,8 +783,10 @@ export function IconPreOrder({ size = 20, className, ...p }: IconProps) {
 }
 
 /**
- * IconSignatureDish — chef hat with a 5-point star on the front band.
- * Used for the Signature badge. strokeWidth 1.9, round caps, 24×24 viewBox.
+ * IconSignatureDish — real toque blanche chef hat.
+ * Anatomy: puffy cloud crown (3-arc system) + side bulges for depth
+ * + tall straight cylinder body + 2 pleat lines + thick flat brim.
+ * strokeWidth 1.9, round caps/joins, 24×24 viewBox. No fill, pure stroke.
  */
 export function IconSignatureDish({ size = 20, className, ...p }: IconProps) {
   return (
@@ -794,15 +796,30 @@ export function IconSignatureDish({ size = 20, className, ...p }: IconProps) {
       strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"
       className={className} {...p}
     >
-      {/* Hat dome */}
-      <path d="M7 15 Q7 7 12 7 Q17 7 17 15" />
-      {/* Hat band */}
-      <rect x="6" y="15" width="12" height="4" rx="1.2" />
-      {/* 5-point star centred in dome */}
-      <path
-        d="M12 9 L12.5 10.8 L14.4 10.8 L12.9 11.9 L13.5 13.7 L12 12.6 L10.5 13.7 L11.1 11.9 L9.6 10.8 L11.5 10.8 Z"
-        fill="currentColor" stroke="none"
-      />
+      {/* ── Puffy crown dome (main arch) ── */}
+      <path d="M7 12 C7 5 17 5 17 12" />
+
+      {/* ── Left side puff bulge — gives the 3-D cloud look ── */}
+      <path d="M7 12 C5 12 4 10.5 4 9 C4 7.5 5 6.5 7 7.2" strokeWidth="1.7" />
+
+      {/* ── Right side puff bulge ── */}
+      <path d="M17 12 C19 12 20 10.5 20 9 C20 7.5 19 6.5 17 7.2" strokeWidth="1.7" />
+
+      {/* ── Crease line — separates puff from cylinder body ── */}
+      <line x1="7" y1="12" x2="17" y2="12" />
+
+      {/* ── Left wall of cylinder body ── */}
+      <line x1="7" y1="12" x2="7" y2="19" />
+
+      {/* ── Right wall of cylinder body ── */}
+      <line x1="17" y1="12" x2="17" y2="19" />
+
+      {/* ── Pleat fold lines inside cylinder (left & right of centre) ── */}
+      <line x1="10.5" y1="12.5" x2="10.5" y2="19" strokeWidth="1.2" />
+      <line x1="13.5" y1="12.5" x2="13.5" y2="19" strokeWidth="1.2" />
+
+      {/* ── Wide flat brim / band at base ── */}
+      <path d="M5.5 19 H18.5" strokeWidth="2.4" />
     </svg>
   );
 }
