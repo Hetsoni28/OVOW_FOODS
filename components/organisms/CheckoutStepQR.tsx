@@ -1,8 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { IconArrowLeft, IconCheck, IconCopy, IconAlertTriangle } from "@/components/atoms/Icons";
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { pageAnim, childAnim } from "@/lib/animations";
 import { COMPANY_CONFIG } from "@/lib/config";
@@ -23,6 +23,13 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
   const [copiedUpi, setCopiedUpi] = useState(false);
   const [copiedAmt, setCopiedAmt] = useState(false);
 
+  // Auto-advance state
+  const [upiLaunched, setUpiLaunched] = useState(false);
+  const [countdown, setCountdown] = useState(5);
+  const [autoAdvanceCancelled, setAutoAdvanceCancelled] = useState(false);
+  const countdownRef = useRef<NodeJS.Timeout | null>(null);
+  const autoAdvanceRef = useRef(false);
+
   const copyUpi = () => {
     navigator.clipboard.writeText(COMPANY_CONFIG.upiId);
     setCopiedUpi(true);
@@ -33,6 +40,48 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
     navigator.clipboard.writeText(cartTotal.toFixed(2));
     setCopiedAmt(true);
     setTimeout(() => setCopiedAmt(false), 2000);
+  };
+
+  const startCountdown = useCallback(() => {
+    if (autoAdvanceCancelled) return;
+    setCountdown(5);
+    autoAdvanceRef.current = true;
+    countdownRef.current = setInterval(() => {
+      setCountdown((c) => {
+        if (c <= 1) {
+          clearInterval(countdownRef.current!);
+          if (autoAdvanceRef.current) {
+            onConfirmPayment();
+          }
+          return 0;
+        }
+        return c - 1;
+      });
+    }, 1000);
+  }, [autoAdvanceCancelled, onConfirmPayment]);
+
+  // When user returns from UPI app (page becomes visible again) → start 5s auto-advance
+  useEffect(() => {
+    if (!upiLaunched) return;
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible" && upiLaunched && !autoAdvanceCancelled) {
+        startCountdown();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      if (countdownRef.current) clearInterval(countdownRef.current);
+    };
+  }, [upiLaunched, autoAdvanceCancelled, startCountdown]);
+
+  const handleCancelAutoAdvance = () => {
+    autoAdvanceRef.current = false;
+    if (countdownRef.current) clearInterval(countdownRef.current);
+    setAutoAdvanceCancelled(true);
+    setUpiLaunched(false);
   };
 
   return (
@@ -58,7 +107,7 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
           <div className="bg-primary/5 p-6 flex flex-col items-center border border-primary/10 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#C9A24A]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
 
-            {/* Amount Badge — most important info */}
+            {/* Amount Badge */}
             <div className="relative z-10 mb-5 flex flex-col items-center gap-1">
               <span className="text-[10px] uppercase tracking-[0.2em] text-primary/40 font-bold">Amount to Pay</span>
               <div className="flex items-baseline gap-1">
@@ -67,14 +116,13 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
                 </span>
                 <span className="text-primary/40 text-sm">.00</span>
               </div>
-              {/* Pulsing dot — shows the amount is encoded live in QR */}
               <div className="flex items-center gap-1.5 mt-1">
                 <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                 <span className="text-[10px] text-green-600 font-semibold uppercase tracking-widest">Amount pre-filled in QR</span>
               </div>
             </div>
 
-            {/* QR Code — encodes upi://pay?pa=UPI_ID&am=EXACT_AMOUNT&cu=INR&tn=ORDER_REF */}
+            {/* QR Code */}
             <div className="bg-white p-4 shadow-xl border border-primary/5 relative z-10">
               <Image
                 src={qrUrl}
@@ -91,43 +139,35 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
             </p>
           </div>
 
-          {/* Manual transfer section — for users without scan */}
+          {/* Manual transfer section */}
           <div className="border border-primary/10 p-5 space-y-3 bg-white">
             <p className="text-[10px] font-bold uppercase tracking-widest text-primary/40">Can&apos;t scan? Transfer manually</p>
 
-            {/* UPI ID row */}
             <div className="flex items-center justify-between py-2 border-b border-primary/5">
               <div className="min-w-0 flex-1 pr-2">
                 <p className="text-[10px] text-primary/40 uppercase tracking-widest">UPI ID</p>
                 <p className="font-bold text-primary text-sm tracking-wide break-all">{COMPANY_CONFIG.upiId}</p>
               </div>
-              <button suppressHydrationWarning
-                onClick={copyUpi}
-                className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-3 py-2 border border-primary/20 hover:border-primary hover:bg-primary hover:text-white text-primary transition-all"
-              >
+              <button suppressHydrationWarning onClick={copyUpi} className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-3 py-2 border border-primary/20 hover:border-primary hover:bg-primary hover:text-white text-primary transition-all">
                 {copiedUpi ? <IconCheck size={12} className="text-green-500" /> : <IconCopy size={12} />}
                 {copiedUpi ? "Copied!" : "Copy ID"}
               </button>
             </div>
 
-            {/* Exact Amount row */}
             <div className="flex items-center justify-between py-2">
               <div className="min-w-0 flex-1 pr-2">
                 <p className="text-[10px] text-primary/40 uppercase tracking-widest">Exact Amount</p>
                 <p className="font-bold text-primary text-sm break-all">₹{cartTotal.toLocaleString("en-IN")}.00</p>
               </div>
-              <button suppressHydrationWarning
-                onClick={copyAmount}
-                className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-3 py-2 border border-primary/20 hover:border-primary hover:bg-primary hover:text-white text-primary transition-all"
-              >
+              <button suppressHydrationWarning onClick={copyAmount} className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-3 py-2 border border-primary/20 hover:border-primary hover:bg-primary hover:text-white text-primary transition-all">
                 {copiedAmt ? <IconCheck size={12} className="text-green-500" /> : <IconCopy size={12} />}
                 {copiedAmt ? "Copied!" : "Copy ₹"}
               </button>
             </div>
           </div>
 
-          {/* Warning */}
-          <div className="flex flex-col gap-3 bg-red-50 p-4 border border-red-100 rounded-lg">
+          {/* Screenshot Warning */}
+          <div className="flex flex-col gap-3 bg-red-50 p-4 border border-red-100">
             <div className="flex items-start gap-3">
               <IconAlertTriangle size={18} className="text-red-500 shrink-0 mt-0.5" />
               <p className="text-xs text-red-800 leading-relaxed font-bold uppercase tracking-wider">
@@ -135,14 +175,50 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
               </p>
             </div>
             <p className="text-xs text-red-700 leading-relaxed pl-7">
-              You <strong>must</strong> take a screenshot of your successful payment. You will need to attach this screenshot in the WhatsApp message on the next step to confirm your order.
+              Take a screenshot of your successful payment and attach it to the WhatsApp message on the next step.
             </p>
           </div>
 
-          {/* Action buttons */}
+          {/* Auto-advance countdown banner — appears when user returns from UPI app */}
+          <AnimatePresence>
+            {upiLaunched && !autoAdvanceCancelled && (
+              <motion.div
+                initial={{ opacity: 0, y: 8, height: 0 }}
+                animate={{ opacity: 1, y: 0, height: "auto" }}
+                exit={{ opacity: 0, y: -8, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="bg-[#0B2118] text-white p-4 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    {/* Spinning countdown ring */}
+                    <div className="relative w-10 h-10 flex-shrink-0">
+                      <div className="absolute inset-0 rounded-full border-4 border-[#C9A24A]/20" />
+                      <div className="absolute inset-0 rounded-full border-4 border-t-[#C9A24A] animate-spin" />
+                      <span className="absolute inset-0 flex items-center justify-center font-black text-[#C9A24A] text-sm">{countdown}</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-white">Welcome back!</p>
+                      <p className="text-[11px] text-white/50">
+                        Advancing to confirmation in <span className="text-[#C9A24A] font-black">{countdown}s</span>
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleCancelAutoAdvance}
+                    className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white border border-white/10 px-3 py-1.5 transition-colors flex-shrink-0"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Action Buttons */}
           <div className="flex gap-4 pt-2">
             <a
               href={upiUri}
+              onClick={() => { setUpiLaunched(true); setAutoAdvanceCancelled(false); }}
               className="flex-1 flex flex-col items-center justify-center bg-white border-2 border-primary text-primary py-3 px-2 text-xs font-bold tracking-wider hover:bg-primary hover:text-white transition-colors text-center"
             >
               <span>1. Open UPI App</span>
@@ -151,7 +227,7 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
               onClick={onConfirmPayment}
               className="flex-1 flex flex-col items-center justify-center bg-[#C9A24A] text-white py-3 px-2 text-xs font-bold tracking-wider hover:bg-[#0B2118] transition-colors shadow-lg shadow-[#0B2118]/20"
             >
-              <span>2. I Have Screenshot</span>
+              <span>2. I&apos;ve Paid ✓</span>
             </button>
           </div>
         </motion.div>
