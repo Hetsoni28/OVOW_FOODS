@@ -631,3 +631,61 @@ export function IconCamera({ size = 20, className, ...p }: IconProps) {
     </svg>
   );
 }
+
+// ── Availability Status Icons ────────────────────────────────────────────────
+
+/** 🟢 Available — filled green circle with animated outer ping ring */
+export function IconStatusAvailable({ size = 12, className }: { size?: number; className?: string }) {
+  return (
+    <span
+      className={`relative inline-flex items-center justify-center shrink-0 ${className ?? ""}`}
+      style={{ width: size, height: size }}
+    >
+      {/* Ping animation ring */}
+      <span
+        className="absolute inline-flex rounded-full bg-[#2E7D4F] opacity-50 animate-ping"
+        style={{ width: size, height: size }}
+      />
+      {/* Solid filled circle */}
+      <svg width={size} height={size} viewBox="0 0 12 12" fill="none" className="relative z-10">
+        <circle cx="6" cy="6" r="5.5" fill="#2E7D4F" />
+        {/* White check mark */}
+        <polyline
+          points="3.5,6.2 5.2,8 8.5,4"
+          stroke="white"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
+      </svg>
+    </span>
+  );
+}
+
+/** 🟠 Limited — amber circle with exclamation mark */
+export function IconStatusLimited({ size = 12, className }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" className={`shrink-0 ${className ?? ""}`}>
+      {/* Outer filled amber circle */}
+      <circle cx="6" cy="6" r="5.5" fill="#F59E0B" />
+      {/* Exclamation mark stem */}
+      <line x1="6" y1="3.5" x2="6" y2="6.8" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+      {/* Exclamation mark dot */}
+      <circle cx="6" cy="8.5" r="0.75" fill="white" />
+    </svg>
+  );
+}
+
+/** 🔴 Sold Out — red circle with X mark */
+export function IconStatusSoldOut({ size = 12, className }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" className={`shrink-0 ${className ?? ""}`}>
+      {/* Outer filled red circle */}
+      <circle cx="6" cy="6" r="5.5" fill="#DC2626" />
+      {/* X strokes */}
+      <line x1="4" y1="4" x2="8" y2="8" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="8" y1="4" x2="4" y2="8" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}

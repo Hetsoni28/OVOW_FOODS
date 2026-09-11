@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { IconPlus, IconCheck, IconStar, IconFlame, IconChefHat } from "@/components/atoms/Icons";
+import { IconPlus, IconCheck, IconStar, IconFlame, IconChefHat, IconStatusAvailable, IconStatusLimited, IconStatusSoldOut } from "@/components/atoms/Icons";
 import { LazyVideo } from "@/components/atoms/LazyVideo";
 import { useState } from "react";
 import { Product } from "@/types";
@@ -49,8 +49,8 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
         {/* Badges — top left */}
         <div className="absolute top-2 left-2 md:top-4 md:left-4 flex flex-col gap-1.5 md:gap-2">
           {isSoldOut && (
-            <span className="bg-black/80 text-white px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold shadow-sm backdrop-blur-sm flex items-center gap-1">
-              🔴 Sold Out
+            <span className="bg-black/80 text-white px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold shadow-sm backdrop-blur-sm flex items-center gap-1.5">
+              <IconStatusSoldOut size={10} /> Sold Out
             </span>
           )}
           {!isSoldOut && (product.isSignature || (product as any).signature) && (
@@ -70,10 +70,11 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
           )}
         </div>
 
-        {/* 🟠 Limited badge — bottom left strip */}
+        {/* Limited badge — bottom strip */}
         {isLimited && !isSoldOut && (
-          <div className="absolute bottom-0 left-0 right-0 bg-amber-500/90 backdrop-blur-sm px-3 py-1.5 flex items-center gap-1.5">
-            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] text-white">🟠 Limited Availability</span>
+          <div className="absolute bottom-0 left-0 right-0 bg-amber-500/90 backdrop-blur-sm px-3 py-1.5 flex items-center gap-2">
+            <IconStatusLimited size={10} />
+            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] text-white">Limited Availability</span>
           </div>
         )}
 

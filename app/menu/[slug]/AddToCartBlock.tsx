@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { IconPlus, IconMinus, IconCheck, IconShoppingBag, IconArrowRight, IconBellOff } from "@/components/atoms/Icons";
+import { IconPlus, IconMinus, IconCheck, IconShoppingBag, IconArrowRight, IconBellOff, IconStatusAvailable, IconStatusLimited, IconStatusSoldOut } from "@/components/atoms/Icons";
 import { useCart } from "@/context/CartContext";
 import { Product } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
@@ -45,9 +45,9 @@ export function AddToCartBlock({ product }: { product: Product }) {
     return (
       <div className="mt-12 pt-8 border-t border-primary/10">
         <div className="flex flex-col gap-4">
-          <div className="inline-flex items-center gap-2 bg-red-50 border border-red-200 px-4 py-2 w-fit">
-            <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-red-500">
+          <div className="flex items-center gap-2 bg-red-50 border border-red-200 px-4 py-2.5 w-fit">
+            <IconStatusSoldOut size={12} />
+            <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-red-600">
               Currently Unavailable
             </span>
           </div>
@@ -85,16 +85,16 @@ export function AddToCartBlock({ product }: { product: Product }) {
       {/* ── Availability Status Banner ── */}
       {isLimited ? (
         <div className="flex items-center gap-2 mb-6 bg-amber-50 border border-amber-200 px-4 py-2.5">
-          <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-amber-600">
-            🟠 Limited Availability Today — Order soon!
+          <IconStatusLimited size={13} />
+          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-amber-700">
+            Limited Availability Today — Order soon!
           </span>
         </div>
       ) : (
         <div className="flex items-center gap-2 mb-6">
-          <span className="w-2 h-2 rounded-full bg-[#2E7D4F]" />
+          <IconStatusAvailable size={13} />
           <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#2E7D4F]">
-            🟢 Freshly Available Today
+            Freshly Available Today
           </span>
         </div>
       )}
