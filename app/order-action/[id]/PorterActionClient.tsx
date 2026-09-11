@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { IconCheckCircle, IconTruck, IconAlertCircle, IconCopy, IconNavigation, IconLoader, IconExternalLink, IconMessageSquare } from "@/components/atoms/Icons";
+import {
+  IconCheckCircle, IconTruck, IconAlertCircle, IconCopy,
+  IconLoader, IconExternalLink, IconMessageSquare
+} from "@/components/atoms/Icons";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface PorterData {
   order_id: string;
@@ -34,13 +38,8 @@ export function PorterActionClient({ orderRef, phone, customerName }: { orderRef
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ orderId: orderRef }),
       });
-      
       const result = await res.json();
-      
-      if (!res.ok || !result.success) {
-        throw new Error(result.error || "Failed to book");
-      }
-      
+      if (!res.ok || !result.success) throw new Error(result.error || "Failed to book");
       setData(result.data);
       setStatus("success");
     } catch (err) {
@@ -63,120 +62,132 @@ export function PorterActionClient({ orderRef, phone, customerName }: { orderRef
       ``,
       `Thank you for choosing OVOW FOODS! 🌿`
     ].join("\n");
-    
     window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
-  if (status === "success" && data) {
-    return (
-      <div className="pt-4 space-y-4">
-        <div className="bg-green-50 border border-green-200 p-5 rounded-xl">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-              <IconCheckCircle size={24} className="text-green-600" />
-            </div>
-            <div>
-              <p className="font-bold text-green-800">Porter Booked Successfully!</p>
-              <p className="text-xs text-green-700 font-medium mt-0.5">Pickup in {data.estimated_pickup}</p>
-            </div>
-          </div>
-          
-          <div className="space-y-3 bg-white p-4 rounded-lg border border-green-100 mb-4">
-            <div>
-              <p className="text-[10px] uppercase tracking-widest text-gray-400">Driver</p>
-              <p className="text-sm font-bold text-gray-900">{data.driver.name}</p>
-            </div>
-            <div className="flex justify-between items-center pt-2 border-t border-gray-100">
-              <div>
-                <p className="text-[10px] uppercase tracking-widest text-gray-400">Contact</p>
-                <p className="text-sm font-medium text-gray-900">{data.driver.phone}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-[10px] uppercase tracking-widest text-gray-400">Vehicle</p>
-                <p className="text-sm font-medium text-gray-900">{data.driver.vehicle_number}</p>
-              </div>
-            </div>
-          </div>
+  return (
+    <div className="space-y-3 pt-2">
+      <AnimatePresence mode="wait">
 
-          <div className="space-y-2 mt-4">
-            <a 
-              href={data.tracking_url}
-              target="_blank"
-              rel="noreferrer"
-              className="w-full bg-green-600 hover:bg-green-700 text-white p-4 rounded-lg font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-2 transition-colors"
-            >
-              Track Delivery <IconExternalLink size={14} />
-            </a>
-            
-            {/* Notify Customer with Tracking Link */}
+        {/* SUCCESS STATE */}
+        {status === "success" && data && (
+          <motion.div
+            key="success"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-green-500/10 border border-green-500/20 overflow-hidden"
+          >
+            <div className="flex items-center gap-3 px-5 py-4 border-b border-green-500/10">
+              <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                <IconCheckCircle size={16} className="text-green-400" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-green-300">Porter Booked!</p>
+                <p className="text-[11px] text-green-400/60">Pickup in {data.estimated_pickup}</p>
+              </div>
+            </div>
+
+            {/* Driver details */}
+            <div className="px-5 py-4 grid grid-cols-3 gap-4">
+              <div>
+                <p className="text-[9px] uppercase tracking-widest text-white/30 mb-1">Driver</p>
+                <p className="text-sm font-bold text-white">{data.driver.name}</p>
+              </div>
+              <div>
+                <p className="text-[9px] uppercase tracking-widest text-white/30 mb-1">Contact</p>
+                <p className="text-sm font-bold text-white">{data.driver.phone}</p>
+              </div>
+              <div>
+                <p className="text-[9px] uppercase tracking-widest text-white/30 mb-1">Vehicle</p>
+                <p className="text-sm font-bold text-white">{data.driver.vehicle_number}</p>
+              </div>
+            </div>
+
+            <div className="px-5 pb-4 space-y-2">
+              <a
+                href={data.tracking_url}
+                target="_blank"
+                rel="noreferrer"
+                className="w-full bg-green-500 hover:bg-green-400 text-white py-3.5 font-bold uppercase tracking-[0.15em] text-xs flex items-center justify-center gap-2 transition-colors"
+              >
+                Track Delivery <IconExternalLink size={13} />
+              </a>
+              {phone && (
+                <button
+                  onClick={() => handleNotifyCustomer(data.tracking_url)}
+                  className="w-full bg-[#25D366] hover:bg-[#1da851] text-white py-3.5 font-bold uppercase tracking-[0.15em] text-xs flex items-center justify-center gap-2 transition-colors"
+                >
+                  <IconMessageSquare size={14} />
+                  Send Tracking to Customer
+                </button>
+              )}
+            </div>
+          </motion.div>
+        )}
+
+        {/* IDLE / ERROR STATE */}
+        {status !== "success" && (
+          <motion.div key="actions" className="space-y-2">
+
+            {/* Accept & Notify */}
             {phone && (
               <button
-                onClick={() => handleNotifyCustomer(data.tracking_url)}
-                className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white p-4 rounded-lg font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-2 transition-colors"
+                onClick={() => handleNotifyCustomer()}
+                className="w-full bg-[#25D366] hover:bg-[#1da851] active:scale-[0.98] text-white py-4 font-black uppercase tracking-[0.2em] text-sm flex items-center justify-center gap-2.5 transition-all shadow-lg shadow-[#25D366]/20"
               >
-                <IconMessageSquare size={16} />
-                Send Tracking to Customer
+                <IconMessageSquare size={17} />
+                Accept &amp; Notify Customer
               </button>
             )}
-          </div>
-        </div>
-      </div>
-    );
-  }
 
+            {/* Copy phone */}
+            {phone && (
+              <button
+                onClick={copyPhone}
+                className="w-full flex items-center justify-center gap-2 py-3 border border-white/10 text-xs font-bold text-white/40 hover:border-white/30 hover:text-white/70 transition-colors"
+              >
+                {copiedPhone ? <IconCheckCircle size={13} className="text-green-400" /> : <IconCopy size={13} />}
+                {copiedPhone ? "Copied!" : `Copy: +91 ${phone}`}
+              </button>
+            )}
 
+            {/* Book Porter */}
+            <button
+              onClick={handleBookPorter}
+              disabled={status === "loading"}
+              className="w-full bg-[#1E40AF] hover:bg-blue-900 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed text-white py-4 font-black uppercase tracking-[0.2em] text-sm flex items-center justify-center gap-2.5 transition-all shadow-lg shadow-blue-900/20"
+            >
+              {status === "loading" ? (
+                <><IconLoader size={16} /> Booking Porter...</>
+              ) : (
+                <><IconTruck size={16} /> Book Porter Delivery</>
+              )}
+            </button>
 
-  return (
-    <div className="pt-4 space-y-3">
-      {/* Accept & Notify Customer Button */}
-      {phone && (
-        <button
-          onClick={() => handleNotifyCustomer()}
-          className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white p-4 rounded-xl font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 transition-colors shadow-lg shadow-[#25D366]/20"
-        >
-          <IconMessageSquare size={18} />
-          Accept Order & Notify Customer
-        </button>
-      )}
-      {/* Copy phone button */}
-      {phone && (
-        <button
-          onClick={copyPhone}
-          className="w-full flex items-center justify-center gap-2 py-2.5 border border-gray-200 rounded-lg text-xs font-bold text-gray-600 hover:border-gray-400 hover:text-gray-900 transition-colors"
-        >
-          {copiedPhone ? <IconCheckCircle size={14} className="text-green-500" /> : <IconCopy size={14} />}
-          {copiedPhone ? "Phone Copied!" : `Copy Phone: +91 ${phone}`}
-        </button>
-      )}
-      <button 
-        onClick={handleBookPorter}
-        disabled={status === "loading"}
-        className="w-full bg-[#1E40AF] hover:bg-blue-900 text-white p-4 rounded-xl font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 transition-colors shadow-lg shadow-blue-900/20 disabled:opacity-70 disabled:cursor-not-allowed"
-      >
-        {status === "loading" ? (
-          <>
-            <IconLoader size={18} />
-            Booking Porter...
-          </>
-        ) : (
-          <>
-            <IconTruck size={18} />
-            Book Porter Delivery
-          </>
+            {/* Error message */}
+            <AnimatePresence>
+              {status === "error" && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="flex items-center justify-center gap-2 bg-red-500/10 border border-red-500/20 py-2.5 px-4"
+                >
+                  <IconAlertCircle size={13} className="text-red-400" />
+                  <p className="text-xs text-red-400 font-bold">Failed to book. Please try again.</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {status !== "error" && (
+              <p className="text-center text-[9px] text-white/15 mt-2 flex items-center justify-center gap-1 uppercase tracking-wider">
+                <IconAlertCircle size={10} />
+                Mock mode — no actual drivers booked
+              </p>
+            )}
+          </motion.div>
         )}
-      </button>
-
-      {status === "error" && (
-        <p className="text-center text-xs text-red-500 mt-3 font-bold bg-red-50 py-2 rounded">
-          Failed to book. Please try again.
-        </p>
-      )}
-
-      {status !== "error" && (
-        <p className="text-center text-[10px] text-gray-400 mt-3 flex items-center justify-center gap-1">
-          <IconAlertCircle size={12} /> Currently running in MOCK mode (No actual drivers booked)
-        </p>
-      )}
+      </AnimatePresence>
     </div>
   );
 }

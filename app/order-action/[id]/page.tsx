@@ -1,4 +1,4 @@
-import { IconCheckCircle, IconTruck, IconMapPin } from "@/components/atoms/Icons";
+import { IconCheckCircle, IconTruck, IconMapPin, IconPhone } from "@/components/atoms/Icons";
 import { PorterActionClient } from "./PorterActionClient";
 import { AdminLock } from "./AdminLock";
 
@@ -27,79 +27,95 @@ export default async function OrderActionPage({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-        
-        {/* Header */}
-        <div className="bg-[#0B2118] p-6 text-center relative">
-          <div className="absolute top-4 right-4 bg-green-500/20 text-green-400 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest border border-green-500/30">
-            Secure Link
-          </div>
-          <h1 className="font-serif text-2xl text-[#C9A24A]">OVOW FOODS</h1>
-          <p className="text-white/60 text-xs mt-1 tracking-widest uppercase">Admin Action Portal</p>
+    <AdminLock>
+      <div className="min-h-screen bg-[#0B2118] relative overflow-hidden">
+
+        {/* Background glow */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full bg-[#C9A24A]/5 blur-[120px]" />
         </div>
 
-        <AdminLock>
-          <div className="p-6 space-y-6">
-            
-            {/* Order Summary */}
-            <div className="space-y-4">
-              <div className="flex justify-between items-start pb-4 border-b border-gray-100">
-                <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">Order Ref</p>
-                  <p className="font-bold text-gray-900">{orderRef}</p>
+        {/* Gold shimmer top */}
+        <div className="w-full h-1 bg-gradient-to-r from-transparent via-[#C9A24A] to-transparent" />
+
+        {/* Header */}
+        <header className="px-6 py-5 flex items-center justify-between border-b border-white/5">
+          <div>
+            <p className="text-[9px] font-black uppercase tracking-[0.5em] text-[#C9A24A]">OVOW FOODS</p>
+            <h1 className="font-serif text-xl text-white mt-0.5">Admin Portal</h1>
+          </div>
+          <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 px-3 py-1.5 rounded-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+            <span className="text-[9px] font-black uppercase tracking-widest text-green-400">Secure</span>
+          </div>
+        </header>
+
+        <main className="max-w-lg mx-auto px-4 py-8 space-y-4">
+
+          {/* Order ID badge */}
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/30 mb-1">New Order</p>
+              <p className="font-mono text-xl font-black text-white tracking-wider">{orderRef}</p>
+            </div>
+            <div className="bg-[#C9A24A]/10 border border-[#C9A24A]/30 px-4 py-2 text-right">
+              <p className="text-[9px] text-[#C9A24A]/60 uppercase tracking-widest">Total</p>
+              <p className="font-serif text-2xl font-black text-[#C9A24A]">₹{Number(orderData.t).toLocaleString("en-IN")}</p>
+            </div>
+          </div>
+
+          {/* Payment confirmed badge */}
+          <div className="flex items-center gap-3 bg-green-500/10 border border-green-500/20 p-4">
+            <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+              <IconCheckCircle size={16} className="text-green-400" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-green-300">Payment Marked as Completed</p>
+              <p className="text-[11px] text-green-400/60 mt-0.5">Verify UPI transaction screenshot before booking delivery.</p>
+            </div>
+          </div>
+
+          {/* Customer info card */}
+          <div className="bg-white/5 border border-white/10 overflow-hidden">
+            <div className="px-5 py-3 border-b border-white/5">
+              <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30">Customer Details</p>
+            </div>
+            <div className="p-5 space-y-4">
+              {/* Name + Address */}
+              <div className="flex gap-3">
+                <div className="w-8 h-8 bg-white/5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <IconMapPin size={14} className="text-[#C9A24A]" />
                 </div>
-                <div className="text-right">
-                  <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">Total</p>
-                  <p className="font-bold text-gray-900 text-lg">₹{Number(orderData.t).toLocaleString("en-IN")}</p>
+                <div className="flex-1">
+                  <p className="text-sm font-bold text-white">{orderData.n}</p>
+                  <p className="text-xs text-white/50 mt-1 leading-relaxed">{orderData.a}</p>
                 </div>
               </div>
 
-              {/* Payment Status */}
-              <div className="flex items-center gap-3 p-3 bg-green-50 text-green-800 rounded-lg border border-green-100">
-                <IconCheckCircle size={18} className="text-green-600" />
-                <div>
-                  <p className="text-sm font-bold">Payment Marked Completed</p>
-                  <p className="text-xs text-green-700/80">Please verify UPI transaction before booking.</p>
+              {/* Phone */}
+              <div className="flex gap-3 items-center pt-3 border-t border-white/5">
+                <div className="w-8 h-8 bg-white/5 rounded-full flex items-center justify-center flex-shrink-0">
+                  <IconPhone size={14} className="text-[#C9A24A]" />
                 </div>
-              </div>
-
-              {/* Delivery Details */}
-              <div className="space-y-3 pt-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs text-gray-400 uppercase tracking-widest">Delivery Method</p>
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded border border-blue-100">
-                    <IconTruck size={14} /> PORTER
-                  </div>
-                </div>
-
-                <div className="bg-gray-50 p-4 rounded-lg border border-gray-100 space-y-3">
-                  {/* Address */}
-                  <div className="flex gap-3">
-                    <IconMapPin size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm font-bold text-gray-900">{orderData.n}</p>
-                      <p className="text-sm text-gray-600 mt-1 leading-relaxed">
-                        {orderData.a}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  {/* Contact — copy handled in client */}
-                  <div className="pt-3 border-t border-gray-200">
-                    <p className="text-xs text-gray-500">Contact</p>
-                    <p className="text-sm font-bold text-gray-900">+91 {orderData.p}</p>
-                  </div>
-                </div>
+                <p className="text-sm font-bold text-white tracking-wider">+91 {orderData.p}</p>
               </div>
             </div>
-
-            {/* Interactive Actions — client component */}
-            <PorterActionClient orderRef={orderRef} phone={orderData.p} customerName={orderData.n} />
-
           </div>
-        </AdminLock>
+
+          {/* Delivery method */}
+          <div className="flex items-center justify-between bg-white/5 border border-white/10 px-5 py-4">
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Delivery Method</p>
+            <div className="flex items-center gap-1.5 bg-blue-500/20 border border-blue-500/30 px-3 py-1.5 text-blue-300">
+              <IconTruck size={12} />
+              <span className="text-[10px] font-black uppercase tracking-widest">Porter</span>
+            </div>
+          </div>
+
+          {/* Interactive actions */}
+          <PorterActionClient orderRef={orderRef} phone={orderData.p} customerName={orderData.n} />
+
+        </main>
       </div>
-    </div>
+    </AdminLock>
   );
 }
