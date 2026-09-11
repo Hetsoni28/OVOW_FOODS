@@ -17,7 +17,6 @@ export function MenuClient({
 }) {
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState("");
-  const [swaminarayanOnly, setSwaminarayanOnly] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const isFirstRender = useRef(true);
   
@@ -33,8 +32,7 @@ export function MenuClient({
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (p.description &&
           p.description.toLowerCase().includes(searchQuery.toLowerCase()));
-      const matchesDiet = swaminarayanOnly ? p.isSwaminarayan : true;
-      return matchesCategory && matchesSearch && matchesDiet;
+      return matchesCategory && matchesSearch;
     });
 
     // Sort logic:
@@ -75,12 +73,11 @@ export function MenuClient({
       const bIsTop = b.signature || b.isBestseller ? 1 : 0;
       return bIsTop - aIsTop;
     });
-  }, [activeCategory, searchQuery, swaminarayanOnly, products, categories]);
+  }, [activeCategory, searchQuery, products, categories]);
 
   const handleClear = () => {
     setSearchQuery("");
     setActiveCategory("All");
-    setSwaminarayanOnly(false);
     setCurrentPage(1);
   };
 
@@ -106,7 +103,7 @@ export function MenuClient({
       const y = filterContainer.getBoundingClientRect().top + window.scrollY - 120;
       window.scrollTo({ top: y, behavior: "smooth" });
     }
-  }, [activeCategory, searchQuery, swaminarayanOnly]);
+  }, [activeCategory, searchQuery]);
 
   return (
     <div className="min-h-screen text-primary pb-20" id="menu-grid-top">

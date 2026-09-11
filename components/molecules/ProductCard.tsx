@@ -63,11 +63,7 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
               <IconFlame size={8} className="text-[#C9A24A] md:w-2.5 md:h-2.5" /> Bestseller
             </span>
           )}
-          {product.isSwaminarayan && (
-            <span className="bg-[#123B2A] text-white px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1 md:gap-1.5 shadow-sm border border-[#C9A24A]/30">
-              <span className="text-[8px] md:text-[10px]">🌿</span> Swaminarayan
-            </span>
-          )}
+
         </div>
 
         {/* Limited badge — bottom strip */}

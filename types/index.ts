@@ -27,7 +27,6 @@ export interface Product {
   isSpicy?: boolean;
 
   vegetarian?: boolean;
-  isSwaminarayan?: boolean;
   signature?: boolean;
   isSignature?: boolean; // Legacy
   isBestseller?: boolean;

@@ -43,15 +43,6 @@ export function ProductDetails({ product }: { product: Product }) {
           </div>
         )}
         
-        {product.isSwaminarayan && (
-          <div className="flex items-center gap-2">
-            <span className="text-[14px]">🌿</span>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#123B2A]">
-              Swaminarayan Friendly
-            </span>
-          </div>
-        )}
-
         {product.isSpicy && (
           <div className="flex items-center gap-2">
             <IconChili size={16} />
