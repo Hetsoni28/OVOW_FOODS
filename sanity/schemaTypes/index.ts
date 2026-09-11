@@ -6,6 +6,7 @@ import { galleryType } from './gallery'
 import { bulkOrderType } from './bulkOrder'
 import { categoryType } from './category'
 import { siteSettingsType } from './siteSettings'
+import { orderEventType } from './orderEvent'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -14,6 +15,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     productType,
     reviewType,
     galleryType,
-    bulkOrderType
+    bulkOrderType,
+    orderEventType,
   ],
 }

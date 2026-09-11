@@ -120,3 +120,14 @@ export const RECOMMENDATIONS_QUERY = groq`*[_type == "product" && availabilitySt
   isBestSeller,
   signature
 }`
+
+// Recent order events for the live dispatch ticker on homepage
+// Returns last 20 anonymised events — NO PII (no name, mobile, address)
+export const RECENT_ORDER_EVENTS_QUERY = groq`*[_type == "orderEvent"] | order(placedAt desc) [0...20] {
+  _id,
+  orderId,
+  area,
+  itemCount,
+  paymentMethod,
+  placedAt
+}`

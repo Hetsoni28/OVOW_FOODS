@@ -109,6 +109,21 @@ export function CheckoutClient() {
     saveOrderToStorage(orderSnapshot);
   };
 
+  // Fire anonymised order event to Sanity for the homepage live ticker
+  // Runs in background — never blocks the checkout flow
+  const fireOrderEvent = (method: "cod" | "upi") => {
+    fetch("/api/order-event", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        orderId,
+        area: details.address,
+        itemCount: items.reduce((sum, i) => sum + i.quantity, 0),
+        paymentMethod: method,
+      }),
+    }).catch(() => {}); // silently ignore errors — non-critical
+  };
+
   const handleProcessOrder = (isCod: boolean) => {
     addOrder({
       id: orderId,
@@ -121,6 +136,7 @@ export function CheckoutClient() {
       saveSnapshot("COD", false);
       setFinalCart({ items: [...items], total, method: "cod" });
       clearCart();
+      fireOrderEvent("cod");
       setStep(4);
     } else {
       setStep(3); // Go to QR code for UPI, wait for user to confirm payment
@@ -131,6 +147,7 @@ export function CheckoutClient() {
     saveSnapshot("UPI", true);
     setFinalCart({ items: [...items], total, method: "upi" });
     clearCart();
+    fireOrderEvent("upi");
     setStep(4);
   };
 
