@@ -18,6 +18,7 @@ export function MenuClient({
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [timeSeed, setTimeSeed] = useState(0);
   const isFirstRender = useRef(true);
   
   const ITEMS_PER_PAGE = 8;
@@ -51,7 +52,29 @@ export function MenuClient({
       return matchesCategory && matchesSearch;
     });
 
+    // Helper for stable random sort based on time seed
+    const seededRandom = (str: string, seed: number) => {
+      let h = 0xdeadbeef ^ seed;
+      for (let i = 0; i < str.length; i++) h = Math.imul(h ^ str.charCodeAt(i), 2654435761);
+      return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+    };
+
     return filtered.sort((a, b) => {
+      const aIsTop = a.signature || a.isBestseller ? 1 : 0;
+      const bIsTop = b.signature || b.isBestseller ? 1 : 0;
+
+      // DYNAMIC MODE: When viewing "All Menu Items"
+      if (activeCategory === "All" && timeSeed !== 0) {
+        // 1. Keep Best Sellers & Signatures at the absolute top
+        if (aIsTop !== bIsTop) return bIsTop - aIsTop;
+        
+        // 2. Shuffle the rest randomly based on the current 5-minute time block!
+        const randA = seededRandom(a._id, timeSeed);
+        const randB = seededRandom(b._id, timeSeed);
+        return randB - randA;
+      }
+
+      // STRICT MODE: When viewing a specific category (PDF Logic)
       const catA = typeof a.category === "string" ? a.category : a.category?.name ?? "";
       const catB = typeof b.category === "string" ? b.category : b.category?.name ?? "";
       
@@ -73,11 +96,9 @@ export function MenuClient({
       }
 
       // If they are in the same category, sort top items first
-      const aIsTop = a.signature || a.isBestseller ? 1 : 0;
-      const bIsTop = b.signature || b.isBestseller ? 1 : 0;
       return bIsTop - aIsTop;
     });
-  }, [activeCategory, searchQuery, products, categories]);
+  }, [activeCategory, searchQuery, products, categories, timeSeed]);
 
   const handleClear = () => {
     setSearchQuery("");
@@ -98,6 +119,11 @@ export function MenuClient({
       isFirstRender.current = false;
       return;
     }
+
+    // Automatically change the menu order every 5 minutes!
+    const updateSeed = () => setTimeSeed(Math.floor(Date.now() / (1000 * 60 * 5)));
+    updateSeed();
+    const interval = setInterval(updateSeed, 60000); // Check every minute to see if 5 min block changed
 
     // When filters change, automatically scroll up to the menu grid
     // so the user doesn't get stuck at the bottom of the page.
