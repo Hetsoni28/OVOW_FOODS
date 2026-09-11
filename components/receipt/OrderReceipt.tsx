@@ -224,18 +224,27 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
                 <h3 className="text-[11px] font-bold uppercase tracking-widest text-primary/40 mb-3">Payment</h3>
                 <div className="bg-primary/5 p-4 border border-primary/10 flex items-start gap-3">
                   <div className="mt-0.5">
-                    {order.payment.verification === "VERIFIED" ? (
+                    {/* Green check for COD and for customer-confirmed UPI */}
+                    {(order.payment.method === "COD" || order.payment.customerConfirmation === "CUSTOMER_MARKED_PAID") ? (
                       <IconCheckCircle size={18} className="text-green-600" />
                     ) : (
                       <IconClock size={18} className="text-[#C9A24A]" />
                     )}
                   </div>
                   <div>
-                    <p className="font-bold text-primary mb-0.5">{order.payment.method} — ₹{order.payment.amount}</p>
-                    <p className={`text-xs ${order.payment.verification === "VERIFIED" ? "text-green-600" : "text-[#C9A24A]"}`}>
-                      {order.payment.customerConfirmation === "CUSTOMER_MARKED_PAID" 
-                        ? "Payment submitted (Under verification)" 
-                        : "Payment pending"}
+                    <p className="font-bold text-primary mb-0.5">
+                      {order.payment.method === "COD" ? "Cash on Delivery" : "UPI / QR Payment"} — ₹{order.payment.amount.toLocaleString("en-IN")}
+                    </p>
+                    <p className={`text-xs ${
+                      (order.payment.method === "COD" || order.payment.customerConfirmation === "CUSTOMER_MARKED_PAID")
+                        ? "text-green-600"
+                        : "text-[#C9A24A]"
+                    }`}>
+                      {order.payment.method === "COD"
+                        ? "✓ Cash on Delivery — Payment on arrival"
+                        : order.payment.customerConfirmation === "CUSTOMER_MARKED_PAID"
+                          ? "✓ Payment submitted — Awaiting screenshot confirmation"
+                          : "Awaiting payment confirmation"}
                     </p>
                   </div>
                 </div>
