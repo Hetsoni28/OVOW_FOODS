@@ -237,8 +237,9 @@ export function AddToCartBlock({ product }: { product: Product }) {
             {/* Label */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className={`font-bold text-sm ${wantsRaita ? "text-primary" : "text-primary/70"}`}>
-                  🥣 Add Raita
+                <span className={`font-bold text-sm flex items-center gap-1.5 ${wantsRaita ? "text-primary" : "text-primary/70"}`}>
+                  <IconRaita size={18} className={wantsRaita ? "text-primary" : "text-primary/50"} />
+                  Add Raita
                 </span>
                 <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 bg-green-100 text-green-700 border border-green-200">
                   FREE
