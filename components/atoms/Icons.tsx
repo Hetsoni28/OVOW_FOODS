@@ -305,13 +305,44 @@ export function IconVolumeX({ size = 20, className, ...p }: IconProps) {
   );
 }
 
-export function IconFlame({ size = 20, className, ...p }: IconProps) {
+
+/**
+ * IconTrophy — clean trophy cup for Bestseller badge.
+ * Cup body with two handles, stem, wide base, filled star inside.
+ * strokeWidth 1.9, round caps, 24×24 viewBox.
+ */
+export function IconTrophy({ size = 20, className, ...p }: IconProps) {
   return (
-    <svg {...defaults(size)} className={className} {...p}>
-      <path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 01-7 7 7 7 0 01-7-7c0-1.507.333-2.78.5-4a2 2 0 001.5 1.5z" />
+    <svg
+      width={size} height={size} viewBox="0 0 24 24"
+      fill="none" stroke="currentColor"
+      strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"
+      className={className} {...p}
+    >
+      {/* Cup body */}
+      <path d="M8 3 H16 L15 13 Q14 16 12 16 Q10 16 9 13 Z" />
+      {/* Left handle */}
+      <path d="M8 5 Q4 5.5 4 9 Q4 12 8 12" />
+      {/* Right handle */}
+      <path d="M16 5 Q20 5.5 20 9 Q20 12 16 12" />
+      {/* Stem */}
+      <line x1="12" y1="16" x2="12" y2="20" />
+      {/* Base */}
+      <line x1="8" y1="20" x2="16" y2="20" strokeWidth="2.2" />
+      {/* Filled star inside cup */}
+      <path
+        d="M12 6 L12.5 8 L14.5 8 L13 9.5 L13.6 11.5 L12 10.3 L10.4 11.5 L11 9.5 L9.5 8 L11.5 8 Z"
+        fill="currentColor" stroke="none"
+      />
     </svg>
   );
 }
+
+/** IconFlame — backward-compat alias for IconTrophy */
+export function IconFlame({ size = 20, className, ...p }: IconProps) {
+  return <IconTrophy size={size} className={className} {...p} />;
+}
+
 
 export function IconLeaf({ size = 20, className, ...p }: IconProps) {
   return (
@@ -689,6 +720,115 @@ export function IconStatusSoldOut({ size = 12, className }: { size?: number; cla
     </svg>
   );
 }
+
+/**
+ * IconKidsSpecial — real chef hat (toque) + 4-point star.
+ * Puffed cloud crown, narrow column, wide flat brim + filled star.
+ * strokeWidth 1.9, round caps, 24×24 viewBox.
+ */
+export function IconKidsSpecial({ size = 20, className, ...p }: IconProps) {
+  return (
+    <svg
+      width={size} height={size} viewBox="0 0 24 24"
+      fill="none" stroke="currentColor"
+      strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"
+      className={className} {...p}
+    >
+      {/* Puffed cloud crown — 3 overlapping arcs */}
+      <path d="M7 13 C7 8 9 5 12 5 C15 5 17 8 17 13" />
+      <path d="M7 13 C5.5 13 4 12 4 10 C4 8 5.5 7 7 7.5" />
+      <path d="M17 13 C18.5 13 20 12 20 10 C20 8 18.5 7 17 7.5" />
+      {/* Narrow column connecting crown to brim */}
+      <line x1="9.5" y1="13" x2="9.5" y2="16" />
+      <line x1="14.5" y1="13" x2="14.5" y2="16" />
+      {/* Wide flat brim */}
+      <rect x="6" y="16" width="12" height="2.5" rx="0.8" />
+      {/* 4-point star centred in crown */}
+      <path
+        d="M12 7.5 L12.4 9.2 L14.2 9.5 L12.4 9.8 L12 11.5 L11.6 9.8 L9.8 9.5 L11.6 9.2 Z"
+        fill="currentColor" stroke="none"
+      />
+    </svg>
+  );
+}
+
+/**
+ * IconPreOrder — plate/cloche + clock badge.
+ * Dome with handle nub + plate rim. Small clock overlaid bottom-right.
+ * Clearly reads as "order ahead / scheduled delivery".
+ * strokeWidth 1.9, round caps, 24×24 viewBox.
+ */
+export function IconPreOrder({ size = 20, className, ...p }: IconProps) {
+  return (
+    <svg
+      width={size} height={size} viewBox="0 0 24 24"
+      fill="none" stroke="currentColor"
+      strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"
+      className={className} {...p}
+    >
+      {/* Cloche dome — slightly left-biased to give room for clock */}
+      <path d="M3 15 Q3 7 10.5 7 Q16 7 16 15" />
+      {/* Handle nub on top */}
+      <path d="M9.5 7 Q10.5 5 11.5 7" strokeWidth="1.6" />
+      {/* Plate rim */}
+      <line x1="2" y1="15" x2="17" y2="15" />
+      {/* Clock face — bottom-right corner badge */}
+      <circle cx="19.5" cy="19.5" r="4" />
+      {/* Hour hand — pointing up (12) */}
+      <line x1="19.5" y1="19.5" x2="19.5" y2="17" />
+      {/* Minute hand — pointing right (3) */}
+      <line x1="19.5" y1="19.5" x2="22" y2="19.5" />
+    </svg>
+  );
+}
+
+/**
+ * IconSignatureDish — chef hat with a 5-point star on the front band.
+ * Used for the Signature badge. strokeWidth 1.9, round caps, 24×24 viewBox.
+ */
+export function IconSignatureDish({ size = 20, className, ...p }: IconProps) {
+  return (
+    <svg
+      width={size} height={size} viewBox="0 0 24 24"
+      fill="none" stroke="currentColor"
+      strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"
+      className={className} {...p}
+    >
+      {/* Hat dome */}
+      <path d="M7 15 Q7 7 12 7 Q17 7 17 15" />
+      {/* Hat band */}
+      <rect x="6" y="15" width="12" height="4" rx="1.2" />
+      {/* 5-point star centred in dome */}
+      <path
+        d="M12 9 L12.5 10.8 L14.4 10.8 L12.9 11.9 L13.5 13.7 L12 12.6 L10.5 13.7 L11.1 11.9 L9.6 10.8 L11.5 10.8 Z"
+        fill="currentColor" stroke="none"
+      />
+    </svg>
+  );
+}
+
+/**
+ * IconBestsellerFire — combination trophy + upward trending streak.
+ * Two styles available; use Trophy for default. This is the animated-flame variant.
+ */
+export function IconBestsellerFire({ size = 20, className, ...p }: IconProps) {
+  return (
+    <svg
+      width={size} height={size} viewBox="0 0 24 24"
+      fill="none" stroke="currentColor" strokeWidth="1.6"
+      strokeLinecap="round" strokeLinejoin="round"
+      className={className} {...p}
+    >
+      {/* Outer flame shape */}
+      <path d="M12 2 C 12 2 17 6 17 11 C 17 14 15.5 15.5 14 16 C 14.5 13 13 11 12 10 C 11 12 10 13.5 10.5 16 C 9 15.5 7 14 7 11 C 7 6 12 2 12 2 Z" />
+      {/* Inner bright core */}
+      <path d="M12 10 C 12 10 13.5 12 13 14 C 12.5 15 11.5 15 11 14 C 10.5 12 12 10 12 10 Z" fill="currentColor" stroke="none" />
+      {/* Base glow line */}
+      <path d="M8 20 Q12 22 16 20" strokeWidth="1.2" />
+    </svg>
+  );
+}
+
 
 // ── Swaminarayan Icon ─────────────────────────────────────────────────────────
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { IconPlus, IconCheck, IconStar, IconFlame, IconChefHat, IconStatusAvailable, IconStatusLimited, IconStatusSoldOut } from "@/components/atoms/Icons";
+import { IconPlus, IconCheck, IconStar, IconTrophy, IconChefHat, IconStatusAvailable, IconStatusLimited, IconStatusSoldOut, IconKidsSpecial, IconPreOrder, IconSignatureDish } from "@/components/atoms/Icons";
 import { LazyVideo } from "@/components/atoms/LazyVideo";
 import { useState } from "react";
 import { Product } from "@/types";
@@ -53,7 +53,7 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
         <div className="absolute top-2 left-2 md:top-4 md:left-4 flex flex-col gap-1.5 md:gap-2">
           {!isSoldOut && !isPreOrder && isKidsSpecial && (
             <span className="bg-rose-500/90 text-white px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold shadow-sm backdrop-blur-sm flex items-center gap-1">
-              🧒 Kids Special
+              <IconKidsSpecial size={9} className="shrink-0" /> Kids Special
             </span>
           )}
           {isSoldOut && (
@@ -63,17 +63,17 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
           )}
           {isPreOrder && (
             <span className="bg-purple-700/90 text-white px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold shadow-sm backdrop-blur-sm flex items-center gap-1">
-              🗓 Pre-Order
+              <IconPreOrder size={9} className="shrink-0" /> Pre-Order
             </span>
           )}
           {!isSoldOut && !isPreOrder && (product.isSignature || (product as any).signature) && (
             <span className="bg-[#C9A24A] text-white px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1 md:gap-1.5 shadow-sm">
-              <IconStar size={8} fill="white" className="md:w-2.5 md:h-2.5" /> Signature
+              <IconSignatureDish size={8} className="md:w-2.5 md:h-2.5 shrink-0" /> Signature
             </span>
           )}
           {!isSoldOut && !isPreOrder && (product.isBestseller || (product as any).isBestSeller) && (
             <span className="bg-white/95 backdrop-blur-md text-[#0B2118] px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1 md:gap-1.5 shadow-sm">
-              <IconFlame size={8} className="text-[#C9A24A] md:w-2.5 md:h-2.5" /> Bestseller
+              <IconTrophy size={8} className="text-[#C9A24A] md:w-2.5 md:h-2.5 shrink-0" /> Bestseller
             </span>
           )}
 
@@ -89,7 +89,8 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
         {/* Pre-Order strip — bottom */}
         {isPreOrder && (
           <div className="absolute bottom-0 left-0 right-0 bg-purple-700/90 backdrop-blur-sm px-3 py-1.5 flex items-center gap-2">
-            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] text-white">🗓 Schedule Required · Pre-Order Only</span>
+            <IconPreOrder size={10} className="text-white shrink-0" />
+            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] text-white">Schedule Required · Pre-Order Only</span>
           </div>
         )}
 
