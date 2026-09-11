@@ -69,8 +69,8 @@ export function MenuClient({
         if (aIsTop !== bIsTop) return bIsTop - aIsTop;
         
         // 2. Shuffle the rest randomly based on the current 5-minute time block!
-        const randA = seededRandom(a._id, timeSeed);
-        const randB = seededRandom(b._id, timeSeed);
+        const randA = seededRandom(a._id || a.name || "", timeSeed);
+        const randB = seededRandom(b._id || b.name || "", timeSeed);
         return randB - randA;
       }
 
