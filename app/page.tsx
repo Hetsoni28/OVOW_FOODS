@@ -18,11 +18,21 @@ export const metadata: Metadata = {
 // Revalidate every 60s so the ticker stays fresh without rebuilding
 export const revalidate = 60;
 
+interface OrderEvent {
+  _id: string;
+  orderId: string;
+  area: string;
+  itemCount: number;
+  paymentMethod: string;
+  placedAt: string;
+}
+
 export default async function Home() {
   // Fetch real order events from Sanity (anonymised, no PII)
-  let orderEvents: Awaited<ReturnType<typeof client.fetch>> = [];
+  let orderEvents: OrderEvent[] = [];
   try {
-    orderEvents = await client.fetch(RECENT_ORDER_EVENTS_QUERY);
+    const result = await client.fetch<OrderEvent[]>(RECENT_ORDER_EVENTS_QUERY);
+    orderEvents = Array.isArray(result) ? result : [];
   } catch {
     // Silently fail — ticker just won't show if Sanity is unavailable
   }
