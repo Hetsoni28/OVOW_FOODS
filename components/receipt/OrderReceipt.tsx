@@ -6,6 +6,8 @@ import { getOrderFromStorage } from "@/lib/storage";
 import { Logo } from "@/components/atoms/Logo";
 import { IconCheckCircle, IconDownload, IconChevronLeft, IconMapPin, IconReceiptText, IconClock } from "@/components/atoms/Icons";
 import Link from "next/link";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import { motion } from "framer-motion";
 
 export function OrderReceipt({ orderId }: { orderId: string }) {
@@ -23,42 +25,71 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
     setLoading(false);
   }, [orderId]);
 
-  const handleDownloadPDF = () => {
-    if (!order) return;
+  const handleDownloadPDF = async () => {
+    if (!receiptRef.current || !order) return;
     setDownloading(true);
 
-    // Inject a temporary <style> tag for print layout, then call window.print()
-    const styleId = "ovow-print-style";
-    if (!document.getElementById(styleId)) {
-      const style = document.createElement("style");
-      style.id = styleId;
-      style.innerHTML = `
-        @media print {
-          body * { visibility: hidden !important; }
-          #ovow-receipt-printable, #ovow-receipt-printable * { visibility: visible !important; }
-          #ovow-receipt-printable {
-            position: fixed !important;
-            inset: 0 !important;
-            width: 100% !important;
-            padding: 32px !important;
-            background: #ffffff !important;
-            box-shadow: none !important;
-          }
-          /* Hide decorative ticket edges in print */
-          .ovow-ticket-edge { display: none !important; }
-          /* Hide watermark stamp in print to keep it clean */
-          .ovow-stamp { opacity: 0.06 !important; }
-          /* Remove page margins */
-          @page { margin: 10mm; }
-        }
-      `;
-      document.head.appendChild(style);
-    }
+    try {
+      const original = receiptRef.current;
 
-    setTimeout(() => {
-      window.print();
+      // Clone off-screen so we don't mess with the visible UI
+      const clone = original.cloneNode(true) as HTMLElement;
+      clone.style.cssText = [
+        "position:fixed",
+        "top:-9999px",
+        "left:0",
+        "width:800px",
+        "padding:48px",
+        "background:#ffffff",
+        "overflow:visible",
+        "box-shadow:none",
+      ].join(";");
+
+      // ── Strip CSS that html2canvas cannot render ──────────────────────
+      // 1. Remove blur / opacity from watermark logo
+      clone.querySelectorAll<HTMLElement>('[class*="blur"]').forEach(el => {
+        el.style.filter = "none";
+        el.style.opacity = "0"; // just hide it; it's decorative
+      });
+
+      // 2. Fix mix-blend-multiply on stamp (replace with normal + lower opacity)
+      clone.querySelectorAll<HTMLElement>('[class*="mix-blend"]').forEach(el => {
+        el.style.mixBlendMode = "normal";
+        el.style.opacity = "0.07";
+      });
+
+      // 3. Remove mask-image from ticket edges (they're purely decorative)
+      clone.querySelectorAll<HTMLElement>('[class*="ovow-ticket-edge"]').forEach(el => {
+        el.style.display = "none";
+      });
+
+      document.body.appendChild(clone);
+
+      const canvas = await html2canvas(clone, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#FFFFFF",
+        logging: false,
+      });
+
+      document.body.removeChild(clone);
+
+      const imgData = canvas.toDataURL("image/jpeg", 0.98);
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`OVOW-Invoice-${order.orderId}.pdf`);
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+    } finally {
       setDownloading(false);
-    }, 150);
+    }
   };
 
   if (loading) {
