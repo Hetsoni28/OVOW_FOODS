@@ -28,8 +28,9 @@ export function buildOrderMessage(
       const main = `🔹 *${item.quantity}x* ${item.name} ${item.size ? `(${item.size})` : ""} — ₹${(
         item.price * item.quantity
       ).toLocaleString("en-IN")}`;
+      const swami = item.variant === 'swaminarayan' ? `   ↳ 🌿 *Swaminarayan Style* (No onion/garlic)` : null;
       const raita = item.addons?.wantsRaita ? `   ↳ 🥣 Raita (FREE)` : null;
-      return raita ? [main, raita] : [main];
+      return [main, swami, raita].filter(Boolean) as string[];
     }
   );
 
@@ -134,8 +135,9 @@ export function buildCheckoutWhatsAppMessage(
   const lines = items.flatMap(
     (item) => {
       const main = `🔹 *${item.quantity}x* ${item.name} ${item.size ? `(${item.size})` : ""} → ₹${(item.price * item.quantity).toLocaleString("en-IN")}`;
+      const swami = item.variant === 'swaminarayan' ? `   ↳ 🌿 *Swaminarayan Style* (No onion/garlic)` : null;
       const raita = item.addons?.wantsRaita ? `   ↳ 🥣 Raita (FREE)` : null;
-      return raita ? [main, raita] : [main];
+      return [main, swami, raita].filter(Boolean) as string[];
     }
   );
 
