@@ -780,3 +780,73 @@ export function IconSwaminarayan({ size = 24, className }: { size?: number; clas
     </svg>
   );
 }
+
+// ── Extra Paneer Icon — stylised cube with texture lines ──────────────────────
+export function IconPaneer({ size = 24, className, ...p }: IconProps) {
+  return (
+    <svg
+      width={size} height={size} viewBox="0 0 24 24"
+      fill="none" stroke="currentColor" strokeWidth="1.6"
+      strokeLinecap="round" strokeLinejoin="round"
+      className={className} {...p}
+    >
+      {/* Main block face (front) */}
+      <path d="M3 8 L12 5 L21 8 L21 17 L12 20 L3 17 Z" />
+      {/* Top face */}
+      <path d="M3 8 L12 11 L21 8" />
+      {/* Vertical spine */}
+      <line x1="12" y1="11" x2="12" y2="20" />
+      {/* Texture cut lines on front-left face */}
+      <line x1="5" y1="11.5" x2="11" y2="13.5" strokeWidth="0.9" strokeOpacity="0.6" />
+      <line x1="5" y1="14" x2="11" y2="16" strokeWidth="0.9" strokeOpacity="0.6" />
+      {/* Texture cut lines on front-right face */}
+      <line x1="13" y1="13.5" x2="19" y2="11.5" strokeWidth="0.9" strokeOpacity="0.6" />
+      <line x1="13" y1="16" x2="19" y2="14" strokeWidth="0.9" strokeOpacity="0.6" />
+    </svg>
+  );
+}
+
+// ── Extra Cheese Icon — classic wedge with holes ──────────────────────────────
+export function IconCheese({ size = 24, className, ...p }: IconProps) {
+  return (
+    <svg
+      width={size} height={size} viewBox="0 0 24 24"
+      fill="none" stroke="currentColor" strokeWidth="1.6"
+      strokeLinecap="round" strokeLinejoin="round"
+      className={className} {...p}
+    >
+      {/* Cheese wedge outline */}
+      <path d="M2 17 L12 4 L22 17 Z" />
+      {/* Base line */}
+      <line x1="2" y1="17" x2="22" y2="17" />
+      {/* Cheese holes */}
+      <circle cx="12" cy="14" r="1.3" />
+      <circle cx="8.5" cy="13" r="0.9" />
+      <circle cx="15.5" cy="13" r="0.9" />
+    </svg>
+  );
+}
+
+// ── Extra Raita Icon — bowl with yogurt ripple + garnish dot ─────────────────
+export function IconRaita({ size = 24, className, ...p }: IconProps) {
+  return (
+    <svg
+      width={size} height={size} viewBox="0 0 24 24"
+      fill="none" stroke="currentColor" strokeWidth="1.6"
+      strokeLinecap="round" strokeLinejoin="round"
+      className={className} {...p}
+    >
+      {/* Bowl body */}
+      <path d="M4 9 Q4 19 12 19 Q20 19 20 9 Z" />
+      {/* Bowl rim */}
+      <path d="M3 9 Q3 7 12 7 Q21 7 21 9" />
+      {/* Yogurt surface ripple */}
+      <path d="M8 11 Q10 9.5 12 11 Q14 12.5 16 11" strokeWidth="1.2" strokeOpacity="0.7" />
+      {/* Garnish dot (jeera / masala) */}
+      <circle cx="12" cy="14" r="1" fill="currentColor" strokeWidth="0" />
+      {/* Two small garnish dots */}
+      <circle cx="9" cy="13.5" r="0.6" fill="currentColor" strokeWidth="0" />
+      <circle cx="15" cy="13.5" r="0.6" fill="currentColor" strokeWidth="0" />
+    </svg>
+  );
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { IconPlus, IconMinus, IconCheck, IconShoppingBag, IconArrowRight, IconBellOff, IconStatusAvailable, IconStatusLimited, IconStatusSoldOut, IconSwaminarayan } from "@/components/atoms/Icons";
+import { IconPlus, IconMinus, IconCheck, IconShoppingBag, IconArrowRight, IconBellOff, IconStatusAvailable, IconStatusLimited, IconStatusSoldOut, IconSwaminarayan, IconPaneer, IconCheese, IconRaita } from "@/components/atoms/Icons";
 import { useCart } from "@/context/CartContext";
 import { Product } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,9 +17,9 @@ export function AddToCartBlock({ product }: { product: Product }) {
 
   // Global paid extras — available on every product
   const EXTRAS_LIST = [
-    { id: 'paneer', name: 'Extra Paneer', emoji: '🧀', price: 50, desc: 'Rich, soft paneer cubes' },
-    { id: 'cheese', name: 'Extra Cheese', emoji: '🫕', price: 50, desc: 'Melted cheese topping' },
-    { id: 'raita', name: 'Extra Raita', emoji: '🥣', price: 79, desc: 'Freshly prepared boondi raita' },
+    { id: 'paneer', name: 'Extra Paneer', Icon: IconPaneer, price: 50, desc: 'Rich, soft paneer cubes' },
+    { id: 'cheese', name: 'Extra Cheese', Icon: IconCheese, price: 50, desc: 'Melted cheese topping' },
+    { id: 'raita',  name: 'Extra Raita',  Icon: IconRaita,  price: 79, desc: 'Freshly prepared boondi raita' },
   ];
 
   const toggleExtra = (id: string) => {
@@ -306,8 +306,11 @@ export function AddToCartBlock({ product }: { product: Product }) {
                   </AnimatePresence>
                 </div>
 
-                {/* Emoji */}
-                <span className="text-xl flex-shrink-0">{extra.emoji}</span>
+                {/* Icon */}
+                <extra.Icon
+                  size={22}
+                  className={isSelected ? 'text-[#C9A24A]' : 'text-primary/50'}
+                />
 
                 {/* Label */}
                 <div className="flex-1 min-w-0">
