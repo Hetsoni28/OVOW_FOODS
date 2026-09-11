@@ -257,80 +257,139 @@ export function AddToCartBlock({ product }: { product: Product }) {
         </motion.div>
       )}
 
-      {/* ── EXTRAS SELECTOR ── */}
+      {/* ── EXTRAS SELECTOR — World-Class Design ── */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
         className="mb-6"
       >
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/40">
-            Add Extras
-          </p>
-          {selectedExtras.length > 0 && (
-            <span className="text-[9px] font-bold uppercase tracking-widest text-[#C9A24A]">
-              +₹{extrasTotal} added
-            </span>
-          )}
+        {/* Section Header */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-1 h-5 bg-[#C9A24A]" />
+            <p className="text-[11px] font-black uppercase tracking-[0.25em] text-primary">
+              Customize Your Order
+            </p>
+          </div>
+          <span className="text-[9px] font-bold uppercase tracking-widest text-primary/30 bg-primary/5 px-2.5 py-1 border border-primary/10">
+            Optional
+          </span>
         </div>
-        <div className="flex flex-col gap-2">
-          {EXTRAS_LIST.map((extra) => {
+
+        {/* Extras Cards */}
+        <div className="flex flex-col gap-2.5">
+          {EXTRAS_LIST.map((extra, idx) => {
             const isSelected = selectedExtras.includes(extra.id);
             return (
-              <button
+              <motion.button
                 key={extra.id}
                 onClick={() => toggleExtra(extra.id)}
-                className={`w-full flex items-center gap-4 px-4 py-3.5 border-2 transition-all duration-300 text-left group ${
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.05 * idx, duration: 0.3 }}
+                className={`relative w-full flex items-center gap-4 px-4 py-4 text-left transition-all duration-300 overflow-hidden group ${
                   isSelected
-                    ? 'border-[#C9A24A] bg-[#C9A24A]/5 shadow-[0_0_15px_rgba(201,162,74,0.1)]'
-                    : 'border-primary/10 hover:border-primary/25 bg-white'
+                    ? 'bg-[#0B2118] shadow-[0_4px_24px_rgba(11,33,24,0.18)]'
+                    : 'bg-white border border-primary/10 hover:border-[#C9A24A]/40 hover:shadow-md'
                 }`}
               >
-                {/* Custom Checkbox */}
-                <div className={`w-5 h-5 flex-shrink-0 border-2 flex items-center justify-center transition-all duration-200 ${
-                  isSelected ? 'border-[#C9A24A] bg-[#C9A24A]' : 'border-primary/20 group-hover:border-primary/40'
-                }`}>
-                  <AnimatePresence>
-                    {isSelected && (
-                      <motion.div
-                        key="check"
-                        initial={{ scale: 0, rotate: -90 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        exit={{ scale: 0 }}
-                        transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-                      >
-                        <IconCheck size={12} strokeWidth={3} className="text-white" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                {/* Animated glow strip on left edge */}
+                {isSelected && (
+                  <motion.div
+                    layoutId={`extra-strip-${extra.id}`}
+                    className="absolute left-0 top-0 bottom-0 w-1 bg-[#C9A24A]"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
 
-                {/* Icon */}
-                <extra.Icon
-                  size={22}
-                  className={isSelected ? 'text-[#C9A24A]' : 'text-primary/50'}
-                />
+                {/* Icon Container */}
+                <div className={`w-11 h-11 flex-shrink-0 flex items-center justify-center transition-all duration-300 ${
+                  isSelected
+                    ? 'bg-[#C9A24A]/20 border border-[#C9A24A]/30'
+                    : 'bg-primary/5 border border-primary/10 group-hover:border-[#C9A24A]/20'
+                }`}>
+                  <extra.Icon
+                    size={20}
+                    className={`transition-colors duration-300 ${isSelected ? 'text-[#C9A24A]' : 'text-primary/40 group-hover:text-primary/60'}`}
+                  />
+                </div>
 
                 {/* Label */}
                 <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-bold ${isSelected ? 'text-primary' : 'text-primary/70'}`}>
+                  <p className={`text-sm font-bold tracking-wide transition-colors ${isSelected ? 'text-white' : 'text-primary'}`}>
                     {extra.name}
                   </p>
-                  <p className="text-[10px] text-primary/40 mt-0.5">{extra.desc}</p>
+                  <p className={`text-[10px] mt-0.5 transition-colors ${isSelected ? 'text-white/50' : 'text-primary/40'}`}>
+                    {extra.desc}
+                  </p>
                 </div>
 
-                {/* Price */}
-                <span className={`text-sm font-serif font-bold flex-shrink-0 ${
-                  isSelected ? 'text-[#C9A24A]' : 'text-primary/30'
+                {/* Price Badge — BOLD & READABLE */}
+                <div className={`flex-shrink-0 flex items-center justify-center px-3 py-1.5 transition-all duration-300 ${
+                  isSelected
+                    ? 'bg-[#C9A24A] shadow-[0_2px_10px_rgba(201,162,74,0.4)]'
+                    : 'border border-primary/15 bg-white group-hover:border-[#C9A24A]/30'
                 }`}>
-                  +₹{extra.price}
-                </span>
-              </button>
+                  <span className={`font-serif text-base font-black tracking-wide ${
+                    isSelected ? 'text-white' : 'text-primary/70'
+                  }`}>
+                    +₹{extra.price}
+                  </span>
+                </div>
+
+                {/* Checkmark top-right corner */}
+                <AnimatePresence>
+                  {isSelected && (
+                    <motion.div
+                      key="check-corner"
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                      className="absolute top-2 right-2 w-5 h-5 bg-[#C9A24A] flex items-center justify-center"
+                    >
+                      <IconCheck size={11} strokeWidth={3} className="text-white" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.button>
             );
           })}
         </div>
+
+        {/* Live Extras Total Summary Bar */}
+        <AnimatePresence>
+          {selectedExtras.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, height: 0, marginTop: 0 }}
+              animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
+              exit={{ opacity: 0, height: 0, marginTop: 0 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="overflow-hidden"
+            >
+              <div className="flex items-center justify-between bg-[#C9A24A]/10 border border-[#C9A24A]/30 px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <motion.div
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{ duration: 0.4, delay: 0.1 }}
+                  >
+                    <IconCheck size={14} className="text-[#C9A24A]" strokeWidth={3} />
+                  </motion.div>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60">
+                    {selectedExtras.length} Extra{selectedExtras.length > 1 ? 's' : ''} Added
+                  </span>
+                </div>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-primary/40">Extras Total</span>
+                  <span className="font-serif text-lg font-black text-[#C9A24A]">+₹{extrasTotal}</span>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
+
 
       {/* ── QUANTITY + ADD BUTTON ─── */}
       <div className="flex flex-col sm:flex-row items-center gap-4 lg:gap-5">
