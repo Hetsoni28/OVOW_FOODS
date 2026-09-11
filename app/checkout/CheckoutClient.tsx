@@ -120,12 +120,8 @@ export function CheckoutClient() {
     if (isCod) {
       saveSnapshot("COD", false);
       setFinalCart({ items: [...items], total, method: "cod" });
-      const currentItems = [...items];
-      const currentTotal = total;
       clearCart();
       setStep(4);
-      const msg = buildCheckoutWhatsAppMessage(currentItems, details, currentTotal, orderId, "cod");
-      window.open(`https://wa.me/${COMPANY_CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
     } else {
       setStep(3); // Go to QR code for UPI, wait for user to confirm payment
     }
@@ -134,12 +130,8 @@ export function CheckoutClient() {
   const handleConfirmPayment = () => {
     saveSnapshot("UPI", true);
     setFinalCart({ items: [...items], total, method: "upi" });
-    const currentItems = [...items];
-    const currentTotal = total;
     clearCart();
     setStep(4);
-    const msg = buildCheckoutWhatsAppMessage(currentItems, details, currentTotal, orderId, "upi");
-    window.open(`https://wa.me/${COMPANY_CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
   if (!mounted) {
