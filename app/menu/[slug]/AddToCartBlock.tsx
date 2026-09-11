@@ -160,11 +160,6 @@ export function AddToCartBlock({ product }: { product: Product }) {
               <span className="text-[8px] font-black uppercase tracking-[0.2em] text-white">Swaminarayan</span>
             </div>
             <div className="text-center">
-              <p className={`text-xs font-bold uppercase tracking-widest ${
-                variant === 'swaminarayan' ? 'text-[#0B2118]' : 'text-primary/60'
-              }`}>
-                Pure Jain
-              </p>
               <p className="text-[9px] text-primary/40 mt-0.5">No onion or garlic</p>
             </div>
             {variant === 'swaminarayan' && (
