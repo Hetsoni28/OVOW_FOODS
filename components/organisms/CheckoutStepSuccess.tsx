@@ -57,9 +57,10 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
     "Finalising your order...",
   ];
 
-  // Random verify duration: 5–12 seconds
+  // Verification duration: 2–3 seconds only
+  // (User already waited 5s on the QR countdown page before arriving here)
   useEffect(() => {
-    const TOTAL_MS = (5 + Math.random() * 7) * 1000;
+    const TOTAL_MS = (2 + Math.random() * 1) * 1000;
     const startTime = Date.now();
 
     // Progress bar
