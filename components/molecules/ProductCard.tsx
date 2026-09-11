@@ -11,7 +11,10 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
 
-  const isSoldOut = product.available === false;
+  // Resolve availability: new field takes priority, fallback to legacy boolean
+  const status = product.availabilityStatus ?? (product.available === false ? 'soldout' : 'available');
+  const isSoldOut = status === 'soldout';
+  const isLimited = status === 'limited';
 
   function handleAdd(e: React.MouseEvent) {
     e.preventDefault();
@@ -43,11 +46,11 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
         {/* Subtle gradient overlay for badges */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-        {/* Badges */}
+        {/* Badges — top left */}
         <div className="absolute top-2 left-2 md:top-4 md:left-4 flex flex-col gap-1.5 md:gap-2">
           {isSoldOut && (
-            <span className="bg-black/80 text-white px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold shadow-sm backdrop-blur-sm">
-              Sold Out
+            <span className="bg-black/80 text-white px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold shadow-sm backdrop-blur-sm flex items-center gap-1">
+              🔴 Sold Out
             </span>
           )}
           {!isSoldOut && (product.isSignature || (product as any).signature) && (
@@ -66,6 +69,13 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
             </span>
           )}
         </div>
+
+        {/* 🟠 Limited badge — bottom left strip */}
+        {isLimited && !isSoldOut && (
+          <div className="absolute bottom-0 left-0 right-0 bg-amber-500/90 backdrop-blur-sm px-3 py-1.5 flex items-center gap-1.5">
+            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] text-white">🟠 Limited Availability</span>
+          </div>
+        )}
 
         {/* Veg mark */}
         <div className="absolute top-2 right-2 md:top-4 md:right-4">

@@ -17,6 +17,7 @@ export const ALL_PRODUCTS_QUERY = groq`*[_type == "product"] | order(sortOrder a
   price,
   originalPrice,
   available,
+  availabilityStatus,
   "category": category->name,
   "previewVideo": video.asset->url,
   "thumbnailUrl": thumbnail.asset->url,
@@ -42,6 +43,7 @@ export const PRODUCT_BY_SLUG_QUERY = groq`*[_type == "product" && slug.current =
   price,
   originalPrice,
   available,
+  availabilityStatus,
   "category": category->name,
   "previewVideo": video.asset->url,
   "thumbnailUrl": thumbnail.asset->url,
@@ -106,4 +108,17 @@ export const PRODUCT_REVIEWS_QUERY = groq`*[_type == "review" && isApproved == t
   rating,
   comment,
   date
+}`
+
+// Recommendations: fetch available products NOT in the given category slugs (to cross-sell)
+export const RECOMMENDATIONS_QUERY = groq`*[_type == "product" && availabilityStatus != "soldout" && available != false && !(_id in $excludeIds)] | order(isBestSeller desc, sortOrder asc) [0...6] {
+  _id,
+  name,
+  "slug": slug.current,
+  price,
+  availabilityStatus,
+  "category": category->name,
+  "thumbnailUrl": thumbnail.asset->url,
+  isBestSeller,
+  signature
 }`

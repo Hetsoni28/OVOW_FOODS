@@ -1,88 +1,165 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
-import { IconPlus } from "@/components/atoms/Icons";
 import { motion, AnimatePresence } from "framer-motion";
+import { IconPlus, IconCheck } from "@/components/atoms/Icons";
 import { useCart } from "@/context/CartContext";
-import { getSuggestions } from "@/lib/pairingRules";
 
-export function CrossSellSection() {
-  const { items, addItem } = useCart();
-  
-  const suggestions = useMemo(() => getSuggestions(items), [items]);
+interface Recommendation {
+  _id: string;
+  slug: string;
+  name: string;
+  price: number;
+  category: string;
+  thumbnailUrl?: string;
+  availabilityStatus?: string;
+  isBestSeller?: boolean;
+  signature?: boolean;
+}
 
-  if (suggestions.length === 0) return null;
+function RecommendationRow({
+  item,
+  index,
+}: {
+  item: Recommendation;
+  index: number;
+}) {
+  const { addItem } = useCart();
+  const [added, setAdded] = useState(false);
+
+  function handleAdd() {
+    addItem({
+      slug: item.slug,
+      name: item.name,
+      price: item.price,
+      category: item.category,
+      availabilityStatus: item.availabilityStatus as any,
+    });
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1800);
+  }
 
   return (
-    <div className="border-t border-primary/10 pt-6 mt-6">
-      <div className="flex items-center gap-3 mb-4">
-        <h3 className="font-serif text-lg text-primary whitespace-nowrap">✨ Complete Your Meal</h3>
-        <div className="h-px flex-1 bg-gradient-to-r from-[#C9A24A]/40 to-transparent" />
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.3, delay: index * 0.07 }}
+      className="flex items-center gap-3 py-3 border-b border-primary/6 last:border-0"
+    >
+      {/* Thumbnail */}
+      <Link href={`/menu/${item.slug}`} className="shrink-0">
+        <div className="relative w-12 h-12 overflow-hidden bg-primary/5 rounded-sm">
+          {item.thumbnailUrl ? (
+            <Image
+              src={item.thumbnailUrl}
+              alt={item.name}
+              fill
+              className="object-cover"
+              sizes="48px"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-lg">
+              🍽️
+            </div>
+          )}
+        </div>
+      </Link>
+
+      {/* Info */}
+      <div className="flex-1 min-w-0">
+        {item.isBestSeller && (
+          <p className="text-[8px] font-black uppercase tracking-widest text-[#C9A24A] mb-0.5">
+            🔥 Bestseller
+          </p>
+        )}
+        <Link href={`/menu/${item.slug}`}>
+          <h4 className="font-serif text-sm text-primary leading-tight truncate hover:text-[#C9A24A] transition-colors">
+            {item.name}
+          </h4>
+        </Link>
+        <p className="text-xs font-bold text-primary/60 mt-0.5 tabular-nums">
+          ₹{item.price}
+        </p>
       </div>
 
-      <div className="flex flex-col gap-3">
-        <AnimatePresence mode="popLayout">
-          {suggestions.map((item) => (
-            <motion.div
-              key={item.id}
-              layout
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.25 }}
-              className={`flex items-center gap-3 p-3 rounded-lg border ${
-                item.isFree 
-                  ? "border-[#2E7D4F]/30 bg-[#2E7D4F]/5" 
-                  : "border-[#C9A24A]/20 bg-[#C9A24A]/5"
-              }`}
-            >
-              {/* Image */}
-              <div className="relative w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
-                <Image
-                  src={item.image || "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&q=80"}
-                  alt={item.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              
-              {/* Info */}
-              <div className="flex-1 min-w-0">
-                {item.isFree && (
-                  <p className="text-[9px] font-bold uppercase tracking-widest text-[#2E7D4F] mb-0.5">
-                    🎁 Free with your Biryani
-                  </p>
-                )}
-                <h4 className="font-medium text-primary text-sm leading-tight">{item.name}</h4>
-                <p className={`text-sm font-bold mt-0.5 ${item.isFree ? "text-[#2E7D4F]" : "text-[#C9A24A]"}`}>
-                  {item.isFree ? "FREE" : `₹${item.price}`}
-                </p>
-              </div>
+      {/* Add button */}
+      <button
+        suppressHydrationWarning
+        onClick={handleAdd}
+        disabled={added}
+        className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 border ${
+          added
+            ? "bg-[#2E7D4F] border-[#2E7D4F] text-white"
+            : "border-primary/20 text-primary hover:bg-[#C9A24A] hover:border-[#C9A24A] hover:text-white"
+        }`}
+      >
+        {added ? <IconCheck size={13} /> : <IconPlus size={13} />}
+      </button>
+    </motion.div>
+  );
+}
 
-              {/* Add button */}
-              <button suppressHydrationWarning
-                onClick={() => {
-                  // Build a Product-compatible object for the cart
-                  addItem({
-                    slug: item.id,
-                    name: item.name,
-                    price: item.price,
-                    category: item.category,
-                    previewVideo: undefined, // Or pass item.previewVideo if available
-                    vegetarian: true,
-                  });
-                }}
-                className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 ${
-                  item.isFree 
-                    ? "bg-[#2E7D4F] text-white hover:bg-[#1a5031]" 
-                    : "bg-[#C9A24A] text-white hover:bg-[#0B2118]"
-                }`}
-              >
-                <IconPlus size={12} strokeWidth={3} />
-                Add
-              </button>
-            </motion.div>
+export function CrossSellSection() {
+  const { items } = useCart();
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (items.length === 0) {
+      setRecommendations([]);
+      return;
+    }
+
+    const cartItemIds = items.map((i) => i._id).filter(Boolean);
+    const cartCategories = [...new Set(items.map((i) => i.category).filter(Boolean))];
+
+    setLoading(true);
+    fetch("/api/recommendations", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cartItemIds, cartCategories }),
+    })
+      .then((r) => r.json())
+      .then(({ recommendations }) => setRecommendations(recommendations ?? []))
+      .catch(() => setRecommendations([]))
+      .finally(() => setLoading(false));
+  }, [items]);
+
+  if (items.length === 0 || recommendations.length === 0) return null;
+
+  return (
+    <div className="border-t border-primary/8 pt-5 mt-5">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-3">
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#C9A24A] mb-0.5">
+            Your order is almost complete 👀
+          </p>
+          <p className="text-xs text-primary/40 font-medium">
+            You might also enjoy
+          </p>
+        </div>
+        <Link
+          href="/menu"
+          className="text-[9px] font-bold uppercase tracking-widest text-primary/30 hover:text-[#C9A24A] transition-colors"
+        >
+          Full menu →
+        </Link>
+      </div>
+
+      {/* Recommendations */}
+      <div className="relative">
+        {loading && (
+          <div className="absolute inset-0 bg-white/60 z-10 flex items-center justify-center">
+            <div className="w-4 h-4 border-2 border-[#C9A24A] border-t-transparent rounded-full animate-spin" />
+          </div>
+        )}
+        <AnimatePresence mode="popLayout">
+          {recommendations.map((item, i) => (
+            <RecommendationRow key={item._id} item={item} index={i} />
           ))}
         </AnimatePresence>
       </div>

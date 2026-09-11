@@ -13,7 +13,10 @@ export function AddToCartBlock({ product }: { product: Product }) {
   const [floatingPop, setFloatingPop] = useState<number | null>(null);
   const [wantsRaita, setWantsRaita] = useState(true); // default ON — free, so most will want it
 
-  const isSoldOut = product.available === false;
+  // Resolve status: new field takes priority, legacy boolean as fallback
+  const status = product.availabilityStatus ?? (product.available === false ? 'soldout' : 'available');
+  const isSoldOut = status === 'soldout';
+  const isLimited = status === 'limited';
 
   const handleDecrease = () => setQuantity((q) => Math.max(1, q - 1));
   const handleIncrease = () => setQuantity((q) => q + 1);
@@ -75,9 +78,26 @@ export function AddToCartBlock({ product }: { product: Product }) {
     );
   }
 
-  // ── AVAILABLE STATE ────────────────────────────────────────────────────────
+  // ── AVAILABLE / LIMITED STATE ───────────────────────────────────────
   return (
     <div className="mt-12 pt-8 border-t border-primary/10">
+
+      {/* ── Availability Status Banner ── */}
+      {isLimited ? (
+        <div className="flex items-center gap-2 mb-6 bg-amber-50 border border-amber-200 px-4 py-2.5">
+          <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-amber-600">
+            🟠 Limited Availability Today — Order soon!
+          </span>
+        </div>
+      ) : (
+        <div className="flex items-center gap-2 mb-6">
+          <span className="w-2 h-2 rounded-full bg-[#2E7D4F]" />
+          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#2E7D4F]">
+            🟢 Freshly Available Today
+          </span>
+        </div>
+      )}
 
       {/* ── FREE RAITA ADD-ON ─── */}
       {product.includedRaita && (

@@ -113,8 +113,23 @@ export const productType = defineType({
       initialValue: false,
     }),
     defineField({
+      name: 'availabilityStatus',
+      title: '📦 Availability Status',
+      type: 'string',
+      description: 'Controls the live badge shown to customers on your menu.',
+      options: {
+        list: [
+          { title: '🟢 Available Today', value: 'available' },
+          { title: '🟠 Limited Availability', value: 'limited' },
+          { title: '🔴 Sold Out', value: 'soldout' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'available',
+    }),
+    defineField({
       name: 'available',
-      title: 'Is Available?',
+      title: 'Is Available? (Legacy — use Availability Status above)',
       type: 'boolean',
       initialValue: true,
     }),
