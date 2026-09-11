@@ -1,4 +1,4 @@
-import { ProductCard } from "@/components/molecules/ProductCard";
+import { DynamicCuratedMasterpieces } from "./DynamicCuratedMasterpieces";
 import { client } from "@/sanity/lib/client";
 import { HOME_FEATURED_PRODUCTS_QUERY } from "@/sanity/lib/queries";
 import type { Product } from "@/types";
@@ -23,11 +23,7 @@ export async function MenuPreviewSection() {
       </div>
 
       <div className="container-x relative z-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-          {featuredProducts.map((p) => (
-            <ProductCard key={p.slug} product={p} />
-          ))}
-        </div>
+        <DynamicCuratedMasterpieces products={featuredProducts} />
         
         <div className="mt-12 md:mt-16 text-center">
           <Link href="/menu" className="inline-flex items-center justify-center border border-[#C9A24A] text-[#C9A24A] px-8 py-3 text-sm tracking-[0.2em] uppercase hover:bg-[#C9A24A] hover:text-white transition-colors duration-300">

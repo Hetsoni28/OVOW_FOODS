@@ -66,7 +66,7 @@ export const RELATED_PRODUCTS_QUERY = groq`*[_type == "product" && category->nam
   isBestSeller
 }`
 
-export const HOME_FEATURED_PRODUCTS_QUERY = groq`*[_type == "product" && available != false && (isBestSeller == true || signature == true)] | order(_updatedAt desc) [0...4] {
+export const HOME_FEATURED_PRODUCTS_QUERY = groq`*[_type == "product" && available != false && (isBestSeller == true || signature == true)] | order(_updatedAt desc) [0...12] {
   _id,
   name,
   "slug": slug.current,
