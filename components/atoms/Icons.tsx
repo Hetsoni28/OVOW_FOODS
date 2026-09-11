@@ -693,53 +693,89 @@ export function IconStatusSoldOut({ size = 12, className }: { size?: number; cla
 // ── Swaminarayan Icon ─────────────────────────────────────────────────────────
 
 /**
- * Real Swaminarayan icon — sacred Urdhvapundra tilak (two vertical gold
- * stripes + saffron chandlo dot) set inside a 6-petal lotus mandala,
- * double gold ring border, deep-green disc. Scales from 10 px to 64 px.
+ * Redesigned Swaminarayan icon — bold 8-point mandala outer ring, fat 6-petal
+ * lotus, curved Urdhvapundra tilak stripes, saffron chandlo with specular
+ * highlight. Reads clearly at any size ≥ 24 px.
  */
 export function IconSwaminarayan({ size = 24, className }: { size?: number; className?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
 
-      {/* ── Background disc ── */}
+      {/* ── Deep-green background disc ── */}
       <circle cx="12" cy="12" r="12" fill="#0B2118" />
 
-      {/* ── Outer gold ring ── */}
-      <circle cx="12" cy="12" r="11" stroke="#C9A24A" strokeWidth="0.7" fill="none" />
+      {/* ── Bold outer gold ring ── */}
+      <circle cx="12" cy="12" r="11.1" stroke="#C9A24A" strokeWidth="1.2" fill="none" />
 
-      {/* ── Inner double ring ── */}
-      <circle cx="12" cy="12" r="9.6" stroke="#C9A24A" strokeWidth="0.3" fill="none" />
-
-      {/* ── 6-petal lotus ── */}
+      {/* ── 8 mandala accent dots on the ring (cardinal + diagonal) ── */}
       {/* Top */}
-      <path d="M10.9 9.8 Q11.4 5.8 12 5.2 Q12.6 5.8 13.1 9.8 Z" fill="#C9A24A" fillOpacity="0.55" />
+      <circle cx="12"   cy="2.5"  r="0.75" fill="#C9A24A" />
       {/* Top-right */}
-      <path d="M13.2 10.5 Q16.8 7.5 17.6 7.8 Q17.5 8.9 14.3 11.5 Z" fill="#C9A24A" fillOpacity="0.55" />
+      <circle cx="18.7" cy="5.3"  r="0.75" fill="#C9A24A" />
+      {/* Right */}
+      <circle cx="21.5" cy="12"   r="0.75" fill="#C9A24A" />
       {/* Bottom-right */}
-      <path d="M13.5 13.6 Q16.8 16.6 16.8 17.6 Q15.7 17.9 12.6 15.1 Z" fill="#C9A24A" fillOpacity="0.55" />
+      <circle cx="18.7" cy="18.7" r="0.75" fill="#C9A24A" />
       {/* Bottom */}
-      <path d="M10.9 14.2 Q11.4 18.2 12 18.8 Q12.6 18.2 13.1 14.2 Z" fill="#C9A24A" fillOpacity="0.55" />
+      <circle cx="12"   cy="21.5" r="0.75" fill="#C9A24A" />
       {/* Bottom-left */}
-      <path d="M10.5 13.6 Q7.2 16.6 7.2 17.6 Q8.3 17.9 11.4 15.1 Z" fill="#C9A24A" fillOpacity="0.55" />
+      <circle cx="5.3"  cy="18.7" r="0.75" fill="#C9A24A" />
+      {/* Left */}
+      <circle cx="2.5"  cy="12"   r="0.75" fill="#C9A24A" />
       {/* Top-left */}
-      <path d="M10.8 10.5 Q7.2 7.5 6.4 7.8 Q6.5 8.9 9.7 11.5 Z" fill="#C9A24A" fillOpacity="0.55" />
+      <circle cx="5.3"  cy="5.3"  r="0.75" fill="#C9A24A" />
 
-      {/* ── Centre mask (clean petal bases) ── */}
-      <circle cx="12" cy="12" r="5.8" fill="#0B2118" />
+      {/* ── Inner ring ── */}
+      <circle cx="12" cy="12" r="9.3" stroke="#C9A24A" strokeWidth="0.35" fill="none" />
 
-      {/* ── Inner lotus ring ── */}
-      <circle cx="12" cy="12" r="5.2" stroke="#C9A24A" strokeWidth="0.4" fill="none" />
+      {/* ── 6 bold lotus petals ── */}
+      {/* Top petal */}
+      <path d="M10.6 10 Q11.3 5 12 4.2 Q12.7 5 13.4 10 Z"
+        fill="#C9A24A" fillOpacity="0.82" />
+      {/* Top-right petal */}
+      <path d="M13.3 10.5 Q17.5 7 18.4 7.5 Q18.2 8.8 14.6 11.8 Z"
+        fill="#C9A24A" fillOpacity="0.82" />
+      {/* Bottom-right petal */}
+      <path d="M13.8 13.8 Q17.5 17.2 17.5 18.2 Q16.2 18.6 12.8 15.4 Z"
+        fill="#C9A24A" fillOpacity="0.82" />
+      {/* Bottom petal */}
+      <path d="M10.6 14 Q11.3 19 12 19.8 Q12.7 19 13.4 14 Z"
+        fill="#C9A24A" fillOpacity="0.82" />
+      {/* Bottom-left petal */}
+      <path d="M10.2 13.8 Q6.5 17.2 6.5 18.2 Q7.8 18.6 11.2 15.4 Z"
+        fill="#C9A24A" fillOpacity="0.82" />
+      {/* Top-left petal */}
+      <path d="M10.7 10.5 Q6.5 7 5.6 7.5 Q5.8 8.8 9.4 11.8 Z"
+        fill="#C9A24A" fillOpacity="0.82" />
 
-      {/* ── Tilak left stripe (Urdhvapundra) ── */}
-      <rect x="9.9" y="9.5" width="1.85" height="7" rx="0.92" fill="#C9A24A" />
+      {/* ── Centre mask — hides raw petal bases for clean layering ── */}
+      <circle cx="12" cy="12" r="6.2" fill="#0B2118" />
+
+      {/* ── Inner ornamental ring ── */}
+      <circle cx="12" cy="12" r="5.7" stroke="#C9A24A" strokeWidth="0.5" fill="none" />
+
+      {/* ── Tilak left stripe — curved path (not a plain rectangle) ── */}
+      <path
+        d="M10.1 9.6 C 9.7 11.5 9.7 14 10.1 16.4
+           C 10.3 17 11.1 17 11.4 16.4
+           C 11.8 14 11.8 11.5 11.5 9.6
+           C 11.3 8.9 10.3 8.9 10.1 9.6 Z"
+        fill="#C9A24A"
+      />
 
       {/* ── Tilak right stripe ── */}
-      <rect x="12.25" y="9.5" width="1.85" height="7" rx="0.92" fill="#C9A24A" />
+      <path
+        d="M12.5 9.6 C 12.2 11.5 12.2 14 12.5 16.4
+           C 12.8 17 13.6 17 13.8 16.4
+           C 14.2 14 14.3 11.5 13.9 9.6
+           C 13.7 8.9 12.7 8.9 12.5 9.6 Z"
+        fill="#C9A24A"
+      />
 
-      {/* ── Saffron chandlo dot above stripes ── */}
-      <circle cx="12" cy="8.1" r="2" fill="#F97316" />
-      {/* Subtle specular highlight */}
-      <circle cx="11.3" cy="7.5" r="0.7" fill="white" fillOpacity="0.35" />
+      {/* ── Saffron chandlo (sacred dot) above tilak ── */}
+      <circle cx="12" cy="8" r="2.2" fill="#F97316" />
+      {/* Specular highlight for 3-D feel */}
+      <circle cx="11.2" cy="7.3" r="0.75" fill="white" fillOpacity="0.4" />
 
     </svg>
   );

@@ -154,7 +154,12 @@ export function AddToCartBlock({ product }: { product: Product }) {
             {/* Real Swaminarayan icon */}
             <IconSwaminarayan size={32} />
             <div className="text-center">
-              <p className="text-[9px] text-primary/40 mt-0.5">No onion or garlic</p>
+              <p className={`text-[9px] font-black uppercase tracking-[0.18em] mt-1 ${
+                variant === 'swaminarayan' ? 'text-[#0B2118]' : 'text-primary/50'
+              }`}>
+                Swaminarayan
+              </p>
+              <p className="text-[8px] text-primary/35 mt-0.5">No onion or garlic</p>
             </div>
             {variant === 'swaminarayan' && (
               <motion.div
