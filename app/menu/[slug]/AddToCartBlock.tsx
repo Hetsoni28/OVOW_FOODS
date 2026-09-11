@@ -13,6 +13,23 @@ export function AddToCartBlock({ product }: { product: Product }) {
   const [floatingPop, setFloatingPop] = useState<number | null>(null);
   const [wantsRaita, setWantsRaita] = useState(true);
   const [variant, setVariant] = useState<'regular' | 'swaminarayan'>('regular');
+  const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
+
+  // Global paid extras — available on every product
+  const EXTRAS_LIST = [
+    { id: 'paneer', name: 'Extra Paneer', emoji: '🧀', price: 50, desc: 'Rich, soft paneer cubes' },
+    { id: 'cheese', name: 'Extra Cheese', emoji: '🫕', price: 50, desc: 'Melted cheese topping' },
+    { id: 'raita', name: 'Extra Raita', emoji: '🥣', price: 79, desc: 'Freshly prepared boondi raita' },
+  ];
+
+  const toggleExtra = (id: string) => {
+    setSelectedExtras((prev) =>
+      prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]
+    );
+  };
+
+  const extrasTotal = EXTRAS_LIST.filter((e) => selectedExtras.includes(e.id)).reduce((sum, e) => sum + e.price, 0);
+  const totalPerUnit = product.price + extrasTotal;
 
   // Resolve status: new field takes priority, legacy boolean as fallback
   const status = product.availabilityStatus ?? (product.available === false ? 'soldout' : 'available');
@@ -24,11 +41,14 @@ export function AddToCartBlock({ product }: { product: Product }) {
 
   const handleAdd = () => {
     if (isSoldOut) return;
+    const chosenExtras = EXTRAS_LIST.filter((e) => selectedExtras.includes(e.id)).map((e) => ({ name: e.name, price: e.price }));
     for (let i = 0; i < quantity; i++) {
       addItem({
         ...product,
+        price: product.price + extrasTotal, // bake extras price into cart item price
         variant,
         addons: product.includedRaita ? { wantsRaita } : undefined,
+        extras: chosenExtras.length > 0 ? chosenExtras : undefined,
       });
     }
     setAdded(true);
@@ -237,6 +257,78 @@ export function AddToCartBlock({ product }: { product: Product }) {
         </motion.div>
       )}
 
+      {/* ── EXTRAS SELECTOR ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+        className="mb-6"
+      >
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/40">
+            Add Extras
+          </p>
+          {selectedExtras.length > 0 && (
+            <span className="text-[9px] font-bold uppercase tracking-widest text-[#C9A24A]">
+              +₹{extrasTotal} added
+            </span>
+          )}
+        </div>
+        <div className="flex flex-col gap-2">
+          {EXTRAS_LIST.map((extra) => {
+            const isSelected = selectedExtras.includes(extra.id);
+            return (
+              <button
+                key={extra.id}
+                onClick={() => toggleExtra(extra.id)}
+                className={`w-full flex items-center gap-4 px-4 py-3.5 border-2 transition-all duration-300 text-left group ${
+                  isSelected
+                    ? 'border-[#C9A24A] bg-[#C9A24A]/5 shadow-[0_0_15px_rgba(201,162,74,0.1)]'
+                    : 'border-primary/10 hover:border-primary/25 bg-white'
+                }`}
+              >
+                {/* Custom Checkbox */}
+                <div className={`w-5 h-5 flex-shrink-0 border-2 flex items-center justify-center transition-all duration-200 ${
+                  isSelected ? 'border-[#C9A24A] bg-[#C9A24A]' : 'border-primary/20 group-hover:border-primary/40'
+                }`}>
+                  <AnimatePresence>
+                    {isSelected && (
+                      <motion.div
+                        key="check"
+                        initial={{ scale: 0, rotate: -90 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        exit={{ scale: 0 }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                      >
+                        <IconCheck size={12} strokeWidth={3} className="text-white" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Emoji */}
+                <span className="text-xl flex-shrink-0">{extra.emoji}</span>
+
+                {/* Label */}
+                <div className="flex-1 min-w-0">
+                  <p className={`text-sm font-bold ${isSelected ? 'text-primary' : 'text-primary/70'}`}>
+                    {extra.name}
+                  </p>
+                  <p className="text-[10px] text-primary/40 mt-0.5">{extra.desc}</p>
+                </div>
+
+                {/* Price */}
+                <span className={`text-sm font-serif font-bold flex-shrink-0 ${
+                  isSelected ? 'text-[#C9A24A]' : 'text-primary/30'
+                }`}>
+                  +₹{extra.price}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </motion.div>
+
       {/* ── QUANTITY + ADD BUTTON ─── */}
       <div className="flex flex-col sm:flex-row items-center gap-4 lg:gap-5">
 
@@ -338,7 +430,7 @@ export function AddToCartBlock({ product }: { product: Product }) {
               >
                 <div className="w-px h-6 bg-white/20" />
                 <span className="font-serif text-xl font-bold tracking-wider">
-                  ₹{(product.price * quantity).toLocaleString("en-IN")}
+                  ₹{(totalPerUnit * quantity).toLocaleString("en-IN")}
                 </span>
                 <IconArrowRight size={16} className="text-white/50" />
               </motion.div>

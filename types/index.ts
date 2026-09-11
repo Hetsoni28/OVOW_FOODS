@@ -43,6 +43,7 @@ export interface CartItem extends Product {
   addons?: {
     wantsRaita?: boolean; // Customer chose to include free Raita
   };
+  extras?: { name: string; price: number }[]; // Paid extras like Extra Cheese, Extra Paneer
 }
 
 export type OrderStatus =

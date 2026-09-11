@@ -30,7 +30,8 @@ export function buildOrderMessage(
       ).toLocaleString("en-IN")}`;
       const swami = item.variant === 'swaminarayan' ? `   ↳ 🌿 *Swaminarayan Style* (No onion/garlic)` : null;
       const raita = item.addons?.wantsRaita ? `   ↳ 🥣 Raita (FREE)` : null;
-      return [main, swami, raita].filter(Boolean) as string[];
+      const extraLines = item.extras?.map((e) => `   ↳ ➕ ${e.name} (+₹${e.price})`) ?? [];
+      return [main, swami, raita, ...extraLines].filter(Boolean) as string[];
     }
   );
 
@@ -137,7 +138,8 @@ export function buildCheckoutWhatsAppMessage(
       const main = `▪ *${item.quantity}x* ${item.name} ${item.size ? `(${item.size})` : ""} → ₹${(item.price * item.quantity).toLocaleString("en-IN")}`;
       const swami = item.variant === 'swaminarayan' ? `   ↳ 🌿 *Swaminarayan Style* (No onion/garlic)` : null;
       const raita = item.addons?.wantsRaita ? `   ↳ 🥣 Raita (FREE)` : null;
-      return [main, swami, raita].filter(Boolean) as string[];
+      const extraLines = item.extras?.map((e) => `   ↳ ➕ ${e.name} (+₹${e.price})`) ?? [];
+      return [main, swami, raita, ...extraLines].filter(Boolean) as string[];
     }
   );
 

@@ -24,6 +24,15 @@ export function CartItem({ item }: { item: CartItemType }) {
         {item.addons?.wantsRaita && (
           <p className="text-[10px] text-[#2E7D4F] font-bold mt-0.5">+ Free Raita</p>
         )}
+        {item.extras && item.extras.length > 0 && (
+          <div className="mt-1 flex flex-col gap-0.5">
+            {item.extras.map((extra) => (
+              <p key={extra.name} className="text-[10px] text-[#C9A24A] font-bold">
+                + {extra.name} (+₹{extra.price})
+              </p>
+            ))}
+          </div>
+        )}
         <p className="text-xs text-primary/50 mt-0.5">{item.size}</p>
         <p className="text-sm font-semibold text-[#C9A24A] mt-1">
           ₹{(item.price * item.quantity).toLocaleString("en-IN")}
