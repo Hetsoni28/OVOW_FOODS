@@ -42,14 +42,60 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
   const [whatsappSent, setWhatsappSent] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
 
-  // Trigger confetti after mount
+  // ── Verification phase ─────────────────────────────────────────────
+  const [verified, setVerified] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [statusIdx, setStatusIdx] = useState(0);
+
+  const VERIFY_MESSAGES = [
+    "Connecting to payment network...",
+    "Contacting your bank...",
+    "Checking transaction ID...",
+    "Verifying amount ₹" + cartTotal.toLocaleString("en-IN") + "...",
+    "Confirming with UPI...",
+    "Almost there...",
+    "Finalising your order...",
+  ];
+
+  // Random verify duration: 5–12 seconds
   useEffect(() => {
+    const TOTAL_MS = (5 + Math.random() * 7) * 1000;
+    const startTime = Date.now();
+
+    // Progress bar
+    const progressInterval = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const pct = Math.min((elapsed / TOTAL_MS) * 100, 99); // hold at 99 until done
+      setProgress(pct);
+      if (elapsed >= TOTAL_MS) {
+        clearInterval(progressInterval);
+        setProgress(100);
+        setTimeout(() => setVerified(true), 300);
+      }
+    }, 80);
+
+    // Rotate status messages
+    const msgInterval = setInterval(() => {
+      setStatusIdx((i) => (i + 1) % VERIFY_MESSAGES.length);
+    }, Math.round(TOTAL_MS / VERIFY_MESSAGES.length));
+
+    return () => {
+      clearInterval(progressInterval);
+      clearInterval(msgInterval);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Trigger confetti only after verified
+  useEffect(() => {
+    if (!verified) return;
     const t = setTimeout(() => setShowParticles(true), 200);
     return () => clearTimeout(t);
-  }, []);
+  }, [verified]);
 
   // Animate the order timeline steps
   useEffect(() => {
+    if (!verified) return;
     let step = 0;
     const interval = setInterval(() => {
       step++;
@@ -57,7 +103,7 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
       if (step >= 2) clearInterval(interval);
     }, 600);
     return () => clearInterval(interval);
-  }, []);
+  }, [verified]);
 
   const handleWA = () => {
     handleSendWhatsApp();
@@ -69,6 +115,98 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
     color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
     delay: i * 0.04,
   }));
+
+  // ── VERIFYING SCREEN ─────────────────────────────────────────────────
+  if (!verified) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.97 }}
+        className="max-w-2xl mx-auto"
+      >
+        <div className="bg-[#0B2118] relative overflow-hidden">
+          {/* Gold shimmer top */}
+          <div className="w-full h-1 bg-gradient-to-r from-transparent via-[#C9A24A] to-transparent" />
+
+          <div className="px-8 md:px-16 py-16 flex flex-col items-center text-center">
+
+            {/* Animated gold spinner */}
+            <div className="relative w-24 h-24 mb-10">
+              {/* Outer ring — slow spin */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 rounded-full border-4 border-transparent border-t-[#C9A24A] border-r-[#C9A24A]/30"
+              />
+              {/* Inner ring — reverse spin */}
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-4 rounded-full border-2 border-transparent border-t-[#C9A24A]/60"
+              />
+              {/* Centre pulsing dot */}
+              <motion.div
+                animate={{ scale: [1, 1.2, 1], opacity: [0.6, 1, 0.6] }}
+                transition={{ duration: 1.2, repeat: Infinity }}
+                className="absolute inset-0 flex items-center justify-center"
+              >
+                <div className="w-6 h-6 rounded-full bg-[#C9A24A]/80" />
+              </motion.div>
+            </div>
+
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#C9A24A] mb-4">
+              Verifying Payment
+            </p>
+
+            {/* Rotating status message */}
+            <div className="h-6 overflow-hidden mb-10">
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={statusIdx}
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -10, opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="text-white/50 text-sm"
+                >
+                  {VERIFY_MESSAGES[statusIdx]}
+                </motion.p>
+              </AnimatePresence>
+            </div>
+
+            {/* Progress bar */}
+            <div className="w-full max-w-xs">
+              <div className="flex justify-between mb-2">
+                <span className="text-[9px] font-bold uppercase tracking-widest text-white/20">Processing</span>
+                <span className="text-[9px] font-black text-[#C9A24A]">{Math.round(progress)}%</span>
+              </div>
+              <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full bg-gradient-to-r from-[#C9A24A]/60 via-[#C9A24A] to-[#C9A24A]/60 rounded-full"
+                  style={{ width: `${progress}%` }}
+                  transition={{ duration: 0.1 }}
+                />
+              </div>
+            </div>
+
+            {/* Order reference */}
+            <p className="text-[10px] text-white/20 mt-8">
+              Order Ref: <span className="text-white/40 font-bold">#{orderId}</span>
+            </p>
+          </div>
+        </div>
+
+        {/* Reassurance card below */}
+        <div className="bg-white border border-primary/5 border-t-0 px-8 py-6 text-center">
+          <p className="text-xs text-primary/50 leading-relaxed">
+            Please <strong className="text-primary">do not close or refresh</strong> this page.<br />
+            Your payment confirmation is being processed.
+          </p>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
