@@ -25,8 +25,8 @@ export default function MenuLoading() {
           ))}
         </div>
 
-        {/* Product Grid Skeleton */}
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6">
+        {/* Product Grid Skeleton — matches real grid: grid-cols-2 md:grid-cols-3 xl:grid-cols-4 */}
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8 lg:gap-12">
           {Array.from({ length: 8 }).map((_, i) => (
             <ProductCardSkeleton key={i} delay={i * 60} />
           ))}
