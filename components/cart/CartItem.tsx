@@ -14,6 +14,19 @@ export function CartItem({ item }: { item: CartItemType }) {
         <p className="font-serif text-base leading-snug text-primary font-semibold">
           {item.name}
         </p>
+        {/* Variant badge */}
+        {item.variant === 'swaminarayan' && (
+          <div className="inline-flex items-center gap-1 bg-[#0B2118] px-2 py-0.5 mt-1">
+            <svg width="7" height="7" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2C8 2 5 6 5 10c0 5 7 12 7 12s7-7 7-12c0-4-3-8-7-8z" fill="#C9A24A"/>
+              <circle cx="12" cy="10" r="2.5" fill="#0B2118"/>
+            </svg>
+            <span className="text-[7px] font-black uppercase tracking-[0.18em] text-white">Swaminarayan</span>
+          </div>
+        )}
+        {item.addons?.wantsRaita && (
+          <p className="text-[10px] text-[#2E7D4F] font-bold mt-0.5">+ Free Raita</p>
+        )}
         <p className="text-xs text-primary/50 mt-0.5">{item.size}</p>
         <p className="text-sm font-semibold text-[#C9A24A] mt-1">
           ₹{(item.price * item.quantity).toLocaleString("en-IN")}

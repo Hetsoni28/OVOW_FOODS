@@ -11,7 +11,8 @@ export function AddToCartBlock({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [floatingPop, setFloatingPop] = useState<number | null>(null);
-  const [wantsRaita, setWantsRaita] = useState(true); // default ON — free, so most will want it
+  const [wantsRaita, setWantsRaita] = useState(true);
+  const [variant, setVariant] = useState<'regular' | 'swaminarayan'>('regular');
 
   // Resolve status: new field takes priority, legacy boolean as fallback
   const status = product.availabilityStatus ?? (product.available === false ? 'soldout' : 'available');
@@ -26,6 +27,7 @@ export function AddToCartBlock({ product }: { product: Product }) {
     for (let i = 0; i < quantity; i++) {
       addItem({
         ...product,
+        variant,
         addons: product.includedRaita ? { wantsRaita } : undefined,
       });
     }
@@ -98,6 +100,83 @@ export function AddToCartBlock({ product }: { product: Product }) {
           </span>
         </div>
       )}
+
+      {/* ── SWAMINARAYAN VARIANT SELECTOR — shows on every product ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className="mb-6"
+      >
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/40 mb-3">
+          Preparation Style
+        </p>
+        <div className="grid grid-cols-2 gap-3">
+          {/* Regular Option */}
+          <button
+            onClick={() => setVariant('regular')}
+            className={`relative flex flex-col items-center justify-center gap-2.5 p-4 border-2 transition-all duration-300 ${
+              variant === 'regular'
+                ? 'border-[#C9A24A] bg-[#C9A24A]/5'
+                : 'border-primary/10 hover:border-primary/25 bg-white'
+            }`}
+          >
+            {/* Veg indicator dot */}
+            <div className="flex items-center justify-center w-6 h-6 border border-[#2E7D4F] rounded-sm bg-white">
+              <div className="w-3 h-3 rounded-full bg-[#2E7D4F]" />
+            </div>
+            <div className="text-center">
+              <p className={`text-xs font-bold uppercase tracking-widest ${
+                variant === 'regular' ? 'text-primary' : 'text-primary/60'
+              }`}>
+                Regular
+              </p>
+              <p className="text-[9px] text-primary/40 mt-0.5">With onion &amp; garlic</p>
+            </div>
+            {variant === 'regular' && (
+              <motion.div
+                layoutId="variant-indicator"
+                className="absolute inset-0 border-2 border-[#C9A24A] pointer-events-none"
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+              />
+            )}
+          </button>
+
+          {/* Swaminarayan Option */}
+          <button
+            onClick={() => setVariant('swaminarayan')}
+            className={`relative flex flex-col items-center justify-center gap-2.5 p-4 border-2 transition-all duration-300 ${
+              variant === 'swaminarayan'
+                ? 'border-[#0B2118] bg-[#0B2118]/5'
+                : 'border-primary/10 hover:border-[#0B2118]/40 bg-white'
+            }`}
+          >
+            {/* Swaminarayan Badge */}
+            <div className="flex items-center gap-1.5 bg-[#0B2118] px-3 py-1.5">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2C8 2 5 6 5 10c0 5 7 12 7 12s7-7 7-12c0-4-3-8-7-8z" fill="#C9A24A"/>
+                <circle cx="12" cy="10" r="2.5" fill="#0B2118"/>
+              </svg>
+              <span className="text-[8px] font-black uppercase tracking-[0.2em] text-white">Swaminarayan</span>
+            </div>
+            <div className="text-center">
+              <p className={`text-xs font-bold uppercase tracking-widest ${
+                variant === 'swaminarayan' ? 'text-[#0B2118]' : 'text-primary/60'
+              }`}>
+                Pure Jain
+              </p>
+              <p className="text-[9px] text-primary/40 mt-0.5">No onion or garlic</p>
+            </div>
+            {variant === 'swaminarayan' && (
+              <motion.div
+                layoutId="variant-indicator"
+                className="absolute inset-0 border-2 border-[#0B2118] pointer-events-none"
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+              />
+            )}
+          </button>
+        </div>
+      </motion.div>
 
       {/* ── FREE RAITA ADD-ON ─── */}
       {product.includedRaita && (

@@ -40,6 +40,7 @@ export interface Product {
 
 export interface CartItem extends Product {
   quantity: number;
+  variant?: 'regular' | 'swaminarayan'; // dish preparation variant
   addons?: {
     wantsRaita?: boolean; // Customer chose to include free Raita
   };

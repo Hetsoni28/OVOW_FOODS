@@ -125,22 +125,9 @@ export function MenuClient({
               <IconSlidersHorizontal size={12} className="text-[#C9A24A]" />
               {filteredProducts.length} DISH{filteredProducts.length !== 1 && "ES"}
             </p>
-            {/* Swaminarayan Filter Toggle */}
-            <button
-              suppressHydrationWarning
-              onClick={() => setSwaminarayanOnly(!swaminarayanOnly)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-300 text-[10px] font-bold tracking-widest uppercase ${
-                swaminarayanOnly
-                  ? "bg-[#C9A24A] border-[#C9A24A] text-white shadow-lg shadow-[#C9A24A]/20"
-                  : "bg-transparent border-primary/20 text-primary/60 hover:border-[#C9A24A] hover:text-[#C9A24A]"
-              }`}
-            >
-              <span className="text-[12px]">🌿</span>
-              Swaminarayan Only
-            </button>
           </div>
           <div className="flex items-center gap-3">
-            {(searchQuery || activeCategory !== "All" || swaminarayanOnly) && (
+            {(searchQuery || activeCategory !== "All") && (
               <button suppressHydrationWarning
                 onClick={handleClear}
                 className="text-[10px] uppercase tracking-widest font-bold text-[#C9A24A] hover:text-primary transition-colors flex items-center gap-1.5 self-start sm:self-center"
