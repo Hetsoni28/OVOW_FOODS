@@ -6,8 +6,6 @@ import { getOrderFromStorage } from "@/lib/storage";
 import { Logo } from "@/components/atoms/Logo";
 import { IconCheckCircle, IconDownload, IconChevronLeft, IconMapPin, IconReceiptText, IconClock } from "@/components/atoms/Icons";
 import Link from "next/link";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import { motion } from "framer-motion";
 
 export function OrderReceipt({ orderId }: { orderId: string }) {
@@ -25,48 +23,42 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
     setLoading(false);
   }, [orderId]);
 
-  const handleDownloadPDF = async () => {
-    if (!receiptRef.current || !order) return;
+  const handleDownloadPDF = () => {
+    if (!order) return;
     setDownloading(true);
 
-    try {
-      const element = receiptRef.current;
-      
-      // Temporary styling for PDF generation to ensure white background and perfect width
-      const originalPadding = element.style.padding;
-      const originalWidth = element.style.width;
-      
-      element.style.padding = "40px";
-      element.style.width = "800px"; // Fixed width for A4 aspect ratio approximation
-
-      const canvas = await html2canvas(element, {
-        scale: 2, // High resolution
-        useCORS: true,
-        backgroundColor: "#F9F6F0",
-        logging: false,
-      });
-
-      // Restore styling
-      element.style.padding = originalPadding;
-      element.style.width = originalWidth;
-
-      const imgData = canvas.toDataURL("image/jpeg", 1.0);
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4",
-      });
-
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`OVOW-Invoice-${order.orderId}.pdf`);
-    } catch (error) {
-      console.error("Failed to generate PDF", error);
-    } finally {
-      setDownloading(false);
+    // Inject a temporary <style> tag for print layout, then call window.print()
+    const styleId = "ovow-print-style";
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement("style");
+      style.id = styleId;
+      style.innerHTML = `
+        @media print {
+          body * { visibility: hidden !important; }
+          #ovow-receipt-printable, #ovow-receipt-printable * { visibility: visible !important; }
+          #ovow-receipt-printable {
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100% !important;
+            padding: 32px !important;
+            background: #ffffff !important;
+            box-shadow: none !important;
+          }
+          /* Hide decorative ticket edges in print */
+          .ovow-ticket-edge { display: none !important; }
+          /* Hide watermark stamp in print to keep it clean */
+          .ovow-stamp { opacity: 0.06 !important; }
+          /* Remove page margins */
+          @page { margin: 10mm; }
+        }
+      `;
+      document.head.appendChild(style);
     }
+
+    setTimeout(() => {
+      window.print();
+      setDownloading(false);
+    }, 150);
   };
 
   if (loading) {
@@ -116,10 +108,10 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
         className="w-full max-w-3xl relative"
       >
         {/* Decorative Ticket Edge (Top) */}
-        <div className="h-3 w-full bg-[radial-gradient(circle,transparent_4px,#ffffff_5px)] bg-[length:12px_12px] bg-bottom" style={{ maskImage: "linear-gradient(to bottom, transparent 40%, black 41%)", WebkitMaskImage: "linear-gradient(to bottom, transparent 40%, black 41%)" }} />
+        <div className="ovow-ticket-edge h-3 w-full bg-[radial-gradient(circle,transparent_4px,#ffffff_5px)] bg-[length:12px_12px] bg-bottom" style={{ maskImage: "linear-gradient(to bottom, transparent 40%, black 41%)", WebkitMaskImage: "linear-gradient(to bottom, transparent 40%, black 41%)" }} />
 
         {/* The actual printable area */}
-        <div ref={receiptRef} className="p-8 md:p-14 bg-white relative shadow-[0_20px_50px_rgba(18,59,42,0.06)] overflow-hidden">
+        <div id="ovow-receipt-printable" ref={receiptRef} className="p-8 md:p-14 bg-white relative shadow-[0_20px_50px_rgba(18,59,42,0.06)] overflow-hidden">
           
           {/* Faint Watermark Background */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full flex items-center justify-center opacity-[0.02] pointer-events-none">
@@ -127,7 +119,7 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
           </div>
 
           {/* Rubber Stamp Effect */}
-          <div className="absolute top-48 right-8 md:right-20 pointer-events-none opacity-10 rotate-[-15deg] z-0 select-none">
+          <div className="ovow-stamp absolute top-48 right-8 md:right-20 pointer-events-none opacity-10 rotate-[-15deg] z-0 select-none">
             {(order.payment.method === "COD" || order.payment.customerConfirmation === "CUSTOMER_MARKED_PAID") ? (
               <div className="border-[6px] border-green-700 text-green-700 px-8 py-3 text-5xl font-black uppercase tracking-[0.2em] mix-blend-multiply">CONFIRMED</div>
             ) : (
