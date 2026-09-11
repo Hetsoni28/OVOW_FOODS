@@ -689,3 +689,58 @@ export function IconStatusSoldOut({ size = 12, className }: { size?: number; cla
     </svg>
   );
 }
+
+// ── Swaminarayan Icon ─────────────────────────────────────────────────────────
+
+/**
+ * Real Swaminarayan icon — sacred Urdhvapundra tilak (two vertical gold
+ * stripes + saffron chandlo dot) set inside a 6-petal lotus mandala,
+ * double gold ring border, deep-green disc. Scales from 10 px to 64 px.
+ */
+export function IconSwaminarayan({ size = 24, className }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
+
+      {/* ── Background disc ── */}
+      <circle cx="12" cy="12" r="12" fill="#0B2118" />
+
+      {/* ── Outer gold ring ── */}
+      <circle cx="12" cy="12" r="11" stroke="#C9A24A" strokeWidth="0.7" fill="none" />
+
+      {/* ── Inner double ring ── */}
+      <circle cx="12" cy="12" r="9.6" stroke="#C9A24A" strokeWidth="0.3" fill="none" />
+
+      {/* ── 6-petal lotus ── */}
+      {/* Top */}
+      <path d="M10.9 9.8 Q11.4 5.8 12 5.2 Q12.6 5.8 13.1 9.8 Z" fill="#C9A24A" fillOpacity="0.55" />
+      {/* Top-right */}
+      <path d="M13.2 10.5 Q16.8 7.5 17.6 7.8 Q17.5 8.9 14.3 11.5 Z" fill="#C9A24A" fillOpacity="0.55" />
+      {/* Bottom-right */}
+      <path d="M13.5 13.6 Q16.8 16.6 16.8 17.6 Q15.7 17.9 12.6 15.1 Z" fill="#C9A24A" fillOpacity="0.55" />
+      {/* Bottom */}
+      <path d="M10.9 14.2 Q11.4 18.2 12 18.8 Q12.6 18.2 13.1 14.2 Z" fill="#C9A24A" fillOpacity="0.55" />
+      {/* Bottom-left */}
+      <path d="M10.5 13.6 Q7.2 16.6 7.2 17.6 Q8.3 17.9 11.4 15.1 Z" fill="#C9A24A" fillOpacity="0.55" />
+      {/* Top-left */}
+      <path d="M10.8 10.5 Q7.2 7.5 6.4 7.8 Q6.5 8.9 9.7 11.5 Z" fill="#C9A24A" fillOpacity="0.55" />
+
+      {/* ── Centre mask (clean petal bases) ── */}
+      <circle cx="12" cy="12" r="5.8" fill="#0B2118" />
+
+      {/* ── Inner lotus ring ── */}
+      <circle cx="12" cy="12" r="5.2" stroke="#C9A24A" strokeWidth="0.4" fill="none" />
+
+      {/* ── Tilak left stripe (Urdhvapundra) ── */}
+      <rect x="9.9" y="9.5" width="1.85" height="7" rx="0.92" fill="#C9A24A" />
+
+      {/* ── Tilak right stripe ── */}
+      <rect x="12.25" y="9.5" width="1.85" height="7" rx="0.92" fill="#C9A24A" />
+
+      {/* ── Saffron chandlo dot above stripes ── */}
+      <circle cx="12" cy="8.1" r="2" fill="#F97316" />
+      {/* Subtle specular highlight */}
+      <circle cx="11.3" cy="7.5" r="0.7" fill="white" fillOpacity="0.35" />
+
+    </svg>
+  );
+}

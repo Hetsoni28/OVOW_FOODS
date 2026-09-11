@@ -1,6 +1,6 @@
 "use client";
 
-import { IconMinus, IconPlus, IconTrash } from "@/components/atoms/Icons";
+import { IconMinus, IconPlus, IconTrash, IconSwaminarayan } from "@/components/atoms/Icons";
 import { CartItem as CartItemType } from "@/types";
 import { useCart } from "@/context/CartContext";
 
@@ -16,11 +16,8 @@ export function CartItem({ item }: { item: CartItemType }) {
         </p>
         {/* Variant badge */}
         {item.variant === 'swaminarayan' && (
-          <div className="inline-flex items-center gap-1 bg-[#0B2118] px-2 py-0.5 mt-1">
-            <svg width="7" height="7" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2C8 2 5 6 5 10c0 5 7 12 7 12s7-7 7-12c0-4-3-8-7-8z" fill="#C9A24A"/>
-              <circle cx="12" cy="10" r="2.5" fill="#0B2118"/>
-            </svg>
+          <div className="inline-flex items-center gap-1.5 bg-[#0B2118] px-2 py-0.5 mt-1">
+            <IconSwaminarayan size={12} />
             <span className="text-[7px] font-black uppercase tracking-[0.18em] text-white">Swaminarayan</span>
           </div>
         )}

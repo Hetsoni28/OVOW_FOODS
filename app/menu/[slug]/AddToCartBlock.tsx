@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { IconPlus, IconMinus, IconCheck, IconShoppingBag, IconArrowRight, IconBellOff, IconStatusAvailable, IconStatusLimited, IconStatusSoldOut } from "@/components/atoms/Icons";
+import { IconPlus, IconMinus, IconCheck, IconShoppingBag, IconArrowRight, IconBellOff, IconStatusAvailable, IconStatusLimited, IconStatusSoldOut, IconSwaminarayan } from "@/components/atoms/Icons";
 import { useCart } from "@/context/CartContext";
 import { Product } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
@@ -151,14 +151,8 @@ export function AddToCartBlock({ product }: { product: Product }) {
                 : 'border-primary/10 hover:border-[#0B2118]/40 bg-white'
             }`}
           >
-            {/* Swaminarayan Badge */}
-            <div className="flex items-center gap-1.5 bg-[#0B2118] px-3 py-1.5">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2C8 2 5 6 5 10c0 5 7 12 7 12s7-7 7-12c0-4-3-8-7-8z" fill="#C9A24A"/>
-                <circle cx="12" cy="10" r="2.5" fill="#0B2118"/>
-              </svg>
-              <span className="text-[8px] font-black uppercase tracking-[0.2em] text-white">Swaminarayan</span>
-            </div>
+            {/* Real Swaminarayan icon */}
+            <IconSwaminarayan size={32} />
             <div className="text-center">
               <p className="text-[9px] text-primary/40 mt-0.5">No onion or garlic</p>
             </div>
