@@ -25,9 +25,11 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
 
   // Auto-advance state
   const [upiLaunched, setUpiLaunched] = useState(false);
+  const [scannerPrompt, setScannerPrompt] = useState(false); // for QR scanner path
   const [countdown, setCountdown] = useState(5);
   const [autoAdvanceCancelled, setAutoAdvanceCancelled] = useState(false);
   const countdownRef = useRef<NodeJS.Timeout | null>(null);
+  const scannerTimerRef = useRef<NodeJS.Timeout | null>(null);
   const autoAdvanceRef = useRef(false);
 
   const copyUpi = () => {
@@ -77,10 +79,31 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
     };
   }, [upiLaunched, autoAdvanceCancelled, startCountdown]);
 
+  // Scanner path: if user hasn't opened UPI app, start a 30s idle timer.
+  // After 30s they've likely already scanned & paid → show prompt
+  useEffect(() => {
+    if (upiLaunched || autoAdvanceCancelled) return;
+
+    scannerTimerRef.current = setTimeout(() => {
+      if (!upiLaunched && !autoAdvanceCancelled) {
+        setScannerPrompt(true);
+        startCountdown();
+      }
+    }, 30000);
+
+    return () => {
+      if (scannerTimerRef.current) clearTimeout(scannerTimerRef.current);
+    };
+  // Only run once on mount (no upiLaunched/cancelled deps to avoid re-triggering)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleCancelAutoAdvance = () => {
     autoAdvanceRef.current = false;
     if (countdownRef.current) clearInterval(countdownRef.current);
+    if (scannerTimerRef.current) clearTimeout(scannerTimerRef.current);
     setAutoAdvanceCancelled(true);
+    setScannerPrompt(false);
     setUpiLaunched(false);
   };
 
@@ -179,9 +202,9 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
             </p>
           </div>
 
-          {/* Auto-advance countdown banner — appears when user returns from UPI app */}
+          {/* Auto-advance countdown banner — appears for both UPI app & scanner paths */}
           <AnimatePresence>
-            {upiLaunched && !autoAdvanceCancelled && (
+            {(upiLaunched || scannerPrompt) && !autoAdvanceCancelled && (
               <motion.div
                 initial={{ opacity: 0, y: 8, height: 0 }}
                 animate={{ opacity: 1, y: 0, height: "auto" }}
@@ -197,17 +220,28 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
                       <span className="absolute inset-0 flex items-center justify-center font-black text-[#C9A24A] text-sm">{countdown}</span>
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-white">Welcome back!</p>
-                      <p className="text-[11px] text-white/50">
-                        Advancing to confirmation in <span className="text-[#C9A24A] font-black">{countdown}s</span>
-                      </p>
+                      {scannerPrompt && !upiLaunched ? (
+                        <>
+                          <p className="text-sm font-bold text-white">Did you just pay by scanning? 📲</p>
+                          <p className="text-[11px] text-white/50">
+                            Moving to next step in <span className="text-[#C9A24A] font-black">{countdown}s</span>
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="text-sm font-bold text-white">Welcome back!</p>
+                          <p className="text-[11px] text-white/50">
+                            Advancing to confirmation in <span className="text-[#C9A24A] font-black">{countdown}s</span>
+                          </p>
+                        </>
+                      )}
                     </div>
                   </div>
                   <button
                     onClick={handleCancelAutoAdvance}
                     className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white border border-white/10 px-3 py-1.5 transition-colors flex-shrink-0"
                   >
-                    Cancel
+                    Not Yet
                   </button>
                 </div>
               </motion.div>
