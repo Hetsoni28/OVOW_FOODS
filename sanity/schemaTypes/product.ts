@@ -81,6 +81,13 @@ export const productType = defineType({
       initialValue: false,
     }),
     defineField({
+      name: 'isKidsSpecial',
+      title: '🧒 Kids Special?',
+      type: 'boolean',
+      description: 'Mark this dish as kid-friendly / suitable for children.',
+      initialValue: false,
+    }),
+    defineField({
       name: 'vegetarian',
       title: 'Is Vegetarian?',
       type: 'boolean',

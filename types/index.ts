@@ -32,7 +32,7 @@ export interface Product {
   isBestseller?: boolean;
   available?: boolean;
   isAvailable?: boolean; // Legacy
-  availabilityStatus?: 'available' | 'limited' | 'soldout';
+  availabilityStatus?: 'available' | 'limited' | 'soldout' | 'preorder';
   sortOrder?: number;
   includedRaita?: boolean; // If true, customer can opt-in for free Raita
 }

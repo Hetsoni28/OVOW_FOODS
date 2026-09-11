@@ -16,6 +16,7 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
   const isSoldOut = status === 'soldout';
   const isLimited = status === 'limited';
   const isPreOrder = status === 'preorder';
+  const isKidsSpecial = !!(product as any).isKidsSpecial;
 
   function handleAdd(e: React.MouseEvent) {
     e.preventDefault();
@@ -50,7 +51,11 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
 
         {/* Badges — top left */}
         <div className="absolute top-2 left-2 md:top-4 md:left-4 flex flex-col gap-1.5 md:gap-2">
-          {isSoldOut && (
+          {!isSoldOut && !isPreOrder && isKidsSpecial && (
+            <span className="bg-rose-500/90 text-white px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold shadow-sm backdrop-blur-sm flex items-center gap-1">
+              🧒 Kids Special
+            </span>
+          )}
             <span className="bg-black/80 text-white px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold shadow-sm backdrop-blur-sm flex items-center gap-1.5">
               <IconStatusSoldOut size={10} /> Sold Out
             </span>

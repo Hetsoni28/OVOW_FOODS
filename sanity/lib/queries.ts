@@ -22,6 +22,7 @@ export const ALL_PRODUCTS_QUERY = groq`*[_type == "product"] | order(sortOrder a
   "previewVideo": video.asset->url,
   "thumbnailUrl": thumbnail.asset->url,
   isSpicy,
+  isKidsSpecial,
   isBestSeller,
   signature,
   size,
@@ -78,6 +79,7 @@ export const HOME_FEATURED_PRODUCTS_QUERY = groq`*[_type == "product" && availab
   "previewVideo": video.asset->url,
   "thumbnailUrl": thumbnail.asset->url,
   signature,
+  isKidsSpecial,
   isBestSeller,
   servingSize
 }`
