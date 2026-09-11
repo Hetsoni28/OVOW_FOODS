@@ -48,6 +48,7 @@ export const PRODUCT_BY_SLUG_QUERY = groq`*[_type == "product" && slug.current =
   "previewVideo": video.asset->url,
   "thumbnailUrl": thumbnail.asset->url,
   isSpicy,
+  isKidsSpecial,
   isBestSeller,
   signature,
   servingSize,

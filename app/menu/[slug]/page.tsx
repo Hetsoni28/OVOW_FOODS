@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { IconArrowLeft, IconCheckCircle, IconLeaf, IconUtensilsCrossed, IconFlame, IconStar } from "@/components/atoms/Icons";
+import { IconArrowLeft, IconCheckCircle, IconLeaf, IconUtensilsCrossed, IconTrophy, IconSignatureDish, IconKidsSpecial, IconPreOrder } from "@/components/atoms/Icons";
 import { LazyVideo } from "@/components/atoms/LazyVideo";
 import { client } from "@/sanity/lib/client";
 import { PRODUCT_BY_SLUG_QUERY, ALL_PRODUCTS_QUERY, RELATED_PRODUCTS_QUERY, PRODUCT_REVIEWS_QUERY } from "@/sanity/lib/queries";
@@ -68,7 +68,10 @@ export default async function Product({
     { next: { revalidate: 60 } }
   );
 
-  const isSoldOut = product.available === false;
+  const status = (product as any).availabilityStatus ?? (product.available === false ? 'soldout' : 'available');
+  const isSoldOut = status === 'soldout' || product.available === false;
+  const isPreOrder = status === 'preorder';
+  const isKidsSpecial = !!(product as any).isKidsSpecial;
 
   // Fallback video logic for main product
   let mainFallbackVideo = undefined;
@@ -117,14 +120,24 @@ export default async function Product({
                     Sold Out
                   </span>
                 )}
-                {!isSoldOut && (product.isSignature || (product as any).signature) && (
-                  <span className="bg-[#C9A24A] text-white px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-bold shadow-xl flex items-center gap-2">
-                    <IconStar size={12} fill="white" /> Signature Dish
+                {isPreOrder && (
+                  <span className="bg-purple-700/90 text-white px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-bold shadow-xl backdrop-blur-sm flex items-center gap-2">
+                    <IconPreOrder size={12} /> Pre-Order Only
                   </span>
                 )}
-                {!isSoldOut && (product.isBestseller || (product as any).isBestSeller) && (
+                {!isSoldOut && !isPreOrder && isKidsSpecial && (
+                  <span className="bg-rose-500/90 text-white px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-bold shadow-xl backdrop-blur-sm flex items-center gap-2">
+                    <IconKidsSpecial size={12} /> Kids Special
+                  </span>
+                )}
+                {!isSoldOut && !isPreOrder && (product.isSignature || (product as any).signature) && (
+                  <span className="bg-[#C9A24A] text-white px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-bold shadow-xl flex items-center gap-2">
+                    <IconSignatureDish size={12} /> Signature Dish
+                  </span>
+                )}
+                {!isSoldOut && !isPreOrder && (product.isBestseller || (product as any).isBestSeller) && (
                   <span className="bg-white/95 backdrop-blur-md text-[#0B2118] px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-bold shadow-xl flex items-center gap-2">
-                    <IconFlame size={12} className="text-[#C9A24A]" /> Bestseller
+                    <IconTrophy size={12} className="text-[#C9A24A]" /> Bestseller
                   </span>
                 )}
               </div>
