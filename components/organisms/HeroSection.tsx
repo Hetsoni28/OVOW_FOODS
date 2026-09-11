@@ -34,6 +34,7 @@ export function HeroSection() {
         className="absolute inset-0 w-full h-full object-cover z-[1]"
         threshold={0}
         rootMargin="0px"
+        showSkeleton={false}
       />
 
       {/* Dark overlay for text readability */}

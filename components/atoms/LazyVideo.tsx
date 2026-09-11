@@ -24,6 +24,8 @@ interface LazyVideoProps {
   threshold?: number;
   rootMargin?: string;
   onCanPlay?: () => void;
+  /** Set false to hide the shimmer skeleton (e.g. Hero already has a static image fallback) */
+  showSkeleton?: boolean;
 }
 
 export function LazyVideo({
@@ -37,6 +39,7 @@ export function LazyVideo({
   threshold = 0.1,
   rootMargin = "200px",
   onCanPlay,
+  showSkeleton = true,
 }: LazyVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const loadedRef = useRef(false);
@@ -91,8 +94,8 @@ export function LazyVideo({
         style={{ objectFit }}
       />
 
-      {/* ── Shimmer Skeleton overlay (fades OUT once video is ready) ── */}
-      {skeletonVisible && (
+      {/* ── Shimmer Skeleton overlay (only when showSkeleton=true) ── */}
+      {showSkeleton && skeletonVisible && (
         <div
           className="absolute inset-0 z-10 pointer-events-none overflow-hidden transition-opacity duration-500"
           style={{
