@@ -22,6 +22,22 @@ export function MenuClient({
   
   const ITEMS_PER_PAGE = 8;
 
+  // Enforce PDF Menu order logic on Categories
+  const getCategoryPriority = (catName: string) => {
+    const lower = catName.toLowerCase();
+    if (lower.includes("veg") || lower.includes("subji") || lower.includes("paneer")) return 1; // Sabji
+    if (lower.includes("biryani") || lower.includes("rice")) return 2; // Biryani
+    if (lower.includes("dal")) return 3; // Dal
+    if (lower.includes("roti") || lower.includes("bread")) return 4; // Roti
+    if (lower.includes("dessert") || lower.includes("sweet")) return 5; // Dessert
+    if (lower.includes("side") || lower.includes("said") || lower.includes("raita") || lower.includes("papad")) return 6; // Said items
+    return 7;
+  };
+
+  const sortedCategories = useMemo(() => {
+    return [...categories].sort((a, b) => getCategoryPriority(a.name) - getCategoryPriority(b.name));
+  }, [categories]);
+
   const filteredProducts = useMemo(() => {
     const filtered = products.filter((p) => {
       const catName =
@@ -35,24 +51,12 @@ export function MenuClient({
       return matchesCategory && matchesSearch;
     });
 
-    // Sort logic:
-    // 1. Force Subji (Veg/Paneer), Biryani, and Rice to the top
-    // 2. Group by Category Order (using the order from Sanity)
-    // 3. Within each category, put Signature / Best Seller items first
     return filtered.sort((a, b) => {
-      const getPriority = (catName: string) => {
-        const lower = catName.toLowerCase();
-        if (lower.includes("veg") || lower.includes("paneer")) return 1;
-        if (lower.includes("biryani")) return 2;
-        if (lower.includes("rice")) return 3;
-        return 4; // Everything else
-      };
-
       const catA = typeof a.category === "string" ? a.category : a.category?.name ?? "";
       const catB = typeof b.category === "string" ? b.category : b.category?.name ?? "";
       
-      const priorityA = getPriority(catA);
-      const priorityB = getPriority(catB);
+      const priorityA = getCategoryPriority(catA);
+      const priorityB = getCategoryPriority(catB);
 
       if (priorityA !== priorityB) {
         return priorityA - priorityB;
@@ -108,7 +112,7 @@ export function MenuClient({
   return (
     <div className="min-h-screen text-primary pb-20" id="menu-grid-top">
       <MenuFilterBar 
-        categories={categories} 
+        categories={sortedCategories} 
         activeCategory={activeCategory} 
         setActiveCategory={setActiveCategory} 
         searchQuery={searchQuery} 
