@@ -15,6 +15,7 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
   const status = product.availabilityStatus ?? (product.available === false ? 'soldout' : 'available');
   const isSoldOut = status === 'soldout';
   const isLimited = status === 'limited';
+  const isPreOrder = status === 'preorder';
 
   function handleAdd(e: React.MouseEvent) {
     e.preventDefault();
@@ -23,6 +24,7 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
     addItem(product);
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
+    // If pre-order item, show a toast hint (optional improvement)
   }
 
   const hasDiscount = product.originalPrice && product.originalPrice > product.price;
@@ -53,12 +55,17 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
               <IconStatusSoldOut size={10} /> Sold Out
             </span>
           )}
-          {!isSoldOut && (product.isSignature || (product as any).signature) && (
+          {isPreOrder && (
+            <span className="bg-purple-700/90 text-white px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold shadow-sm backdrop-blur-sm flex items-center gap-1">
+              🗓 Pre-Order
+            </span>
+          )}
+          {!isSoldOut && !isPreOrder && (product.isSignature || (product as any).signature) && (
             <span className="bg-[#C9A24A] text-white px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1 md:gap-1.5 shadow-sm">
               <IconStar size={8} fill="white" className="md:w-2.5 md:h-2.5" /> Signature
             </span>
           )}
-          {!isSoldOut && (product.isBestseller || (product as any).isBestSeller) && (
+          {!isSoldOut && !isPreOrder && (product.isBestseller || (product as any).isBestSeller) && (
             <span className="bg-white/95 backdrop-blur-md text-[#0B2118] px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1 md:gap-1.5 shadow-sm">
               <IconFlame size={8} className="text-[#C9A24A] md:w-2.5 md:h-2.5" /> Bestseller
             </span>
@@ -71,6 +78,12 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
           <div className="absolute bottom-0 left-0 right-0 bg-amber-500/90 backdrop-blur-sm px-3 py-1.5 flex items-center gap-2">
             <IconStatusLimited size={10} />
             <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] text-white">Limited Availability</span>
+          </div>
+        )}
+        {/* Pre-Order strip — bottom */}
+        {isPreOrder && (
+          <div className="absolute bottom-0 left-0 right-0 bg-purple-700/90 backdrop-blur-sm px-3 py-1.5 flex items-center gap-2">
+            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] text-white">🗓 Schedule Required · Pre-Order Only</span>
           </div>
         )}
 
@@ -139,6 +152,8 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
                   ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                   : added 
                     ? 'bg-[#2E7D4F] text-white border-transparent' 
+                    : isPreOrder
+                    ? 'border border-purple-500/40 text-purple-600 hover:bg-purple-600 hover:border-transparent hover:text-white'
                     : 'border border-primary/20 text-primary hover:bg-[#C9A24A] hover:border-transparent hover:text-white'
               }`}
             >

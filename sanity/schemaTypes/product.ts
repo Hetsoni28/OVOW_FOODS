@@ -114,6 +114,7 @@ export const productType = defineType({
         list: [
           { title: '🟢 Available Today', value: 'available' },
           { title: '🟠 Limited Availability', value: 'limited' },
+          { title: '🟣 Pre-Order Only', value: 'preorder' },
           { title: '🔴 Sold Out', value: 'soldout' },
         ],
         layout: 'radio',
