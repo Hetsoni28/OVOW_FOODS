@@ -27,7 +27,7 @@ export function ProductDetails({ product }: { product: Product }) {
       variants={container} 
       initial="hidden" 
       animate="show" 
-      className="flex flex-col justify-center"
+      className="flex flex-col justify-start"
     >
       
       {/* Tags Row */}

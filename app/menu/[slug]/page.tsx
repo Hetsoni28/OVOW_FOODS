@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { IconArrowLeft, IconCheckCircle, IconLeaf, IconUtensilsCrossed, IconTrophy, IconSignatureDish, IconKidsSpecial, IconPreOrder } from "@/components/atoms/Icons";
 import { LazyVideo } from "@/components/atoms/LazyVideo";
+import { ScrollToTop } from "@/components/atoms/ScrollToTop";
 import { client } from "@/sanity/lib/client";
 import { PRODUCT_BY_SLUG_QUERY, ALL_PRODUCTS_QUERY, RELATED_PRODUCTS_QUERY, PRODUCT_REVIEWS_QUERY } from "@/sanity/lib/queries";
 import { AddToCartBlock } from "./AddToCartBlock";
@@ -83,7 +84,8 @@ export default async function Product({
   const mainDisplayVideo = product.previewVideo || mainFallbackVideo;
 
   return (
-    <main className="min-h-screen bg-[#F8F4EA] pt-32 pb-20">
+    <main className="min-h-screen bg-[#F8F4EA] pt-24 pb-20">
+      <ScrollToTop />
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         
         {/* Back button */}
@@ -98,7 +100,7 @@ export default async function Product({
         <div className="grid md:grid-cols-2 gap-12 lg:gap-20">
           {/* Left: Video & Badges */}
           <div className="relative">
-            <div className="relative aspect-[4/5] bg-primary/5 overflow-hidden">
+            <div className="relative aspect-[3/4] md:aspect-[4/5] bg-primary/5 overflow-hidden">
               {mainDisplayVideo ? (
                 <LazyVideo 
                   src={mainDisplayVideo} 
