@@ -61,7 +61,8 @@ export function LiveDispatchTicker({ events }: { events: OrderEvent[] }) {
               transition={{ duration: 0.3 }}
               className="text-[11px] text-primary/70 font-medium whitespace-nowrap"
             >
-              🛵 <span className="font-bold text-primary">{ev.itemCount} {ev.itemCount === 1 ? "item" : "items"}</span>
+              <svg className="inline-block mr-1 -mt-0.5 flex-shrink-0" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v5"/><circle cx="17" cy="19" r="2"/><circle cx="7" cy="19" r="2"/></svg>
+              <span className="font-bold text-primary">{ev.itemCount} {ev.itemCount === 1 ? "item" : "items"}</span>
               {" "}dispatched to{" "}
               <span className="font-bold text-primary">{ev.area}</span>
               {" · "}
