@@ -136,7 +136,7 @@ export function CrossSellSection() {
       <div className="flex items-center justify-between mb-3">
         <div>
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#C9A24A] mb-0.5">
-            Your order is almost complete 👀
+            Your order is almost complete
           </p>
           <p className="text-xs text-primary/40 font-medium">
             You might also enjoy

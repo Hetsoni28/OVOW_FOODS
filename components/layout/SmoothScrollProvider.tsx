@@ -13,13 +13,25 @@ function ScrollReset() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // 1. Force native scroll instantly
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+
     if (lenis) {
-      // Stop any ongoing scroll animation and jump to top instantly
+      // 2. Stop ongoing Lenis momentum, force to top, and restart
+      lenis.stop();
       lenis.scrollTo(0, { immediate: true });
-    } else {
-      // Fallback for SSR or if Lenis not ready yet
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      lenis.start();
     }
+
+    // 3. Safety fallback after React completes rendering the new route
+    const timer = setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      if (lenis) {
+        lenis.scrollTo(0, { immediate: true });
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, [pathname, lenis]);
 
   return null;

@@ -253,8 +253,8 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
               <div>
                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 mb-3 pl-2">Logistics</h3>
                 <div className="bg-white border-2 border-primary/5 p-4 flex gap-4 items-center">
-                  <div className="w-10 h-10 bg-[#F9F6F0] rounded-full flex items-center justify-center border border-primary/10">
-                    <span className="text-xl">🚚</span>
+                <div className="w-10 h-10 bg-[#F9F6F0] rounded-full flex items-center justify-center border border-primary/10">
+                    <svg className="w-5 h-5 text-primary/60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" /></svg>
                   </div>
                   <div>
                     <p className="font-bold text-primary text-sm uppercase tracking-wide">

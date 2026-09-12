@@ -104,7 +104,7 @@ export function LazyVideo({
         >
           <div className="absolute inset-0 skeleton-shimmer" />
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-3xl opacity-10 select-none">🍽️</span>
+            <svg className="w-8 h-8 opacity-10 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
           </div>
         </div>
       )}

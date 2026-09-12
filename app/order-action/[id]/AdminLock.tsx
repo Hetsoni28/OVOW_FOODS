@@ -13,8 +13,11 @@ export function AdminLock({ children }: { children: React.ReactNode }) {
   const [isPending, startTransition] = useTransition();
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
 
-  // Auto-focus first input on mount
-  useEffect(() => { inputs.current[0]?.focus(); }, []);
+  // Scroll to top on mount so page never opens mid-scroll
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    inputs.current[0]?.focus();
+  }, []);
 
   const handleChange = (val: string, idx: number) => {
     if (!/^\d?$/.test(val)) return;
@@ -48,6 +51,8 @@ export function AdminLock({ children }: { children: React.ReactNode }) {
       if (isValid) {
         setIsUnlocked(true);
         setError(false);
+        // Scroll to top so admin content always starts at top
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
       } else {
         setError(true);
         setShake(true);

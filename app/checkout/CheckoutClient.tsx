@@ -42,6 +42,13 @@ export function CheckoutClient() {
 
   useEffect(() => { setMounted(true); }, []);
 
+  // Scroll to top when changing steps (e.g. going to payment or success page)
+  useEffect(() => {
+    if (mounted) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [step, mounted]);
+
   const validateDetails = () => {
     const e: Errors = {};
     if (!details.name.trim()) e.name = "Name required";
