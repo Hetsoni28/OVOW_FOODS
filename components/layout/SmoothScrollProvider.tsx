@@ -1,47 +1,31 @@
 "use client";
 
-import { ReactLenis, useLenis } from "lenis/react";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 /**
- * Resets Lenis scroll to the very top on every route change.
- * Must be rendered INSIDE <ReactLenis> so useLenis() works.
+ * Resets scroll to top on every route change.
+ * Uses native browser scroll — no third-party library interception.
+ * CSS `scroll-behavior: smooth` in globals.css handles smooth scrolling.
  */
 function ScrollReset() {
-  const lenis = useLenis();
   const pathname = usePathname();
 
   useEffect(() => {
-    // 1. Force native scroll instantly
+    // Instant jump to top — 100% reliable, no library interception
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-
-    if (lenis) {
-      // 2. Stop ongoing Lenis momentum, force to top, and restart
-      lenis.stop();
-      lenis.scrollTo(0, { immediate: true });
-      lenis.start();
-    }
-
-    // 3. Safety fallback after React completes rendering the new route
-    const timer = setTimeout(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-      if (lenis) {
-        lenis.scrollTo(0, { immediate: true });
-      }
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, [pathname, lenis]);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [pathname]);
 
   return null;
 }
 
 export function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
   return (
-    <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothWheel: true }}>
+    <>
       <ScrollReset />
       {children}
-    </ReactLenis>
+    </>
   );
 }

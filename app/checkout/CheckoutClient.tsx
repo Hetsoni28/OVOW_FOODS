@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useLenis } from "lenis/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/context/CartContext";
 import { buildUpiUri, buildQrUrl } from "@/lib/upi";
@@ -41,23 +40,15 @@ export function CheckoutClient() {
   const [qrUrl, setQrUrl] = useState("");
   const [finalCart, setFinalCart] = useState<{items: CartItem[], total: number, method: "upi" | "cod"} | null>(null);
 
-  const lenis = useLenis();
-
   useEffect(() => { setMounted(true); }, []);
 
-  // Scroll to top when changing checkout steps — bypasses Lenis interception
+  // Scroll to top on every step change — works perfectly without Lenis
   useEffect(() => {
     if (!mounted) return;
-    // Direct DOM — cannot be intercepted by Lenis
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
-    // Also tell Lenis directly
-    if (lenis) {
-      lenis.stop();
-      lenis.scrollTo(0, { immediate: true });
-      lenis.start();
-    }
-  }, [step, mounted, lenis]);
+  }, [step, mounted]);
 
   const validateDetails = () => {
     const e: Errors = {};
