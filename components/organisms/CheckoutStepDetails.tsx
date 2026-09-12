@@ -109,8 +109,9 @@ export function CheckoutStepDetails({ details, errors, onChange, onScheduleReset
         {/* ── Date & Time Dropdowns ── */}
         {isLater && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-amber-50 border border-[#C9A24A]/20 rounded-lg">
-            <div className="col-span-full text-xs font-bold uppercase tracking-widest text-[#C9A24A] mb-1">
-              📅 Choose Delivery Slot
+            <div className="col-span-full flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#C9A24A] mb-1">
+              <IconCalendar size={14} />
+              Choose Delivery Slot
             </div>
             <Field id="scheduleDate" label="Select Date" required error={errors.scheduleDate}>
               <div className="relative">

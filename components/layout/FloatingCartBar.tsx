@@ -15,8 +15,8 @@ export function FloatingCartBar() {
     setMounted(true);
   }, []);
 
-  // Hide on checkout page or if cart is empty
-  if (!mounted || count === 0 || pathname === "/checkout") return null;
+  // Hide on checkout/cart pages or if cart is empty
+  if (!mounted || count === 0 || pathname === "/checkout" || pathname === "/cart") return null;
 
   return (
     <AnimatePresence>
@@ -40,7 +40,7 @@ export function FloatingCartBar() {
               {count} {count === 1 ? "Item" : "Items"}
             </span>
             <span className="text-sm font-bold text-[#C9A24A] flex items-center gap-1.5">
-              <span>Rs. {total}</span>
+              <span>₹{total.toLocaleString("en-IN")}</span>
             </span>
           </div>
 

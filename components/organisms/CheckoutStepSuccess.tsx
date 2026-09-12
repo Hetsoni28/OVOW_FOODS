@@ -401,7 +401,7 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
             transition={{ delay: 1.2 }}
             className="text-center text-[10px] text-primary/40 leading-relaxed"
           >
-            ⚠️ Your order is only confirmed after you send the WhatsApp message with your payment screenshot.
+            Your order is only confirmed after you send the WhatsApp message with your payment screenshot.
           </motion.p>
         )}
 
@@ -431,7 +431,7 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
         className="text-center text-[10px] text-primary/30 mt-6 leading-relaxed px-4"
       >
         Questions? WhatsApp us at {" "}
-        <span className="text-primary/50 font-bold">+91 the number on your receipt</span>
+        <a href="https://wa.me/917567566214" className="text-[#25D366] font-bold hover:underline">+91 7567566214</a>
       </motion.p>
     </motion.div>
   );

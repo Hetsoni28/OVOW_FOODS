@@ -33,8 +33,8 @@ export function MobileBottomBar() {
 
   useEffect(() => { setMounted(true); }, []);
 
-  // Conditional return AFTER all hooks
-  if (pathname === "/checkout") return null;
+  // Conditional return AFTER all hooks — hide on transactional pages only
+  if (!mounted || pathname === "/checkout" || pathname === "/cart" || pathname.startsWith("/receipt")) return null;
 
   const navItems = [
     { label: "Menu", href: "/menu", icon: IconSquareMenu },
