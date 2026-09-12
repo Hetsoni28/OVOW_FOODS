@@ -183,7 +183,9 @@ export function MenuClient({
                 <button suppressHydrationWarning
                   onClick={() => {
                     setCurrentPage((p) => Math.max(1, p - 1));
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    // Direct DOM scroll — bypasses Lenis interception
+                    document.documentElement.scrollTop = 0;
+                    document.body.scrollTop = 0;
                   }}
                   disabled={currentPage === 1}
                   className="px-6 py-2 border border-[#C9A24A]/30 rounded-full text-[#C9A24A] text-xs font-bold uppercase tracking-widest disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#C9A24A] hover:text-white transition-all"
@@ -196,7 +198,9 @@ export function MenuClient({
                 <button suppressHydrationWarning
                   onClick={() => {
                     setCurrentPage((p) => Math.min(totalPages, p + 1));
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    // Direct DOM scroll — bypasses Lenis interception
+                    document.documentElement.scrollTop = 0;
+                    document.body.scrollTop = 0;
                   }}
                   disabled={currentPage === totalPages}
                   className="px-6 py-2 border border-[#C9A24A]/30 rounded-full text-[#C9A24A] text-xs font-bold uppercase tracking-widest disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#C9A24A] hover:text-white transition-all"
