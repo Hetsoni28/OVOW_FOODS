@@ -12,7 +12,11 @@ const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 export default function OrdersPage() {
   const { orders, mounted } = useOrderHistory();
 
-  if (!mounted) return null;
+  if (!mounted) return (
+    <div className="min-h-screen bg-[#F9F6F0]">
+      <div className="bg-[#0B2118] pt-24 pb-32" />
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-[#F9F6F0]">

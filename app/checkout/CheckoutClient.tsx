@@ -57,7 +57,7 @@ export function CheckoutClient() {
 
   const goToPayment = () => {
     if (!validateDetails()) return;
-    if (items.length === 0 && step === 1) return <CheckoutEmptyState />;
+    if (items.length === 0 && step === 1) return;
     const ref = generateOrderRef();
     setOrderId(ref);
     if (paymentMethod === "upi") {

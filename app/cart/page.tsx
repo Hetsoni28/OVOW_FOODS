@@ -11,7 +11,7 @@ export default function CartPage() {
   const { items, count } = useCart();
 
   return (
-    <div className="min-h-screen bg-[#F9F6F0] pt-8 pb-20">
+    <div className="min-h-screen bg-[#F9F6F0] pt-24 pb-20">
       <div className="max-w-2xl mx-auto px-4 md:px-6">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">

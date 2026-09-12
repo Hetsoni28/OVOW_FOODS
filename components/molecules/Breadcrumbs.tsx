@@ -8,8 +8,15 @@ import { motion } from "framer-motion";
 export function Breadcrumbs() {
   const pathname = usePathname();
 
-  // Don't show breadcrumbs on the home page or studio
-  if (pathname === "/" || pathname.startsWith("/studio")) return null;
+  // Don't show breadcrumbs on home, studio, cart, checkout, or order success pages
+  if (
+    pathname === "/" ||
+    pathname.startsWith("/studio") ||
+    pathname.startsWith("/cart") ||
+    pathname.startsWith("/checkout") ||
+    pathname.startsWith("/receipt") ||
+    pathname.startsWith("/order-action")
+  ) return null;
 
   // Generate breadcrumb path segments
   const segments = pathname.split("/").filter((p) => p !== "");

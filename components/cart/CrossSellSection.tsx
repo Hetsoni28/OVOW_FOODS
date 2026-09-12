@@ -61,8 +61,8 @@ function RecommendationRow({
               sizes="48px"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-lg">
-              🍽️
+            <div className="w-full h-full flex items-center justify-center text-primary/20">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
             </div>
           )}
         </div>
@@ -72,7 +72,7 @@ function RecommendationRow({
       <div className="flex-1 min-w-0">
         {item.isBestSeller && (
           <p className="text-[8px] font-black uppercase tracking-widest text-[#C9A24A] mb-0.5">
-            🔥 Bestseller
+            ★ Bestseller
           </p>
         )}
         <Link href={`/menu/${item.slug}`}>
