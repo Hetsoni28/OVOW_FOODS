@@ -2,6 +2,7 @@
 
 import { IconUser, IconPhone, IconMapPin, IconCheckCircle, IconClock, IconTruck, IconCalendar } from "@/components/atoms/Icons";
 import { Field, inputCls } from "./SharedUI";
+import { SmartAddressField } from "./SmartAddressField";
 import type { Details, Errors } from "@/lib/types";
 import { useMemo } from "react";
 
@@ -183,17 +184,11 @@ export function CheckoutStepDetails({ details, errors, onChange, onScheduleReset
 
         {/* ── Address ── */}
         <Field id="address" label="Delivery Address" required error={errors.address}>
-          <div className="relative group">
-            <IconMapPin size={18} className="absolute left-0 top-3 text-primary/30 group-focus-within:text-[#C9A24A] transition-colors" />
-            <textarea
-              id="address"
-              rows={3}
-              value={details.address}
-              onChange={(e) => onChange("address", e.target.value)}
-              placeholder="Full delivery address with landmark"
-              className={`${inputCls(errors.address)} pl-8 resize-none`}
-            />
-          </div>
+          <SmartAddressField
+            value={details.address}
+            onChange={(val) => onChange("address", val)}
+            error={errors.address}
+          />
         </Field>
 
         {/* ── Instructions ── */}
