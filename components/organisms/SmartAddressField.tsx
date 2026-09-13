@@ -35,8 +35,14 @@ interface BDCResult {
   principalSubdivision: string;
   postcode: string;
   localityInfo?: {
-    administrative?: { name: string; adminLevel: number }[];
-    informative?: { name: string; description?: string }[];
+    administrative?: { name: string; adminLevel: number; isoName?: string }[];
+    informative?: {
+      name: string;
+      description?: string;   // e.g. "amenity", "building", "tertiary", "suburb"
+      isoName?: string;
+      order?: number;
+    }[];
+    likelihood?: number;
   };
 }
 
@@ -57,31 +63,55 @@ function buildFromPhoton(p: PhotonFeature["properties"]): string {
   return parts.filter((v, i, a) => v && a.indexOf(v) === i).join(", ");
 }
 
+// Road-related OSM descriptions from BigDataCloud informative layer
+const ROAD_TYPES = new Set([
+  "motorway","trunk","primary","secondary","tertiary",
+  "unclassified","residential","service","living_street",
+  "road","street","lane","path","footway",
+]);
+
+// Building / POI descriptions
+const BUILDING_TYPES = new Set([
+  "amenity","building","shop","tourism","leisure",
+  "office","place","man_made","historic",
+]);
+
+// Suburb / neighbourhood descriptions
+const AREA_TYPES = new Set([
+  "suburb","neighbourhood","quarter","borough",
+  "residential_area","village","hamlet",
+]);
+
 function buildFromBDC(data: BDCResult): string {
+  const informative = (data.localityInfo?.informative ?? [])
+    // Sort by specificity — higher order = more specific = show first
+    .sort((a, b) => (b.order ?? 0) - (a.order ?? 0));
+
   const parts: string[] = [];
 
-  // Try to get the most specific local area name
-  const admin = data.localityInfo?.administrative ?? [];
-  const informative = data.localityInfo?.informative ?? [];
+  // 1. Building / Apartment / POI (most specific — e.g. "Safal Tomato Business Park", "Shyamal Residency")
+  const building = informative.find(i => BUILDING_TYPES.has(i.description ?? ""));
+  if (building) parts.push(building.name);
 
-  // Neighbourhood / ward (adminLevel 10–12)
-  const ward = admin.find(a => a.adminLevel >= 10)?.name;
-  if (ward) parts.push(ward);
+  // 2. Road / Street (e.g. "Satellite Road", "SG Highway")
+  const road = informative.find(i => ROAD_TYPES.has(i.description ?? ""));
+  if (road && !parts.some(p => p.includes(road.name))) parts.push(road.name);
 
-  // Locality (specific area like "Navrangpura", "Satellite")
-  if (data.locality && data.locality !== data.city) parts.push(data.locality);
+  // 3. Neighbourhood / Suburb / Area (e.g. "Navrangpura", "Satellite", "Prahlad Nagar")
+  const area = informative.find(i => AREA_TYPES.has(i.description ?? ""));
+  if (area && area.name !== data.city && !parts.some(p => p.includes(area.name))) parts.push(area.name);
 
-  // Informative area (roads, places of interest)
-  const poi = informative.find(i => i.description?.toLowerCase().includes("road") || i.description?.toLowerCase().includes("street"));
-  if (poi && !parts.includes(poi.name)) parts.push(poi.name);
+  // 4. Locality fallback (BigDataCloud top-level, e.g. "Satellite")
+  if (data.locality && data.locality !== data.city && !parts.some(p => p.includes(data.locality)))
+    parts.push(data.locality);
 
-  // City
+  // 5. City
   if (data.city) parts.push(data.city);
 
-  // State
+  // 6. State
   if (data.principalSubdivision) parts.push(data.principalSubdivision);
 
-  // Pincode
+  // 7. Pincode
   if (data.postcode) parts.push(data.postcode);
 
   return parts.filter(Boolean).join(", ");
