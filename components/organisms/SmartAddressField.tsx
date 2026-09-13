@@ -118,6 +118,34 @@ function buildFromBDC(data: BDCResult): string {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
+   Delivery Zone — Ahmedabad only
+───────────────────────────────────────────────────────────────────────────── */
+// Delivery zone — full Ahmedabad metro including all suburbs:
+// Bopal, South Bopal, Sanand, Vastral, Gandhinagar, Naroda, Vatva, Maninagar etc.
+// Bounding box: SW(22.80, 72.28) → NE(23.25, 72.80)
+const ZONE = {
+  minLat: 22.80, maxLat: 23.25,
+  minLon: 72.28, maxLon: 72.80,
+};
+
+// Photon search bbox — same zone (minLon,minLat,maxLon,maxLat)
+const AMD_BBOX = `${ZONE.minLon},${ZONE.minLat},${ZONE.maxLon},${ZONE.maxLat}`;
+
+function isInZone(lat: number, lon: number): boolean {
+  return lat >= ZONE.minLat && lat <= ZONE.maxLat &&
+         lon >= ZONE.minLon && lon <= ZONE.maxLon;
+}
+
+// City name fallback (when coords not available, e.g. Photon search results)
+const ACCEPTED_CITIES = new Set([
+  "ahmedabad", "amdavad", "gandhinagar", "sanand",
+  "bopal", "south bopal", "vastral", "naroda",
+]);
+function isAcceptedCity(city: string): boolean {
+  return ACCEPTED_CITIES.has(city.trim().toLowerCase());
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
    Component
 ───────────────────────────────────────────────────────────────────────────── */
 interface SmartAddressFieldProps {
@@ -149,8 +177,8 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
   }, []);
 
   /* ── GPS + Reverse Geocode ───────────────────────────────────────── */
-  async function reverseGeocode(lat: number, lon: number): Promise<string> {
-    // PRIMARY: BigDataCloud — best free option for India, returns locality info
+  async function reverseGeocode(lat: number, lon: number): Promise<{ address: string; city: string }> {
+    // PRIMARY: BigDataCloud
     try {
       const res = await fetch(
         `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`
@@ -158,7 +186,7 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
       if (res.ok) {
         const data: BDCResult = await res.json();
         const built = buildFromBDC(data);
-        if (built && built.length > 8) return built;
+        if (built && built.length > 8) return { address: built, city: data.city ?? "" };
       }
     } catch { /* fall through */ }
 
@@ -169,12 +197,14 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
       );
       if (res.ok) {
         const data: { features: PhotonFeature[] } = await res.json();
-        if (data.features.length > 0)
-          return buildFromPhoton(data.features[0].properties);
+        if (data.features.length > 0) {
+          const p = data.features[0].properties;
+          return { address: buildFromPhoton(p), city: p.city ?? "" };
+        }
       }
     } catch { /* fall through */ }
 
-    return "";
+    return { address: "", city: "" };
   }
 
   async function handleUseLocation() {
@@ -188,8 +218,12 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
     navigator.geolocation.getCurrentPosition(
       async ({ coords }) => {
         try {
-          const address = await reverseGeocode(coords.latitude, coords.longitude);
-          if (!address) {
+          const { address, city } = await reverseGeocode(coords.latitude, coords.longitude);
+          // Zone check — coordinate-based (most reliable for suburbs)
+          if (!isInZone(coords.latitude, coords.longitude)) {
+            const cityLabel = city ? ` (${city})` : "";
+            setLocError(`We currently deliver only within Ahmedabad & nearby areas${cityLabel}. Please type your address if you are within our zone.`);
+          } else if (!address) {
             setLocError("Could not detect address. Please type or search manually.");
           } else {
             onChange(address);
@@ -224,17 +258,23 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
     debounceRef.current = setTimeout(async () => {
       setSearching(true);
       try {
-        // India bounding box: SW(8.4, 68.7) NE(37.6, 97.4)
-        const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=7&lang=en&bbox=68.7,8.4,97.4,37.6`;
+        // Ahmedabad metro bounding box (covers Bopal, Sanand, Vastral, Gandhinagar)
+        const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=8&lang=en&bbox=${AMD_BBOX}`;
         const res = await fetch(url);
         const data: { features: PhotonFeature[] } = await res.json();
 
-        // Filter to India only (safety)
-        const india = data.features.filter(
-          f => !f.properties.country || f.properties.country === "India"
-        );
-        setSuggestions(india);
-        setShowSuggestions(india.length > 0);
+        // Trust the bbox — if Photon returned it within AMD bounds, accept it
+        // Only reject if city is explicitly a non-AMD city
+        const filtered = data.features.filter(f => {
+          const city = f.properties.city?.toLowerCase();
+          if (!city) return true; // no city info, trust bbox
+          return isInZone(
+            f.geometry.coordinates[1],
+            f.geometry.coordinates[0]
+          );
+        });
+        setSuggestions(filtered);
+        setShowSuggestions(filtered.length > 0);
       } catch {
         setSuggestions([]);
       } finally {
