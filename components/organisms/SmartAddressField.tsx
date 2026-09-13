@@ -15,18 +15,33 @@ function isInZone(lat: number, lon: number) {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   Address cleaner — takes a Nominatim display_name and makes it human-friendly
+   Address cleaner — makes Nominatim display_name human-friendly
 ───────────────────────────────────────────────────────────────────────────── */
+// Administrative noise words to strip from Nominatim parts
+const STRIP_WORDS = [
+  "india", "ahmedabad district", "district",
+  "taluka", "tehsil", "ward", "gram panchayat",
+];
+
+function fixCamelCase(str: string): string {
+  // Fix Nominatim concatenation bugs like "SabarmatiTaluka" → "Sabarmati Taluka"
+  return str
+    .replace(/([a-z])([A-Z])/g, "$1 $2")  // camelCase split
+    .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2"); // e.g. "ABCDef" → "ABC Def"
+}
+
 function cleanAddress(raw: string): string {
   return raw
     .split(", ")
+    .map(part => fixCamelCase(part.trim()))
     .filter((part, index, arr) => {
-      const lower = part.toLowerCase();
-      // Remove "India" (last part)
-      if (lower === "india") return false;
-      // Remove "Ahmedabad District" (redundant)
-      if (lower === "ahmedabad district") return false;
-      // Remove duplicate consecutive parts
+      const lower = part.toLowerCase().trim();
+      if (!lower) return false;
+      // Strip administrative noise
+      if (STRIP_WORDS.some(w => lower === w || lower.endsWith(" " + w))) return false;
+      // Strip pure number-only parts (e.g. ward numbers)
+      if (/^\d+$/.test(lower)) return false;
+      // Remove consecutive duplicates
       if (index > 0 && arr[index - 1].toLowerCase() === lower) return false;
       return true;
     })
@@ -292,11 +307,31 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
         </div>
       )}
 
+      {/* ── Flat / Floor field — shown after auto-fill ── */}
+      {mode === "filled" && (
+        <div className="relative group">
+          <svg className="absolute left-0 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-primary/30 group-focus-within:text-[#C9A24A] transition-colors pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 10.5h18M3 6h18M3 15h18M3 19.5h18"/>
+          </svg>
+          <input
+            type="text"
+            placeholder="Flat / Floor / Wing / Building name (optional)"
+            className="w-full border-b-2 border-primary/10 focus:border-[#C9A24A] pl-8 py-2.5 text-sm text-primary placeholder:text-primary/25 bg-transparent focus:outline-none transition-colors"
+            onBlur={(e) => {
+              const flat = e.target.value.trim();
+              if (flat && !value.startsWith(flat)) {
+                onChange(`${flat}, ${value}`);
+              }
+            }}
+          />
+        </div>
+      )}
+
       {/* Editable textarea — always shown */}
       <div className="relative group">
         <IconMapPin size={18}
           className={`absolute left-0 top-3 pointer-events-none transition-colors ${locSuccess ? "text-green-500" : "text-primary/30 group-focus-within:text-[#C9A24A]"}`}/>
-        <textarea id="address" rows={3} value={value}
+        <textarea id="address" rows={2} value={value}
           onChange={(e) => { onChange(e.target.value); if (mode === "default" && e.target.value) setMode("filled"); }}
           placeholder="Full delivery address with landmark"
           className={`${inputCls(error)} pl-8 resize-none`}/>
