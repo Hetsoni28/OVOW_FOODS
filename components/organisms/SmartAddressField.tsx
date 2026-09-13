@@ -70,6 +70,34 @@ interface PhotonFeature {
   };
 }
 
+// Unified suggestion type used in state
+export interface AddressSuggestion {
+  id: string;
+  title: string;    // Bold line — area/building name
+  subtitle: string; // Dim line — full address
+  address: string;  // Value to fill into the field
+  lat: number;
+  lon: number;
+}
+
+// Nominatim search result (fallback)
+interface NominatimSearchResult {
+  place_id: number;
+  display_name: string;
+  lat: string;
+  lon: string;
+  address: {
+    road?: string;
+    neighbourhood?: string;
+    suburb?: string;
+    city?: string;
+    town?: string;
+    village?: string;
+    state?: string;
+    postcode?: string;
+  };
+}
+
 // Build a clean, human-readable string from Photon properties
 function buildPhotonLabel(p: PhotonFeature["properties"]): string {
   const parts: string[] = [];
@@ -132,7 +160,7 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
   const [locError, setLocError]       = useState<string | null>(null);
   const [locSuccess, setLocSuccess]   = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<PhotonFeature[]>([]);
+  const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
   const [searching, setSearching]     = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [mode, setMode] = useState<"default" | "search" | "filled">(value ? "filled" : "default");
@@ -219,7 +247,9 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
     );
   }
 
-  /* ── Photon Search Autocomplete ───────────────────────────────────── */
+
+
+  /* ── Dual-engine Search: Photon primary + Nominatim fallback ─────── */
   const doSearch = useCallback((q: string) => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     if (q.trim().length < 3) { setSuggestions([]); setShowSuggestions(false); return; }
@@ -227,29 +257,85 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
     debounceRef.current = setTimeout(async () => {
       setSearching(true);
       try {
-        const url =
-          `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=8&lang=en&bbox=${AMD_BBOX}`;
-        const res = await fetch(url);
-        const data: { features: PhotonFeature[] } = await res.json();
-        // Filter strictly by zone coordinates
-        const filtered = data.features.filter(f =>
-          isInZone(f.geometry.coordinates[1], f.geometry.coordinates[0])
+        // ── 1. Photon (fast, OSM-backed) ───────────────────────────
+        const photonRes = await fetch(
+          `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=10&lang=en&bbox=${AMD_BBOX}`
         );
-        setSuggestions(filtered);
-        setShowSuggestions(filtered.length > 0);
+        const photonData: { features: PhotonFeature[] } = await photonRes.json();
+
+        const photonResults: AddressSuggestion[] = photonData.features
+          .filter(f => {
+            const [lon, lat] = f.geometry.coordinates;
+            return lat >= ZONE.minLat - 0.1 && lat <= ZONE.maxLat + 0.1 &&
+                   lon >= ZONE.minLon - 0.1 && lon <= ZONE.maxLon + 0.1;
+          })
+          .map(f => {
+            const p = f.properties;
+            const title = p.name || p.street || p.neighbourhood || p.suburb || p.city || "Location";
+            const address = buildPhotonLabel(p);
+            return {
+              id: `photon-${p.osm_id ?? Math.random()}`,
+              title,
+              subtitle: address !== title ? address : "",
+              address,
+              lat: f.geometry.coordinates[1],
+              lon: f.geometry.coordinates[0],
+            };
+          });
+
+        if (photonResults.length > 0) {
+          setSuggestions(photonResults);
+          setShowSuggestions(true);
+          return;
+        }
+
+        // ── 2. Nominatim fallback (broader DB, finds newer complexes) ─
+        const nomUrl = `https://nominatim.openstreetmap.org/search?` +
+          new URLSearchParams({
+            q: `${q}, Ahmedabad`,
+            format: "json",
+            addressdetails: "1",
+            limit: "8",
+            countrycodes: "in",
+          }).toString();
+        const nomRes = await fetch(nomUrl, {
+          headers: { "User-Agent": "OvowFoodsApp/1.0" },
+        });
+        const nomData: NominatimSearchResult[] = await nomRes.json();
+
+        const nomResults: AddressSuggestion[] = nomData
+          .filter(r => {
+            const lat = parseFloat(r.lat), lon = parseFloat(r.lon);
+            return lat >= ZONE.minLat - 0.1 && lat <= ZONE.maxLat + 0.1 &&
+                   lon >= ZONE.minLon - 0.1 && lon <= ZONE.maxLon + 0.1;
+          })
+          .map(r => {
+            const cleaned = cleanAddress(r.display_name);
+            const parts = cleaned.split(", ");
+            return {
+              id: `nom-${r.place_id}`,
+              title: parts[0] || cleaned,
+              subtitle: parts.slice(1).join(", "),
+              address: cleaned,
+              lat: parseFloat(r.lat),
+              lon: parseFloat(r.lon),
+            };
+          });
+
+        setSuggestions(nomResults);
+        setShowSuggestions(nomResults.length > 0);
       } catch {
         setSuggestions([]);
+        setShowSuggestions(false);
       } finally {
         setSearching(false);
       }
     }, 380);
   }, []);
 
-  function handleSelect(f: PhotonFeature) {
-    const label = buildPhotonLabel(f.properties);
-    const addr = label || f.properties.name || "";
-    onChange(addr);
-    if (addr) { saveRecent(addr); setRecentAddresses(loadRecent()); }
+  function handleSelect(s: AddressSuggestion) {
+    onChange(s.address);
+    if (s.address) { saveRecent(s.address); setRecentAddresses(loadRecent()); }
     setSearchQuery("");
     setSuggestions([]);
     setShowSuggestions(false);
@@ -329,23 +415,24 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
 
           {showSuggestions && suggestions.length > 0 && (
             <div className="absolute top-full left-0 right-0 z-50 mt-1.5 bg-white border border-primary/10 rounded-xl shadow-2xl overflow-hidden max-h-64 overflow-y-auto">
-              {suggestions.map((f, i) => {
-                const p = f.properties;
-                const title = p.name || p.street || p.neighbourhood || p.suburb || p.city || "Location";
-                const subtitle = buildPhotonLabel(p);
-                return (
-                  <button key={i} type="button" onMouseDown={() => handleSelect(f)}
-                    className="w-full flex items-start gap-3 px-4 py-3 hover:bg-[#C9A24A]/5 transition-colors text-left border-b border-primary/[0.06] last:border-0">
-                    <IconMapPin size={13} className="text-[#C9A24A] mt-0.5 flex-shrink-0"/>
-                    <div className="min-w-0">
-                      <p className="text-xs font-semibold text-primary leading-snug truncate">{title}</p>
-                      {subtitle && subtitle !== title && (
-                        <p className="text-[10px] text-primary/40 leading-snug mt-0.5 truncate">{subtitle}</p>
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
+              {suggestions.map((s) => (
+                <button key={s.id} type="button" onMouseDown={() => handleSelect(s)}
+                  className="w-full flex items-start gap-3 px-4 py-3 hover:bg-[#C9A24A]/5 transition-colors text-left border-b border-primary/[0.06] last:border-0">
+                  <IconMapPin size={13} className="text-[#C9A24A] mt-0.5 flex-shrink-0"/>
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-primary leading-snug truncate">{s.title}</p>
+                    {s.subtitle && (
+                      <p className="text-[10px] text-primary/40 leading-snug mt-0.5 truncate">{s.subtitle}</p>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+          {/* No results message */}
+          {!searching && searchQuery.length >= 3 && !showSuggestions && (
+            <div className="absolute top-full left-0 right-0 z-50 mt-1.5 bg-white border border-primary/10 rounded-xl shadow-lg px-4 py-3">
+              <p className="text-xs text-primary/40 text-center">No results found. Try a nearby landmark or type the address manually.</p>
             </div>
           )}
         </div>
