@@ -108,9 +108,14 @@ export function Footer() {
               rel="noopener noreferrer"
               className="group flex items-center gap-3 order-1 sm:order-2"
             >
-              {/* Avatar */}
-              <div className="w-8 h-8 rounded-full bg-[#C9A24A]/20 border border-[#C9A24A]/30 flex items-center justify-center group-hover:bg-[#C9A24A]/30 group-hover:border-[#C9A24A]/60 transition-all duration-300">
-                <span className="text-[#C9A24A] text-[10px] font-black tracking-tight">SH</span>
+              {/* Avatar — SH Logo */}
+              <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-[#C9A24A]/40 group-hover:border-[#C9A24A]/80 transition-all duration-300 shrink-0 group-hover:scale-110">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/sh-logo.jpg"
+                  alt="SH"
+                  className="w-full h-full object-cover rounded-full"
+                />
               </div>
 
               {/* Text */}
