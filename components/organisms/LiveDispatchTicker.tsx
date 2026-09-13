@@ -17,9 +17,20 @@ function timeAgo(isoString: string): string {
   const diffMin = Math.floor(diffMs / 60000);
   const diffHr = Math.floor(diffMin / 60);
   if (diffMin < 1) return "just now";
-  if (diffMin < 60) return `${diffMin} min ago`;
-  if (diffHr < 24) return `${diffHr} hr ago`;
+  if (diffMin < 60) return `${diffMin}m ago`;
+  if (diffHr < 24) return `${diffHr}h ago`;
   return `${Math.floor(diffHr / 24)}d ago`;
+}
+
+// Delivery truck SVG icon
+function TruckIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0">
+      <path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v5"/>
+      <circle cx="17" cy="19" r="2"/><circle cx="7" cy="19" r="2"/>
+    </svg>
+  );
 }
 
 export function LiveDispatchTicker({ events }: { events: OrderEvent[] }) {
@@ -43,39 +54,65 @@ export function LiveDispatchTicker({ events }: { events: OrderEvent[] }) {
   const ev = events[idx];
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="inline-flex items-center gap-3 bg-white/80 backdrop-blur-sm border border-primary/10 px-4 py-2.5 rounded-full shadow-sm">
-        {/* Live dot */}
-        <span className="relative flex h-2 w-2 flex-shrink-0">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
-        </span>
+    <div className="flex items-center justify-center py-1">
+      <motion.div
+        initial={{ opacity: 0, y: 6, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        className="inline-flex items-center gap-0 bg-white/90 backdrop-blur-md border border-primary/8 rounded-full shadow-[0_2px_16px_rgba(11,33,24,0.07)] overflow-hidden"
+      >
+        {/* Left accent stripe */}
+        <div className="w-1 h-full bg-gradient-to-b from-green-400 to-green-500 self-stretch rounded-l-full" />
 
-        <AnimatePresence mode="wait">
-          {visible && (
-            <motion.p
-              key={ev._id}
-              initial={{ opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.3 }}
-              className="text-[11px] text-primary/70 font-medium whitespace-nowrap"
-            >
-              <svg className="inline-block mr-1 -mt-0.5 flex-shrink-0" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v5"/><circle cx="17" cy="19" r="2"/><circle cx="7" cy="19" r="2"/></svg>
-              <span className="font-bold text-primary">{ev.itemCount} {ev.itemCount === 1 ? "item" : "items"}</span>
-              {" "}dispatched to{" "}
-              <span className="font-bold text-primary">{ev.area}</span>
-              {" · "}
-              <span className="text-primary/40">{timeAgo(ev.placedAt)}</span>
-            </motion.p>
-          )}
-        </AnimatePresence>
+        {/* Main content */}
+        <div className="flex items-center gap-3 pl-3 pr-1 py-2">
 
-        {/* Event count badge */}
-        <span className="text-[9px] font-black uppercase tracking-widest text-[#C9A24A] bg-[#C9A24A]/10 border border-[#C9A24A]/20 px-2 py-0.5 rounded-full flex-shrink-0">
-          {events.length} recent
-        </span>
-      </div>
+          {/* Live pulse dot */}
+          <span className="relative flex h-2 w-2 flex-shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-60" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+          </span>
+
+          {/* Truck icon */}
+          <span className="text-[#C9A24A]">
+            <TruckIcon />
+          </span>
+
+          {/* Animated text */}
+          <AnimatePresence mode="wait">
+            {visible && (
+              <motion.div
+                key={ev._id}
+                initial={{ opacity: 0, x: 6 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -6 }}
+                transition={{ duration: 0.28, ease: "easeOut" }}
+                className="flex items-center gap-1.5 text-[11px] whitespace-nowrap"
+              >
+                <span className="font-bold text-[#0B2118]">
+                  {ev.itemCount} {ev.itemCount === 1 ? "item" : "items"}
+                </span>
+                <span className="text-[#0B2118]/40 font-medium">dispatched to</span>
+                <span className="font-bold text-[#0B2118]">{ev.area}</span>
+                <span className="text-[#0B2118]/30 mx-0.5">·</span>
+                <span className="text-[#0B2118]/35 font-medium">{timeAgo(ev.placedAt)}</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Divider */}
+          <div className="w-px h-4 bg-primary/10 flex-shrink-0" />
+
+          {/* Recent badge — pill with gold */}
+          <div className="flex items-center gap-1.5 bg-[#C9A24A]/10 border border-[#C9A24A]/25 rounded-full px-2.5 py-1 mr-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#C9A24A] flex-shrink-0" />
+            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#C9A24A]">
+              {events.length} Recent
+            </span>
+          </div>
+
+        </div>
+      </motion.div>
     </div>
   );
 }
