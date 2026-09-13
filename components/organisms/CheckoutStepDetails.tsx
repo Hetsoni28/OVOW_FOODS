@@ -158,7 +158,7 @@ export function CheckoutStepDetails({ details, errors, onChange, onScheduleReset
               type="text"
               value={details.name}
               onChange={(e) => onChange("name", e.target.value)}
-              placeholder="E.g. Rahul Sharma"
+              placeholder="Type your name"
               className={`${inputCls(errors.name)} pl-8`}
             />
           </div>
