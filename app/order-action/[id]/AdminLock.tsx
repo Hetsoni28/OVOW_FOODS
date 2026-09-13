@@ -136,7 +136,7 @@ export function AdminLock({ children }: { children: React.ReactNode }) {
                 {digit ? "●" : ""}
               </button>
               {/* Active indicator */}
-              {!digit && document.activeElement === inputs.current[idx] && (
+              {!digit && typeof document !== "undefined" && document.activeElement === inputs.current[idx] && (
                 <motion.div
                   layoutId="pin-cursor"
                   className="absolute inset-0 rounded-xl border-2 border-[#C9A24A] pointer-events-none"
