@@ -3,12 +3,39 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { IconMapPin } from "@/components/atoms/Icons";
 import { inputCls } from "./SharedUI";
-import type { Errors } from "@/lib/types";
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   Types
+   Delivery Zone — Ahmedabad metro (coord-based, most reliable)
+   Covers: Bopal, South Bopal, Sanand, Vastral, Naroda, Gandhinagar, etc.
 ───────────────────────────────────────────────────────────────────────────── */
-// Photon (komoot) — much faster/more accurate than Nominatim for autocomplete
+const ZONE = { minLat: 22.80, maxLat: 23.25, minLon: 72.28, maxLon: 72.80 };
+const AMD_BBOX = `${ZONE.minLon},${ZONE.minLat},${ZONE.maxLon},${ZONE.maxLat}`;
+function isInZone(lat: number, lon: number) {
+  return lat >= ZONE.minLat && lat <= ZONE.maxLat && lon >= ZONE.minLon && lon <= ZONE.maxLon;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Address cleaner — takes a Nominatim display_name and makes it human-friendly
+───────────────────────────────────────────────────────────────────────────── */
+function cleanAddress(raw: string): string {
+  return raw
+    .split(", ")
+    .filter((part, index, arr) => {
+      const lower = part.toLowerCase();
+      // Remove "India" (last part)
+      if (lower === "india") return false;
+      // Remove "Ahmedabad District" (redundant)
+      if (lower === "ahmedabad district") return false;
+      // Remove duplicate consecutive parts
+      if (index > 0 && arr[index - 1].toLowerCase() === lower) return false;
+      return true;
+    })
+    .join(", ");
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Photon feature type (for search autocomplete)
+───────────────────────────────────────────────────────────────────────────── */
 interface PhotonFeature {
   type: "Feature";
   geometry: { type: "Point"; coordinates: [number, number] };
@@ -28,121 +55,39 @@ interface PhotonFeature {
   };
 }
 
-// BigDataCloud reverse geocode
-interface BDCResult {
-  locality: string;
-  city: string;
-  principalSubdivision: string;
-  postcode: string;
-  localityInfo?: {
-    administrative?: { name: string; adminLevel: number; isoName?: string }[];
-    informative?: {
-      name: string;
-      description?: string;   // e.g. "amenity", "building", "tertiary", "suburb"
-      isoName?: string;
-      order?: number;
-    }[];
-    likelihood?: number;
-  };
-}
-
-/* ─────────────────────────────────────────────────────────────────────────────
-   Address formatters
-───────────────────────────────────────────────────────────────────────────── */
-function buildFromPhoton(p: PhotonFeature["properties"]): string {
+// Build a clean, human-readable string from Photon properties
+function buildPhotonLabel(p: PhotonFeature["properties"]): string {
   const parts: string[] = [];
+  // POI/Building name
+  if (p.name) parts.push(p.name);
+  // House number + street
   if (p.housenumber && p.street) parts.push(`${p.housenumber}, ${p.street}`);
-  else if (p.street)             parts.push(p.street);
+  else if (p.street && !parts.some(x => x.includes(p.street!))) parts.push(p.street);
+  // Neighbourhood / suburb / district
   const local = p.neighbourhood || p.suburb || p.district;
-  if (local && local !== p.city) parts.push(local);
-  if (p.name && !parts.some(x => x.includes(p.name!))) parts.unshift(p.name);
-  if (p.city)     parts.push(p.city);
-  if (p.state)    parts.push(p.state);
+  if (local && local !== p.city && !parts.some(x => x.includes(local!))) parts.push(local);
+  // City
+  if (p.city && !parts.some(x => x.includes(p.city!))) parts.push(p.city);
+  // State
+  if (p.state) parts.push(p.state);
+  // Pincode
   if (p.postcode) parts.push(p.postcode);
-  // dedupe adjacent duplicates
-  return parts.filter((v, i, a) => v && a.indexOf(v) === i).join(", ");
-}
-
-// Road-related OSM descriptions from BigDataCloud informative layer
-const ROAD_TYPES = new Set([
-  "motorway","trunk","primary","secondary","tertiary",
-  "unclassified","residential","service","living_street",
-  "road","street","lane","path","footway",
-]);
-
-// Building / POI descriptions
-const BUILDING_TYPES = new Set([
-  "amenity","building","shop","tourism","leisure",
-  "office","place","man_made","historic",
-]);
-
-// Suburb / neighbourhood descriptions
-const AREA_TYPES = new Set([
-  "suburb","neighbourhood","quarter","borough",
-  "residential_area","village","hamlet",
-]);
-
-function buildFromBDC(data: BDCResult): string {
-  const informative = (data.localityInfo?.informative ?? [])
-    // Sort by specificity — higher order = more specific = show first
-    .sort((a, b) => (b.order ?? 0) - (a.order ?? 0));
-
-  const parts: string[] = [];
-
-  // 1. Building / Apartment / POI (most specific — e.g. "Safal Tomato Business Park", "Shyamal Residency")
-  const building = informative.find(i => BUILDING_TYPES.has(i.description ?? ""));
-  if (building) parts.push(building.name);
-
-  // 2. Road / Street (e.g. "Satellite Road", "SG Highway")
-  const road = informative.find(i => ROAD_TYPES.has(i.description ?? ""));
-  if (road && !parts.some(p => p.includes(road.name))) parts.push(road.name);
-
-  // 3. Neighbourhood / Suburb / Area (e.g. "Navrangpura", "Satellite", "Prahlad Nagar")
-  const area = informative.find(i => AREA_TYPES.has(i.description ?? ""));
-  if (area && area.name !== data.city && !parts.some(p => p.includes(area.name))) parts.push(area.name);
-
-  // 4. Locality fallback (BigDataCloud top-level, e.g. "Satellite")
-  if (data.locality && data.locality !== data.city && !parts.some(p => p.includes(data.locality)))
-    parts.push(data.locality);
-
-  // 5. City
-  if (data.city) parts.push(data.city);
-
-  // 6. State
-  if (data.principalSubdivision) parts.push(data.principalSubdivision);
-
-  // 7. Pincode
-  if (data.postcode) parts.push(data.postcode);
-
-  return parts.filter(Boolean).join(", ");
+  // Deduplicate
+  return [...new Set(parts)].join(", ");
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   Delivery Zone — Ahmedabad only
+   Nominatim reverse geocode result type
 ───────────────────────────────────────────────────────────────────────────── */
-// Delivery zone — full Ahmedabad metro including all suburbs:
-// Bopal, South Bopal, Sanand, Vastral, Gandhinagar, Naroda, Vatva, Maninagar etc.
-// Bounding box: SW(22.80, 72.28) → NE(23.25, 72.80)
-const ZONE = {
-  minLat: 22.80, maxLat: 23.25,
-  minLon: 72.28, maxLon: 72.80,
-};
-
-// Photon search bbox — same zone (minLon,minLat,maxLon,maxLat)
-const AMD_BBOX = `${ZONE.minLon},${ZONE.minLat},${ZONE.maxLon},${ZONE.maxLat}`;
-
-function isInZone(lat: number, lon: number): boolean {
-  return lat >= ZONE.minLat && lat <= ZONE.maxLat &&
-         lon >= ZONE.minLon && lon <= ZONE.maxLon;
-}
-
-// City name fallback (when coords not available, e.g. Photon search results)
-const ACCEPTED_CITIES = new Set([
-  "ahmedabad", "amdavad", "gandhinagar", "sanand",
-  "bopal", "south bopal", "vastral", "naroda",
-]);
-function isAcceptedCity(city: string): boolean {
-  return ACCEPTED_CITIES.has(city.trim().toLowerCase());
+interface NominatimReverseResult {
+  display_name: string;
+  address: {
+    city?: string;
+    town?: string;
+    village?: string;
+    county?: string;
+    state?: string;
+  };
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -176,35 +121,22 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
     return () => document.removeEventListener("mousedown", onOutside);
   }, []);
 
-  /* ── GPS + Reverse Geocode ───────────────────────────────────────── */
-  async function reverseGeocode(lat: number, lon: number): Promise<{ address: string; city: string }> {
-    // PRIMARY: BigDataCloud
+  /* ── GPS Reverse Geocode via Nominatim ────────────────────────────── */
+  // Nominatim returns display_name = "Building, Street, Suburb, City, District, State, PIN, India"
+  // We clean it into a proper human-readable Indian address.
+  async function reverseGeocode(lat: number, lon: number): Promise<string> {
     try {
-      const res = await fetch(
-        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`
-      );
-      if (res.ok) {
-        const data: BDCResult = await res.json();
-        const built = buildFromBDC(data);
-        if (built && built.length > 8) return { address: built, city: data.city ?? "" };
-      }
-    } catch { /* fall through */ }
-
-    // FALLBACK: Photon reverse geocode
-    try {
-      const res = await fetch(
-        `https://photon.komoot.io/reverse?lat=${lat}&lon=${lon}&lang=en&limit=1`
-      );
-      if (res.ok) {
-        const data: { features: PhotonFeature[] } = await res.json();
-        if (data.features.length > 0) {
-          const p = data.features[0].properties;
-          return { address: buildFromPhoton(p), city: p.city ?? "" };
-        }
-      }
-    } catch { /* fall through */ }
-
-    return { address: "", city: "" };
+      // zoom=18 = building level; zoom=16 = street level; zoom=14 = suburb level
+      const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1&zoom=18&accept-language=en`;
+      const res = await fetch(url, {
+        headers: { "User-Agent": "OvowFoodsApp/1.0 contact@ovowfoods.com" },
+      });
+      if (!res.ok) throw new Error("Nominatim failed");
+      const data: NominatimReverseResult = await res.json();
+      return cleanAddress(data.display_name);
+    } catch {
+      return "";
+    }
   }
 
   async function handleUseLocation() {
@@ -217,14 +149,17 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
     setLocLoading(true);
     navigator.geolocation.getCurrentPosition(
       async ({ coords }) => {
+        const { latitude: lat, longitude: lon } = coords;
         try {
-          const { address, city } = await reverseGeocode(coords.latitude, coords.longitude);
-          // Zone check — coordinate-based (most reliable for suburbs)
-          if (!isInZone(coords.latitude, coords.longitude)) {
-            const cityLabel = city ? ` (${city})` : "";
-            setLocError(`We currently deliver only within Ahmedabad & nearby areas${cityLabel}. Please type your address if you are within our zone.`);
-          } else if (!address) {
-            setLocError("Could not detect address. Please type or search manually.");
+          // Zone check first — using coordinates (most reliable)
+          if (!isInZone(lat, lon)) {
+            setLocError("We deliver only within Ahmedabad & nearby areas. Please type your address manually.");
+            setLocLoading(false);
+            return;
+          }
+          const address = await reverseGeocode(lat, lon);
+          if (!address || address.length < 8) {
+            setLocError("Could not detect your address. Please type it manually.");
           } else {
             onChange(address);
             setLocSuccess(true);
@@ -240,9 +175,9 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
       (err) => {
         setLocLoading(false);
         const msgs: Record<number, string> = {
-          1: "Permission denied. Please allow location access.",
-          2: "Location unavailable. Try again or type manually.",
-          3: "Location timed out. Try again.",
+          1: "Location permission denied. Please type your address.",
+          2: "Location unavailable. Please type your address.",
+          3: "Location timed out. Please try again.",
         };
         setLocError(msgs[err.code] ?? "Could not get location.");
       },
@@ -250,7 +185,7 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
     );
   }
 
-  /* ── Photon Search ───────────────────────────────────────────────── */
+  /* ── Photon Search Autocomplete ───────────────────────────────────── */
   const doSearch = useCallback((q: string) => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     if (q.trim().length < 3) { setSuggestions([]); setShowSuggestions(false); return; }
@@ -258,21 +193,14 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
     debounceRef.current = setTimeout(async () => {
       setSearching(true);
       try {
-        // Ahmedabad metro bounding box (covers Bopal, Sanand, Vastral, Gandhinagar)
-        const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=8&lang=en&bbox=${AMD_BBOX}`;
+        const url =
+          `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=8&lang=en&bbox=${AMD_BBOX}`;
         const res = await fetch(url);
         const data: { features: PhotonFeature[] } = await res.json();
-
-        // Trust the bbox — if Photon returned it within AMD bounds, accept it
-        // Only reject if city is explicitly a non-AMD city
-        const filtered = data.features.filter(f => {
-          const city = f.properties.city?.toLowerCase();
-          if (!city) return true; // no city info, trust bbox
-          return isInZone(
-            f.geometry.coordinates[1],
-            f.geometry.coordinates[0]
-          );
-        });
+        // Filter strictly by zone coordinates
+        const filtered = data.features.filter(f =>
+          isInZone(f.geometry.coordinates[1], f.geometry.coordinates[0])
+        );
         setSuggestions(filtered);
         setShowSuggestions(filtered.length > 0);
       } catch {
@@ -284,8 +212,8 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
   }, []);
 
   function handleSelect(f: PhotonFeature) {
-    const built = buildFromPhoton(f.properties);
-    onChange(built || f.properties.name || "");
+    const label = buildPhotonLabel(f.properties);
+    onChange(label || f.properties.name || "");
     setSearchQuery("");
     setSuggestions([]);
     setShowSuggestions(false);
@@ -294,22 +222,23 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
     setTimeout(() => setLocSuccess(false), 4000);
   }
 
-  /* ── Render ──────────────────────────────────────────────────────── */
+  /* ── Render ────────────────────────────────────────────────────────── */
   return (
     <div ref={wrapperRef} className="space-y-3">
 
       {/* Action buttons */}
       {mode !== "filled" && (
         <div className="grid grid-cols-2 gap-2">
+          {/* GPS Button */}
           <button type="button" onClick={handleUseLocation} disabled={locLoading}
             className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-[#C9A24A]/40 rounded-xl text-[11px] font-bold uppercase tracking-widest text-[#C9A24A] hover:border-[#C9A24A] hover:bg-[#C9A24A]/5 transition-all disabled:opacity-50 disabled:cursor-wait group">
             {locLoading
               ? <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-              : <svg className="w-4 h-4 flex-shrink-0 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8" strokeDasharray="3 3"/></svg>
-            }
+              : <svg className="w-4 h-4 flex-shrink-0 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8" strokeDasharray="3 3"/></svg>}
             {locLoading ? "Locating…" : "Use My Location"}
           </button>
 
+          {/* Search Button */}
           <button type="button" onClick={() => { setMode("search"); setLocError(null); }}
             className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-primary/20 rounded-xl text-[11px] font-bold uppercase tracking-widest text-primary/50 hover:border-primary/40 hover:text-primary transition-all group">
             <svg className="w-4 h-4 flex-shrink-0 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -335,7 +264,7 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
               {suggestions.map((f, i) => {
                 const p = f.properties;
                 const title = p.name || p.street || p.neighbourhood || p.suburb || p.city || "Location";
-                const subtitle = buildFromPhoton(p);
+                const subtitle = buildPhotonLabel(p);
                 return (
                   <button key={i} type="button" onMouseDown={() => handleSelect(f)}
                     className="w-full flex items-start gap-3 px-4 py-3 hover:bg-[#C9A24A]/5 transition-colors text-left border-b border-primary/[0.06] last:border-0">
@@ -363,9 +292,10 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
         </div>
       )}
 
-      {/* Editable textarea */}
+      {/* Editable textarea — always shown */}
       <div className="relative group">
-        <IconMapPin size={18} className={`absolute left-0 top-3 pointer-events-none transition-colors ${locSuccess ? "text-green-500" : "text-primary/30 group-focus-within:text-[#C9A24A]"}`}/>
+        <IconMapPin size={18}
+          className={`absolute left-0 top-3 pointer-events-none transition-colors ${locSuccess ? "text-green-500" : "text-primary/30 group-focus-within:text-[#C9A24A]"}`}/>
         <textarea id="address" rows={3} value={value}
           onChange={(e) => { onChange(e.target.value); if (mode === "default" && e.target.value) setMode("filled"); }}
           placeholder="Full delivery address with landmark"
@@ -384,7 +314,7 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
         )}
       </div>
 
-      {/* Error */}
+      {/* Error message */}
       {locError && (
         <p className="text-xs text-red-500 flex items-center gap-1.5 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
           <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
