@@ -121,16 +121,74 @@ function buildPhotonLabel(p: PhotonFeature["properties"]): string {
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Nominatim reverse geocode result type
+   Full address object — all fields Nominatim can return for Indian addresses
 ───────────────────────────────────────────────────────────────────────────── */
 interface NominatimReverseResult {
   display_name: string;
   address: {
-    city?: string;
-    town?: string;
-    village?: string;
-    county?: string;
-    state?: string;
+    // Building / POI name
+    amenity?:      string; // society / apartment / shop name
+    building?:     string; // sometimes used instead of amenity
+    tourism?:      string;
+    leisure?:      string;
+    // House / flat
+    house_number?: string;
+    house_name?:   string;
+    // Street
+    road?:         string;
+    pedestrian?:   string;
+    path?:         string;
+    // Area
+    neighbourhood?:string;
+    suburb?:       string;
+    quarter?:      string;
+    // City / district
+    city?:         string;
+    town?:         string;
+    village?:      string;
+    county?:       string;
+    state_district?:string;
+    state?:        string;
+    postcode?:     string;
+    country?:      string;
   };
+}
+
+/** Build a clean Indian address from structured Nominatim reverse-geocode fields.
+ *  Priority: society/apartment → house+street → area → city → pincode
+ */
+function buildReverseAddress(addr: NominatimReverseResult["address"]): string {
+  const parts: string[] = [];
+
+  // 1. Building / society / apartment name (most specific)
+  const building = addr.amenity || addr.building || addr.tourism || addr.leisure || addr.house_name;
+  if (building) parts.push(fixCamelCase(building));
+
+  // 2. House number + street
+  const street = addr.road || addr.pedestrian || addr.path;
+  if (addr.house_number && street) {
+    parts.push(`${addr.house_number}, ${fixCamelCase(street)}`);
+  } else if (street && !parts.some(p => p.toLowerCase().includes(street.toLowerCase()))) {
+    parts.push(fixCamelCase(street));
+  }
+
+  // 3. Neighbourhood / suburb (area name like "Bopal", "South Bopal")
+  const area = addr.neighbourhood || addr.suburb || addr.quarter;
+  if (area && !parts.some(p => p.toLowerCase().includes(area.toLowerCase()))) {
+    parts.push(fixCamelCase(area));
+  }
+
+  // 4. City
+  const city = addr.city || addr.town || addr.village;
+  if (city && !parts.some(p => p.toLowerCase().includes(city.toLowerCase()))) {
+    parts.push(fixCamelCase(city));
+  }
+
+  // 5. Pincode
+  if (addr.postcode) parts.push(addr.postcode);
+
+  // Fallback: if we got nothing useful, strip display_name later
+  return parts.join(", ");
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -182,17 +240,23 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
   }, []);
 
   /* ── GPS Reverse Geocode via Nominatim ────────────────────────────── */
-  // Nominatim returns display_name = "Building, Street, Suburb, City, District, State, PIN, India"
-  // We clean it into a proper human-readable Indian address.
+  // Uses structured address fields (not display_name) so society/apartment names
+  // are preserved correctly.
   async function reverseGeocode(lat: number, lon: number): Promise<string> {
     try {
-      // zoom=18 = building level; zoom=16 = street level; zoom=14 = suburb level
+      // zoom=18 = building-level detail (returns amenity/building names)
       const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1&zoom=18&accept-language=en`;
       const res = await fetch(url, {
         headers: { "User-Agent": "OvowFoodsApp/1.0 contact@ovowfoods.com" },
       });
       if (!res.ok) throw new Error("Nominatim failed");
       const data: NominatimReverseResult = await res.json();
+
+      // Try structured address first (preserves society/apartment names)
+      const structured = buildReverseAddress(data.address);
+      if (structured && structured.length >= 8) return structured;
+
+      // Fallback: clean the display_name string
       return cleanAddress(data.display_name);
     } catch {
       return "";
