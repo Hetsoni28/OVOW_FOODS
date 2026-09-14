@@ -80,21 +80,30 @@ export interface AddressSuggestion {
   lon: number;
 }
 
-// Nominatim search result (fallback)
+// Nominatim search result (forward geocode)
 interface NominatimSearchResult {
   place_id: number;
   display_name: string;
   lat: string;
   lon: string;
+  // Structured address — same fields as reverse geocode
   address: {
-    road?: string;
+    amenity?:       string;
+    building?:      string;
+    tourism?:       string;
+    house_number?:  string;
+    house_name?:    string;
+    road?:          string;
+    pedestrian?:    string;
     neighbourhood?: string;
-    suburb?: string;
-    city?: string;
-    town?: string;
-    village?: string;
-    state?: string;
-    postcode?: string;
+    suburb?:        string;
+    quarter?:       string;
+    city?:          string;
+    town?:          string;
+    village?:       string;
+    county?:        string;
+    state?:         string;
+    postcode?:      string;
   };
 }
 
@@ -313,7 +322,7 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
 
 
 
-  /* ── Dual-engine Search: Photon primary + Nominatim fallback ─────── */
+  /* ── Dual-engine Search: Photon + Nominatim in PARALLEL ──────────── */
   const doSearch = useCallback((q: string) => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     if (q.trim().length < 3) { setSuggestions([]); setShowSuggestions(false); return; }
@@ -321,73 +330,94 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
     debounceRef.current = setTimeout(async () => {
       setSearching(true);
       try {
-        // ── 1. Photon (fast, OSM-backed) ───────────────────────────
-        const photonRes = await fetch(
-          `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=10&lang=en&bbox=${AMD_BBOX}`
-        );
-        const photonData: { features: PhotonFeature[] } = await photonRes.json();
+        // Run both engines simultaneously
+        const [photonSettled, nomSettled] = await Promise.allSettled([
+          // 1. Photon — fast, biased to Ahmedabad bounding box
+          fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=10&lang=en&bbox=${AMD_BBOX}`)
+            .then(r => r.json() as Promise<{ features: PhotonFeature[] }>),
 
-        const photonResults: AddressSuggestion[] = photonData.features
-          .filter(f => {
-            const [lon, lat] = f.geometry.coordinates;
-            return lat >= ZONE.minLat - 0.1 && lat <= ZONE.maxLat + 0.1 &&
-                   lon >= ZONE.minLon - 0.1 && lon <= ZONE.maxLon + 0.1;
-          })
-          .map(f => {
-            const p = f.properties;
-            const title = p.name || p.street || p.neighbourhood || p.suburb || p.city || "Location";
-            const address = buildPhotonLabel(p);
-            return {
-              id: `photon-${p.osm_id ?? Math.random()}`,
-              title,
-              subtitle: address !== title ? address : "",
-              address,
-              lat: f.geometry.coordinates[1],
-              lon: f.geometry.coordinates[0],
-            };
-          });
+          // 2. Nominatim — broader DB, namedetails+extratags for full address info
+          fetch(
+            `https://nominatim.openstreetmap.org/search?` +
+            new URLSearchParams({
+              q:             `${q}, Ahmedabad, Gujarat`,
+              format:        "json",
+              addressdetails:"1",
+              namedetails:   "1",
+              extratags:     "1",
+              limit:         "8",
+              countrycodes:  "in",
+              viewbox:       AMD_BBOX,
+              bounded:       "0",
+            }).toString(),
+            { headers: { "User-Agent": "OvowFoodsApp/1.0 contact@ovowfoods.com" } }
+          ).then(r => r.json() as Promise<NominatimSearchResult[]>),
+        ]);
 
-        if (photonResults.length > 0) {
-          setSuggestions(photonResults);
-          setShowSuggestions(true);
-          return;
+        // ── Process Photon results
+        const photonResults: AddressSuggestion[] =
+          photonSettled.status === "fulfilled"
+            ? photonSettled.value.features
+                .filter(f => {
+                  const [lon, lat] = f.geometry.coordinates;
+                  return lat >= ZONE.minLat - 0.1 && lat <= ZONE.maxLat + 0.1 &&
+                         lon >= ZONE.minLon - 0.1 && lon <= ZONE.maxLon + 0.1;
+                })
+                .map(f => {
+                  const p = f.properties;
+                  const title = p.name || p.street || p.neighbourhood || p.suburb || p.city || "Location";
+                  const address = buildPhotonLabel(p);
+                  return {
+                    id: `photon-${p.osm_id ?? Math.random()}`,
+                    title,
+                    subtitle: address !== title ? address : "",
+                    address,
+                    lat: f.geometry.coordinates[1],
+                    lon: f.geometry.coordinates[0],
+                  };
+                })
+            : [];
+
+        // ── Process Nominatim results (uses structured address fields)
+        const nomResults: AddressSuggestion[] =
+          nomSettled.status === "fulfilled"
+            ? nomSettled.value
+                .filter(r => {
+                  const lat = parseFloat(r.lat), lon = parseFloat(r.lon);
+                  return lat >= ZONE.minLat - 0.15 && lat <= ZONE.maxLat + 0.15 &&
+                         lon >= ZONE.minLon - 0.15 && lon <= ZONE.maxLon + 0.15;
+                })
+                .map(r => {
+                  // Prefer structured address (preserves society/apartment names)
+                  const structured = buildReverseAddress(r.address);
+                  const label = structured && structured.length >= 6
+                    ? structured
+                    : cleanAddress(r.display_name);
+                  const parts = label.split(", ");
+                  return {
+                    id: `nom-${r.place_id}`,
+                    title: parts[0] || label,
+                    subtitle: parts.slice(1, 4).join(", "),
+                    address: label,
+                    lat: parseFloat(r.lat),
+                    lon: parseFloat(r.lon),
+                  };
+                })
+            : [];
+
+        // ── Merge + deduplicate (~50m grid)
+        const seen = new Set<string>();
+        const merged: AddressSuggestion[] = [];
+        for (const s of [...photonResults, ...nomResults]) {
+          const bucket = `${Math.round(s.lat * 1000)},${Math.round(s.lon * 1000)}`;
+          if (!seen.has(bucket) && s.address) {
+            seen.add(bucket);
+            merged.push(s);
+          }
         }
 
-        // ── 2. Nominatim fallback (broader DB, finds newer complexes) ─
-        const nomUrl = `https://nominatim.openstreetmap.org/search?` +
-          new URLSearchParams({
-            q: `${q}, Ahmedabad`,
-            format: "json",
-            addressdetails: "1",
-            limit: "8",
-            countrycodes: "in",
-          }).toString();
-        const nomRes = await fetch(nomUrl, {
-          headers: { "User-Agent": "OvowFoodsApp/1.0" },
-        });
-        const nomData: NominatimSearchResult[] = await nomRes.json();
-
-        const nomResults: AddressSuggestion[] = nomData
-          .filter(r => {
-            const lat = parseFloat(r.lat), lon = parseFloat(r.lon);
-            return lat >= ZONE.minLat - 0.1 && lat <= ZONE.maxLat + 0.1 &&
-                   lon >= ZONE.minLon - 0.1 && lon <= ZONE.maxLon + 0.1;
-          })
-          .map(r => {
-            const cleaned = cleanAddress(r.display_name);
-            const parts = cleaned.split(", ");
-            return {
-              id: `nom-${r.place_id}`,
-              title: parts[0] || cleaned,
-              subtitle: parts.slice(1).join(", "),
-              address: cleaned,
-              lat: parseFloat(r.lat),
-              lon: parseFloat(r.lon),
-            };
-          });
-
-        setSuggestions(nomResults);
-        setShowSuggestions(nomResults.length > 0);
+        setSuggestions(merged.slice(0, 8));
+        setShowSuggestions(merged.length > 0);
       } catch {
         setSuggestions([]);
         setShowSuggestions(false);
@@ -396,6 +426,7 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
       }
     }, 380);
   }, []);
+
 
   function handleSelect(s: AddressSuggestion) {
     onChange(s.address);
