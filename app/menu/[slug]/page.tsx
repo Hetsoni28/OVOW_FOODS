@@ -31,7 +31,12 @@ export async function generateMetadata({
   }
 
   return {
-    title: product.name,
+    title: {
+      // Use `absolute` to bypass the root layout's "%s | OVOW FOODS" template.
+      // This prevents Next.js from creating a stray <title> text node in the body
+      // during SSR/streaming with Turbopack.
+      absolute: `${product.name} | OVOW FOODS`,
+    },
     description: product.description || `Premium ${product.name} from OVOW Foods.`,
   };
 }
