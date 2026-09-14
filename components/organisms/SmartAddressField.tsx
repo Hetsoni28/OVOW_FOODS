@@ -358,23 +358,23 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
   return (
     <div ref={wrapperRef} className="space-y-3">
 
-      {/* Action buttons */}
+      {/* Action buttons — 2-col grid, full width, text wraps gracefully */}
       {mode !== "filled" && (
         <div className="grid grid-cols-2 gap-2">
           {/* GPS Button */}
           <button type="button" onClick={handleUseLocation} disabled={locLoading}
-            className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-[#C9A24A]/40 rounded-xl text-[11px] font-bold uppercase tracking-widest text-[#C9A24A] hover:border-[#C9A24A] hover:bg-[#C9A24A]/5 transition-all disabled:opacity-50 disabled:cursor-wait group">
+            className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2 sm:px-4 py-3 border-2 border-dashed border-[#C9A24A]/40 rounded-xl text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.08em] sm:tracking-widest text-[#C9A24A] hover:border-[#C9A24A] hover:bg-[#C9A24A]/5 transition-all disabled:opacity-50 disabled:cursor-wait group leading-tight text-center">
             {locLoading
               ? <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
               : <svg className="w-4 h-4 flex-shrink-0 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8" strokeDasharray="3 3"/></svg>}
-            {locLoading ? "Locating…" : "Use My Location"}
+            <span>{locLoading ? "Locating…" : "Use My Location"}</span>
           </button>
 
           {/* Search Button */}
           <button type="button" onClick={() => { setMode("search"); setLocError(null); }}
-            className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-primary/20 rounded-xl text-[11px] font-bold uppercase tracking-widest text-primary/50 hover:border-primary/40 hover:text-primary transition-all group">
+            className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2 sm:px-4 py-3 border-2 border-dashed border-primary/20 rounded-xl text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.08em] sm:tracking-widest text-primary/50 hover:border-primary/40 hover:text-primary transition-all group leading-tight text-center">
             <svg className="w-4 h-4 flex-shrink-0 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-            Search Address
+            <span>Search Address</span>
           </button>
         </div>
       )}
@@ -409,12 +409,13 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
             {searching && <svg className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin w-4 h-4 text-[#C9A24A]" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>}
             <input autoFocus type="text" value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); doSearch(e.target.value); }}
-              placeholder="Type area, building, street or landmark…"
+              placeholder="Area, building, street or landmark…"
               className="w-full border-2 border-[#C9A24A]/40 focus:border-[#C9A24A] bg-white rounded-xl pl-10 pr-10 py-3 text-sm text-primary placeholder:text-primary/30 focus:outline-none transition-colors"/>
           </div>
 
           {showSuggestions && suggestions.length > 0 && (
-            <div className="absolute top-full left-0 right-0 z-50 mt-1.5 bg-white border border-primary/10 rounded-xl shadow-2xl overflow-hidden max-h-64 overflow-y-auto">
+            /* max-h-48 on mobile keeps dropdown above keyboard; 64 on sm+ */
+            <div className="absolute top-full left-0 right-0 z-50 mt-1.5 bg-white border border-primary/10 rounded-xl shadow-2xl overflow-hidden max-h-48 sm:max-h-64 overflow-y-auto">
               {suggestions.map((s) => (
                 <button key={s.id} type="button" onMouseDown={() => handleSelect(s)}
                   className="w-full flex items-start gap-3 px-4 py-3 hover:bg-[#C9A24A]/5 transition-colors text-left border-b border-primary/[0.06] last:border-0">
@@ -455,7 +456,7 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
           </svg>
           <input
             type="text"
-            placeholder="Flat / Floor / Wing / Building name (optional)"
+            placeholder="Flat / Floor / Wing (optional)"
             className="w-full border-b-2 border-primary/10 focus:border-[#C9A24A] pl-8 py-2.5 text-sm text-primary placeholder:text-primary/25 bg-transparent focus:outline-none transition-colors"
             onBlur={(e) => {
               const flat = e.target.value.trim();
@@ -476,7 +477,8 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
           placeholder="Full delivery address with landmark"
           className={`${inputCls(error)} pl-8 resize-none`}/>
         {locSuccess && (
-          <div className="absolute right-1 top-2.5 flex items-center gap-1 bg-green-50 border border-green-200 rounded-full px-2 py-0.5">
+          /* On mobile show below the textarea, not overlapping it */
+          <div className="mt-1 inline-flex items-center gap-1 bg-green-50 border border-green-200 rounded-full px-2 py-0.5 self-start">
             <svg className="w-3 h-3 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
             <span className="text-[9px] font-bold text-green-600 uppercase tracking-widest">Auto-filled</span>
           </div>
