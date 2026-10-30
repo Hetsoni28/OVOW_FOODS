@@ -14,16 +14,22 @@ interface CheckoutStepSuccessProps {
 
 // Confetti particle
 function Particle({ delay, color }: { delay: number; color: string }) {
-  const x = (Math.random() - 0.5) * 600;
-  const rotate = Math.random() * 720 - 360;
-  const size = Math.random() * 8 + 4;
+  // Randomise once per particle — re-rolling on every render made confetti jump mid-flight
+  const [p] = useState(() => ({
+    x: (Math.random() - 0.5) * 600,
+    y: 300 + Math.random() * 200,
+    rotate: Math.random() * 720 - 360,
+    size: Math.random() * 8 + 4,
+    round: Math.random() > 0.5,
+    duration: 1.5 + Math.random(),
+  }));
   return (
     <motion.div
       className="absolute top-0 left-1/2 pointer-events-none"
-      style={{ width: size, height: size, backgroundColor: color, borderRadius: Math.random() > 0.5 ? "50%" : "0%" }}
+      style={{ width: p.size, height: p.size, backgroundColor: color, borderRadius: p.round ? "50%" : "0%" }}
       initial={{ y: 0, x: 0, opacity: 1, rotate: 0 }}
-      animate={{ y: 300 + Math.random() * 200, x, opacity: 0, rotate }}
-      transition={{ duration: 1.5 + Math.random(), delay, ease: "easeOut" }}
+      animate={{ y: p.y, x: p.x, opacity: 0, rotate: p.rotate }}
+      transition={{ duration: p.duration, delay, ease: "easeOut" }}
     />
   );
 }
@@ -32,7 +38,7 @@ const CONFETTI_COLORS = ["#C9A24A", "#0B2118", "#25D366", "#F97316", "#FBBF24", 
 
 const ORDER_STEPS = [
   { label: "Order Received", sub: "Your order is in our system", done: true },
-  { label: "Kitchen Notified", sub: "Chefs are being alerted", done: true },
+  { label: "Send on WhatsApp", sub: "Notifies our kitchen with your order", done: false },
   { label: "Preparing", sub: "Your food is being freshly made", done: false },
   { label: "Out for Delivery", sub: "On its way to you!", done: false },
 ];
@@ -48,11 +54,11 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
   const [statusIdx, setStatusIdx] = useState(0);
 
   const VERIFY_MESSAGES = [
-    "Connecting to payment network...",
-    "Contacting your bank...",
-    "Checking transaction ID...",
-    "Verifying amount ₹" + cartTotal.toLocaleString("en-IN") + "...",
-    "Confirming with UPI...",
+    "Saving your order...",
+    "Recording your items...",
+    "Generating your receipt...",
+    "Order total ₹" + cartTotal.toLocaleString("en-IN") + "...",
+    "Preparing your WhatsApp message...",
     "Almost there...",
     "Finalising your order...",
   ];
@@ -156,8 +162,8 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
               </motion.div>
             </div>
 
-            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#C9A24A] mb-4">
-              Verifying Payment
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#86671C] mb-4">
+              Placing Your Order
             </p>
 
             {/* Rotating status message */}
@@ -169,7 +175,7 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: -10, opacity: 0 }}
                   transition={{ duration: 0.25 }}
-                  className="text-white/50 text-sm"
+                  className="text-white/60 text-sm"
                 >
                   {VERIFY_MESSAGES[statusIdx]}
                 </motion.p>
@@ -179,8 +185,8 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
             {/* Progress bar */}
             <div className="w-full max-w-xs">
               <div className="flex justify-between mb-2">
-                <span className="text-[9px] font-bold uppercase tracking-widest text-white/20">Processing</span>
-                <span className="text-[9px] font-black text-[#C9A24A]">{Math.round(progress)}%</span>
+                <span className="text-[9px] font-bold uppercase tracking-widest text-white/60">Processing</span>
+                <span className="text-[9px] font-black text-[#86671C]">{Math.round(progress)}%</span>
               </div>
               <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
                 <motion.div
@@ -192,17 +198,17 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
             </div>
 
             {/* Order reference */}
-            <p className="text-[10px] text-white/20 mt-8">
-              Order Ref: <span className="text-white/40 font-bold">#{orderId}</span>
+            <p className="text-[10px] text-white/60 mt-8">
+              Order Ref: <span className="text-white/60 font-bold">#{orderId}</span>
             </p>
           </div>
         </div>
 
         {/* Reassurance card below */}
         <div className="bg-white border border-primary/5 border-t-0 px-8 py-6 text-center">
-          <p className="text-xs text-primary/50 leading-relaxed">
+          <p className="text-xs text-primary/70 leading-relaxed">
             Please <strong className="text-primary">do not close or refresh</strong> this page.<br />
-            Your payment confirmation is being processed.
+            Your order is being saved. Payment is verified by our team on WhatsApp.
           </p>
         </div>
       </motion.div>
@@ -273,14 +279,14 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
           >
-            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#C9A24A] mb-3">
-              Order Confirmed
+            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#86671C] mb-3">
+              Order Placed
             </p>
             <h2 className="font-serif text-4xl md:text-5xl text-white mb-3 leading-tight">
               Your food is on <br />
               <span className="text-[#C9A24A]">its way!</span>
             </h2>
-            <p className="text-white/40 text-sm mt-4">
+            <p className="text-white/60 text-sm mt-4">
               We've received your order and the kitchen has been notified.
             </p>
           </motion.div>
@@ -293,7 +299,7 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
             className="flex items-center justify-center gap-3 mt-8 flex-wrap"
           >
             <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2">
-              <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/30">Order</span>
+              <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/60">Order</span>
               <span className="text-sm font-black text-white tracking-wider">#{orderId}</span>
             </div>
             <div className="flex items-center gap-2 bg-[#C9A24A]/10 border border-[#C9A24A]/30 px-4 py-2">
@@ -311,7 +317,7 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
         transition={{ delay: 0.7 }}
         className="bg-white border-x border-b border-primary/5 px-8 py-8"
       >
-        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-primary/30 mb-6">Order Status</p>
+        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-primary/70 mb-6">Order Status</p>
         <div className="relative">
           {/* Vertical line */}
           <div className="absolute left-4 top-4 bottom-4 w-px bg-primary/10" />
@@ -347,10 +353,10 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
                   </div>
                   {/* Label */}
                   <div className="flex-1">
-                    <p className={`text-sm font-bold transition-colors ${isActive ? "text-primary" : "text-primary/30"}`}>
+                    <p className={`text-sm font-bold transition-colors ${isActive ? "text-primary" : "text-primary/70"}`}>
                       {step.label}
                     </p>
-                    <p className={`text-[10px] transition-colors ${isActive ? "text-primary/50" : "text-primary/20"}`}>
+                    <p className={`text-[10px] transition-colors ${isActive ? "text-primary/70" : "text-primary/70"}`}>
                       {step.sub}
                     </p>
                   </div>
@@ -382,7 +388,7 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
           className={`w-full relative overflow-hidden flex items-center justify-center gap-3 px-8 py-5 text-xs font-bold uppercase tracking-[0.15em] transition-all duration-500 shadow-xl ${
             whatsappSent
               ? "bg-[#0B2118] text-white"
-              : "bg-[#25D366] text-white shadow-[#25D366]/30 hover:bg-[#1DA851]"
+              : "bg-[#25D366] text-[#0B2118] shadow-[#25D366]/30 hover:bg-[#1DA851]"
           }`}
         >
           {/* Shimmer */}
@@ -399,7 +405,7 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2 }}
-            className="text-center text-[10px] text-primary/40 leading-relaxed"
+            className="text-center text-[10px] text-primary/70 leading-relaxed"
           >
             Your order is only confirmed after you send the WhatsApp message with your payment screenshot.
           </motion.p>
@@ -428,7 +434,7 @@ export function CheckoutStepSuccess({ orderId, cartTotal, handleSendWhatsApp }: 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.3 }}
-        className="text-center text-[10px] text-primary/30 mt-6 leading-relaxed px-4"
+        className="text-center text-[10px] text-primary/70 mt-6 leading-relaxed px-4"
       >
         Questions? WhatsApp us at {" "}
         <a href="https://wa.me/917567566214" className="text-[#25D366] font-bold hover:underline">+91 7567566214</a>

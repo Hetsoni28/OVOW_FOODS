@@ -3,9 +3,12 @@
 import Link from "next/link";
 import { IconPlus, IconCheck, IconStar, IconTrophy, IconChefHat, IconStatusAvailable, IconStatusLimited, IconStatusSoldOut, IconKidsSpecial, IconPreOrder, IconSignatureDish } from "@/components/atoms/Icons";
 import { LazyVideo } from "@/components/atoms/LazyVideo";
+import { sanityImageUrl } from "@/lib/sanityImage";
+import Image from "next/image";
 import { useState } from "react";
 import { Product } from "@/types";
 import { useCart } from "@/context/CartContext";
+import { productImageAlt } from "@/lib/seo";
 
 export function ProductCard({ product, fallbackVideo }: { product: Product, fallbackVideo?: string }) {
   const { addItem } = useCart();
@@ -13,7 +16,7 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
 
   // Resolve availability: new field takes priority, fallback to legacy boolean
   const status = product.availabilityStatus ?? (product.available === false ? 'soldout' : 'available');
-  const isSoldOut = status === 'soldout';
+  const isSoldOut = status === 'soldout' || product.available === false; // matches the product page badge
   const isLimited = status === 'limited';
   const isPreOrder = status === 'preorder';
   const isKidsSpecial = !!(product as any).isKidsSpecial;
@@ -29,20 +32,31 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
   }
 
   const hasDiscount = product.originalPrice && product.originalPrice > product.price;
-  const displayVideo = product.previewVideo || fallbackVideo;
+  // Own video → own photo → another dish's video as last resort
+  const displayVideo = product.previewVideo || (product.thumbnailUrl ? undefined : fallbackVideo);
 
   return (
     <div className="group relative flex flex-col h-full bg-white border border-primary/5 hover:border-[#C9A24A]/40 hover:shadow-[0_16px_40px_rgba(18,59,42,0.1)] hover:-translate-y-1 transition-all duration-500 overflow-hidden">
       {/* Image Container */}
-      <Link href={`/menu/${product.slug}`} className="block relative aspect-[4/5] overflow-hidden bg-primary/5">
+      <Link href={`/menu/${product.slug}`} aria-label={product.name} className="block relative aspect-[4/5] overflow-hidden bg-primary/5">
         {displayVideo ? (
-          <LazyVideo 
-            src={displayVideo} 
+          <LazyVideo
+            src={displayVideo}
+            poster={sanityImageUrl(product.thumbnailUrl, 480, 600)}
             className="w-full h-full object-cover"
+            deferUntilIdle // Sanity product videos are 2–3 MB each — never compete with page load
+          />
+        ) : product.thumbnailUrl ? (
+          <Image
+            src={product.thumbnailUrl}
+            alt={productImageAlt(product)}
+            fill
+            sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+            className="object-cover"
           />
         ) : (
-          <div className="w-full h-full bg-primary/10 flex items-center justify-center text-primary/40 text-xs font-bold tracking-widest uppercase">
-            No Video
+          <div className="w-full h-full bg-primary/10 flex items-center justify-center text-primary/70 text-xs font-bold tracking-widest uppercase">
+            No Image
           </div>
         )}
         
@@ -67,7 +81,7 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
             </span>
           )}
           {!isSoldOut && !isPreOrder && (product.isSignature || (product as any).signature) && (
-            <span className="bg-[#C9A24A] text-white px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1 md:gap-1.5 shadow-sm">
+            <span className="bg-[#C9A24A] text-[#0B2118] px-2 py-1 md:px-3 md:py-1.5 text-[7px] md:text-[9px] uppercase tracking-[0.2em] font-bold flex items-center gap-1 md:gap-1.5 shadow-sm">
               <IconSignatureDish size={8} className="md:w-2.5 md:h-2.5 shrink-0" /> Signature
             </span>
           )}
@@ -106,7 +120,7 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
       <div className="flex flex-1 flex-col p-3 md:p-5 bg-white relative z-10">
         <Link href={`/menu/${product.slug}`} className="flex-1 flex flex-col">
           <div className="flex items-center justify-between gap-2 mb-2 md:mb-3">
-            <span className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] font-medium text-primary/40 flex items-center gap-1.5">
+            <span className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] font-medium text-primary/70 flex items-center gap-1.5">
               <span className="hidden md:block"><IconChefHat size={10} /></span> {typeof product.category === 'string' ? product.category : product.category?.name || 'Dish'}
             </span>
             {hasDiscount && (
@@ -127,25 +141,25 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
               <span className="text-xs font-bold text-primary tabular-nums">
                 {Number((product as any).avgRating).toFixed(1)}
               </span>
-              <span className="text-[10px] text-primary/40">
+              <span className="text-[10px] text-primary/70">
                 ({(product as any).reviewCount})
               </span>
             </div>
           )}
           
           {product.description && (
-            <p className="hidden md:block text-xs md:text-sm text-primary/60 line-clamp-2 leading-relaxed mb-4">
+            <p className="hidden md:block text-xs md:text-sm text-primary/70 line-clamp-2 leading-relaxed mb-4">
               {product.description}
             </p>
           )}
 
           <div className="flex items-center justify-between mt-auto pt-3 md:pt-4">
             <div>
-              <p className="text-[8px] md:text-[10px] text-primary/40 uppercase tracking-widest mb-0.5 md:mb-1">{product.servingSize || "1 Portion"}</p>
+              <p className="text-[8px] md:text-[10px] text-primary/70 uppercase tracking-widest mb-0.5 md:mb-1">{product.servingSize || "1 Portion"}</p>
               <div className="flex items-center gap-1.5 md:gap-2">
                 <p className="text-sm md:text-lg font-medium text-primary">₹{product.price}</p>
                 {hasDiscount && (
-                  <p className="text-[10px] md:text-sm text-primary/40 line-through">₹{product.originalPrice}</p>
+                  <p className="text-[10px] md:text-sm text-primary/70 line-through">₹{product.originalPrice}</p>
                 )}
               </div>
             </div>
@@ -154,7 +168,8 @@ export function ProductCard({ product, fallbackVideo }: { product: Product, fall
               suppressHydrationWarning
               onClick={handleAdd}
               disabled={isSoldOut}
-              className={`w-7 h-7 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
+              aria-label={isSoldOut ? `${product.name} is sold out` : added ? `${product.name} added to cart` : `Add ${product.name} to cart`}
+              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
                 isSoldOut 
                   ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                   : added 

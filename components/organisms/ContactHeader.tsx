@@ -20,38 +20,35 @@ export function ContactHeader() {
     <div className="text-center mb-20 relative">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#C9A24A]/10 blur-[100px] rounded-full -z-10 pointer-events-none" />
       
-      <motion.p 
-        initial="hidden"
-        animate="visible"
-        variants={fadeUp}
-        className="text-[10px] md:text-xs uppercase tracking-[.4em] text-[#C9A24A] font-bold mb-6"
-      >
-        Get in touch
-      </motion.p>
-      
-      <motion.h1 
-        initial="hidden"
-        animate="visible"
-        variants={stagger}
-        className="font-serif text-5xl md:text-7xl lg:text-8xl text-primary leading-tight overflow-hidden pb-4"
-      >
-        {letters.map((letter, i) => (
-          <motion.span 
-            key={i} 
-            variants={letterAnim}
-            className="inline-block"
-          >
-            {letter === " " ? "\u00A0" : letter}
-          </motion.span>
-        ))}
-      </motion.h1>
+      <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-primary leading-tight overflow-hidden pb-4">
+        <motion.span
+          initial="hidden"
+          animate="visible"
+          variants={fadeUp}
+          className="block font-sans text-[10px] md:text-xs uppercase tracking-[.4em] text-[#86671C] font-bold mb-6"
+        >
+          Contact OVOW FOODS &middot; Ahmedabad
+        </motion.span>
+        {/* Letters stay real text (no duplicate copy) so crawlers and screen readers read "Talk to OVOW." once */}
+        <motion.span initial="hidden" animate="visible" variants={stagger} className="block">
+          {letters.map((letter, i) => (
+            <motion.span
+              key={i}
+              variants={letterAnim}
+              className="inline-block"
+            >
+              {letter === " " ? "\u00A0" : letter}
+            </motion.span>
+          ))}
+        </motion.span>
+      </h1>
       
       <motion.p 
         initial="hidden"
         animate="visible"
         variants={fadeUp}
         transition={{ delay: 0.4 }}
-        className="mt-4 text-primary/60 max-w-xl mx-auto text-sm md:text-base leading-relaxed"
+        className="mt-4 text-primary/70 max-w-xl mx-auto text-sm md:text-base leading-relaxed"
       >
         Whether you have a question about our menu, need help with a bulk order, or just want to say hi, our kitchen is always open for you.
       </motion.p>

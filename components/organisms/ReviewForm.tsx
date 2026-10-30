@@ -41,7 +41,7 @@ export function ReviewForm() {
         <div className="w-16 h-16 bg-[#25D366]/10 text-[#25D366] flex items-center justify-center mb-6 rounded-full">
           <IconStar className="fill-current" size={28} />
         </div>
-        <h3 className="font-serif text-3xl text-primary mb-2">Thank you!</h3>
+        <h2 className="font-serif text-3xl text-primary mb-2">Thank you!</h2>
         <p className="text-primary/70">
           Your review has been successfully published to the site!
         </p>
@@ -57,29 +57,38 @@ export function ReviewForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col">
-      <h3 className="font-serif text-3xl text-primary mb-2">Leave a Review</h3>
-      <p className="text-primary/60 text-sm mb-8">Share your OVOW experience with the world.</p>
+      <h2 className="font-serif text-3xl text-primary mb-2">Leave a Review</h2>
+      <p className="text-primary/70 text-sm mb-8">Share your OVOW experience with the world.</p>
       
       <div className="mb-6">
-        <label className="block text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">
+        <p id="rating-label" className="block text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">
           Rating
-        </label>
-        <div className="flex gap-2">
+        </p>
+        <div className="flex gap-2" role="radiogroup" aria-labelledby="rating-label">
           {[1, 2, 3, 4, 5].map((star) => (
             <button suppressHydrationWarning
               key={star}
               type="button"
+              role="radio"
+              aria-checked={rating === star}
+              aria-label={`${star} star${star > 1 ? "s" : ""}`}
+              tabIndex={rating === star ? 0 : -1}
+              onKeyDown={(e) => {
+                // Arrow keys move the selection, as in a native radio group
+                if (e.key === "ArrowRight" || e.key === "ArrowUp") { e.preventDefault(); setRating(Math.min(5, rating + 1)); }
+                if (e.key === "ArrowLeft" || e.key === "ArrowDown") { e.preventDefault(); setRating(Math.max(1, rating - 1)); }
+              }}
               onClick={() => setRating(star)}
               onMouseEnter={() => setHoveredRating(star)}
               onMouseLeave={() => setHoveredRating(0)}
-              className="focus:outline-none transition-transform hover:scale-110"
+              className="p-1 rounded-sm transition-transform hover:scale-110"
             >
               <IconStar 
                 size={28} 
                 className={`${
                   star <= (hoveredRating || rating) 
                     ? "fill-[#C9A24A] text-[#C9A24A]" 
-                    : "fill-transparent text-primary/20"
+                    : "fill-transparent text-primary/70"
                 } transition-colors`} 
               />
             </button>
@@ -88,11 +97,11 @@ export function ReviewForm() {
       </div>
 
       <div className="mb-6">
-        <label htmlFor="name" className="block text-xs font-bold uppercase tracking-widest text-primary/70 mb-2">
+        <label htmlFor="review-name" className="block text-xs font-bold uppercase tracking-widest text-primary/70 mb-2">
           Your Name
         </label>
         <input
-          id="name"
+          id="review-name"
           type="text"
           required
           value={name}
@@ -104,11 +113,11 @@ export function ReviewForm() {
       </div>
 
       <div className="mb-8">
-        <label htmlFor="comment" className="block text-xs font-bold uppercase tracking-widest text-primary/70 mb-2">
+        <label htmlFor="review-comment" className="block text-xs font-bold uppercase tracking-widest text-primary/70 mb-2">
           Your Review
         </label>
         <textarea
-          id="comment"
+          id="review-comment"
           required
           rows={4}
           value={comment}
@@ -120,7 +129,7 @@ export function ReviewForm() {
       </div>
 
       {status === "error" && (
-        <div className="mb-6 p-4 bg-red-50 text-red-600 text-sm border border-red-100">
+        <div role="alert" className="mb-6 p-4 bg-red-50 text-red-700 text-sm border border-red-100">
           {errorMessage}
         </div>
       )}

@@ -1,5 +1,17 @@
 import { defineField, defineType } from 'sanity'
 
+// SEO-friendly URL slug: lowercase ASCII words joined by single hyphens
+// e.g. "Dum Matka Paneer Biryani (Spl.)" -> "dum-matka-paneer-biryani-spl"
+const slugify = (input: string) =>
+  input
+    .normalize('NFKD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/&/g, ' and ')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80)
+
 export const productType = defineType({
   name: 'product',
   title: 'Product',
@@ -15,8 +27,14 @@ export const productType = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      options: { source: 'name' },
-      validation: (rule) => rule.required(),
+      options: { source: 'name', slugify, maxLength: 80 },
+      description: 'Used in the page URL: ovowfoods.com/menu/<slug>. Click "Generate" — keep it short, lowercase, words separated by hyphens.',
+      validation: (rule) =>
+        rule.required().custom((value) =>
+          !value?.current || /^[a-z0-9]+(-[a-z0-9]+)*$/.test(value.current)
+            ? true
+            : 'Use only lowercase letters, numbers and single hyphens (e.g. dum-matka-biryani)'
+        ),
     }),
     defineField({
       name: 'description',
@@ -72,7 +90,16 @@ export const productType = defineType({
       title: 'Product Thumbnail (for PDF Catalog)',
       type: 'image',
       options: { hotspot: true },
-      description: 'Upload a JPG/PNG photo of this dish. Used in the downloadable PDF catalog. Recommended: 800x533px (3:2 ratio).',
+      description: 'Upload a JPG/PNG photo of this dish. Used on the website, in Google/social previews and in the PDF catalog. Recommended: 1200x800px (3:2 ratio).',
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt text (SEO & accessibility)',
+          type: 'string',
+          description: 'Describe the photo naturally, e.g. "Dum Matka Paneer Biryani served in a clay pot with raita". Leave empty to auto-generate from the dish name.',
+          validation: (rule) => rule.max(125).warning('Keep alt text under 125 characters'),
+        }),
+      ],
     }),
     defineField({
       name: 'isSpicy',
@@ -139,6 +166,11 @@ export const productType = defineType({
       title: 'Sort Order',
       type: 'number',
       initialValue: 0,
+    }),
+    defineField({
+      name: 'seo',
+      title: 'SEO (Google & social sharing)',
+      type: 'seo',
     }),
   ],
 })

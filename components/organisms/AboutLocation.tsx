@@ -18,7 +18,7 @@ export function AboutLocation() {
           <div className="flex gap-4">
             <IconMapPin className="text-[#C9A24A] shrink-0 mt-1" />
             <div>
-              <h4 className="font-bold text-xs uppercase tracking-widest text-primary/50 mb-2">Location</h4>
+              <h3 className="font-bold text-xs uppercase tracking-widest text-primary/70 mb-2">Location</h3>
               <p className="text-lg text-primary font-medium">Ahmedabad, Gujarat</p>
               <p className="text-primary/70">Serving the local area</p>
             </div>
@@ -26,7 +26,7 @@ export function AboutLocation() {
           <div className="flex gap-4">
             <IconClock className="text-[#C9A24A] shrink-0 mt-1" />
             <div>
-              <h4 className="font-bold text-xs uppercase tracking-widest text-primary/50 mb-2">Hours</h4>
+              <h3 className="font-bold text-xs uppercase tracking-widest text-primary/70 mb-2">Hours</h3>
               <p className="text-lg text-primary font-medium">Open Daily</p>
               <p className="text-primary/70">Delivery until 4:00 AM</p>
             </div>

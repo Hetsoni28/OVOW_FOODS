@@ -27,7 +27,7 @@ export function CheckoutOrderSummary({ cart, cartTotal }: CheckoutOrderSummaryPr
           <motion.div variants={childAnim} key={`${item._id}-${i}`} className="flex justify-between items-start text-sm border-b border-primary/5 pb-4">
             <div>
               <p className="font-bold text-primary mb-1">{item.name}</p>
-              <p className="text-primary/50 text-xs">Qty: {item.quantity}</p>
+              <p className="text-primary/70 text-xs">Qty: {item.quantity}</p>
             </div>
             <p className="font-serif text-primary">
               ₹{(item.price * item.quantity).toLocaleString("en-IN")}

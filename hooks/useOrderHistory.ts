@@ -33,7 +33,7 @@ export function useOrderHistory() {
     try {
       const newOrder: PastOrder = { ...order, date: new Date().toISOString() };
       setOrders((prev) => {
-        const updated = [newOrder, ...prev].slice(0, 50); // Keep last 50 orders max
+        const updated = [newOrder, ...prev.filter((o) => o.id !== order.id)].slice(0, 50); // Keep last 50 orders max
         localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
         return updated;
       });

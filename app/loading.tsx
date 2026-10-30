@@ -8,7 +8,7 @@ export default function Loading() {
           <IconChefHat size={32} className="text-[#C9A24A] animate-pulse" />
           <div className="absolute inset-0 border-2 border-[#C9A24A]/20 border-t-[#C9A24A] rounded-full animate-spin"></div>
         </div>
-        <p className="text-[10px] uppercase tracking-widest font-bold text-primary/60">
+        <p className="text-[10px] uppercase tracking-widest font-bold text-primary/70">
           Loading...
         </p>
       </div>

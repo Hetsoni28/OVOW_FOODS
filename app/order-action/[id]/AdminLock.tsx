@@ -1,14 +1,23 @@
 "use client";
 
 import { useState, useTransition, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { IconLoader } from "@/components/atoms/Icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { verifyAdminPin } from "./actions";
 
-export function AdminLock({ children }: { children: React.ReactNode }) {
-  const [isUnlocked, setIsUnlocked] = useState(false);
+const ERROR_MESSAGES = {
+  invalid: "Incorrect PIN — Access Denied",
+  locked: "Too many attempts — try again in 15 minutes",
+  not_configured: "Admin PIN is not configured on the server (set ADMIN_PIN)",
+} as const;
+
+// Rendered by the server page instead of the order details until the admin
+// session cookie is set. On success we refresh so the server renders the page.
+export function AdminLock() {
+  const router = useRouter();
   const [pin, setPin] = useState(["", "", "", ""]);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<keyof typeof ERROR_MESSAGES | null>(null);
   const [shake, setShake] = useState(false);
   const [isPending, startTransition] = useTransition();
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
@@ -24,7 +33,7 @@ export function AdminLock({ children }: { children: React.ReactNode }) {
     const next = [...pin];
     next[idx] = val;
     setPin(next);
-    setError(false);
+    setError(null);
 
     if (val && idx < 3) {
       inputs.current[idx + 1]?.focus();
@@ -47,14 +56,13 @@ export function AdminLock({ children }: { children: React.ReactNode }) {
     const p = fullPin ?? pin.join("");
     if (p.length < 4) return;
     startTransition(async () => {
-      const isValid = await verifyAdminPin(p);
-      if (isValid) {
-        setIsUnlocked(true);
-        setError(false);
-        // Scroll to top so admin content always starts at top
+      const result = await verifyAdminPin(p);
+      if (result.ok) {
+        setError(null);
         window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+        router.refresh();
       } else {
-        setError(true);
+        setError(result.reason);
         setShake(true);
         setPin(["", "", "", ""]);
         setTimeout(() => {
@@ -64,8 +72,6 @@ export function AdminLock({ children }: { children: React.ReactNode }) {
       }
     });
   };
-
-  if (isUnlocked) return <>{children}</>;
 
   return (
     <div className="min-h-screen bg-[#0B2118] flex items-center justify-center p-4 relative overflow-hidden">
@@ -87,7 +93,7 @@ export function AdminLock({ children }: { children: React.ReactNode }) {
         <div className="text-center mb-10">
           <p className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C9A24A] mb-3">OVOW FOODS</p>
           <h1 className="font-serif text-3xl text-white mb-2">Admin Portal</h1>
-          <p className="text-white/30 text-xs tracking-wider">Enter your 4-digit merchant PIN</p>
+          <p className="text-white/60 text-xs tracking-wider">Enter your 4-digit merchant PIN</p>
         </div>
 
         {/* Lock icon */}
@@ -117,15 +123,20 @@ export function AdminLock({ children }: { children: React.ReactNode }) {
                 ref={(el) => { inputs.current[idx] = el; }}
                 type="password"
                 inputMode="numeric"
+                autoComplete="one-time-code"
+                aria-label={`PIN digit ${idx + 1} of 4`}
                 maxLength={1}
                 value={digit}
                 onChange={(e) => handleChange(e.target.value, idx)}
                 onKeyDown={(e) => handleKeyDown(e, idx)}
-                className="sr-only"
+                className="sr-only peer"
               />
               <button
+                type="button"
+                tabIndex={-1}
+                aria-hidden="true"
                 onClick={() => inputs.current[idx]?.focus()}
-                className={`w-14 h-14 rounded-xl border-2 flex items-center justify-center text-2xl font-black transition-all duration-200 ${
+                className={`w-14 h-14 rounded-xl border-2 flex peer-focus-visible:ring-4 peer-focus-visible:ring-[#C9A24A]  items-center justify-center text-2xl font-black transition-all duration-200 ${
                   digit
                     ? error
                       ? "border-red-500 bg-red-500/10 text-red-400"
@@ -153,9 +164,10 @@ export function AdminLock({ children }: { children: React.ReactNode }) {
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
+              role="alert"
               className="text-center text-xs text-red-400 font-bold mb-6 tracking-wider"
             >
-              ✕ &nbsp; Incorrect PIN — Access Denied
+              ✕ &nbsp; {error && ERROR_MESSAGES[error]}
             </motion.p>
           )}
         </AnimatePresence>
@@ -199,11 +211,13 @@ export function AdminLock({ children }: { children: React.ReactNode }) {
                 }
               }}
               disabled={key === ""}
+              aria-hidden={key === "" ? true : undefined}
+              aria-label={key === "⌫" ? "Delete last digit" : key === "" ? undefined : `Digit ${key}`}
               className={`h-12 rounded-lg text-lg font-bold transition-all ${
                 key === ""
                   ? "invisible"
                   : key === "⌫"
-                  ? "bg-white/5 text-white/40 hover:bg-white/10 hover:text-white active:scale-95"
+                  ? "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white active:scale-95"
                   : "bg-white/5 text-white hover:bg-[#C9A24A]/20 hover:text-[#C9A24A] active:scale-95 border border-white/10"
               }`}
             >
@@ -212,7 +226,7 @@ export function AdminLock({ children }: { children: React.ReactNode }) {
           ))}
         </div>
 
-        <p className="text-center text-[10px] text-white/15 mt-8 tracking-widest uppercase">
+        <p className="text-center text-[10px] text-white/60 mt-8 tracking-widest uppercase">
           Protected — OVOW Merchant System
         </p>
       </motion.div>

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { SITE_URL } from "@/lib/config";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -6,9 +7,11 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/studio/", "/api/", "/order-action/", "/receipt/"],
+        // Private / transactional pages — also marked noindex in their metadata
+        disallow: ["/studio/", "/api/", "/order-action/", "/receipt/", "/checkout", "/cart", "/orders"],
       },
     ],
-    sitemap: "https://ovow-foods.vercel.app/sitemap.xml",
+    sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_URL,
   };
 }

@@ -90,15 +90,15 @@ export function PorterActionClient({ orderRef, phone, customerName }: { orderRef
             {/* Driver details */}
             <div className="px-5 py-4 grid grid-cols-3 gap-4">
               <div>
-                <p className="text-[9px] uppercase tracking-widest text-white/30 mb-1">Driver</p>
+                <p className="text-[9px] uppercase tracking-widest text-white/60 mb-1">Driver</p>
                 <p className="text-sm font-bold text-white">{data.driver.name}</p>
               </div>
               <div>
-                <p className="text-[9px] uppercase tracking-widest text-white/30 mb-1">Contact</p>
+                <p className="text-[9px] uppercase tracking-widest text-white/60 mb-1">Contact</p>
                 <p className="text-sm font-bold text-white">{data.driver.phone}</p>
               </div>
               <div>
-                <p className="text-[9px] uppercase tracking-widest text-white/30 mb-1">Vehicle</p>
+                <p className="text-[9px] uppercase tracking-widest text-white/60 mb-1">Vehicle</p>
                 <p className="text-sm font-bold text-white">{data.driver.vehicle_number}</p>
               </div>
             </div>
@@ -144,7 +144,7 @@ export function PorterActionClient({ orderRef, phone, customerName }: { orderRef
             {phone && (
               <button
                 onClick={copyPhone}
-                className="w-full flex items-center justify-center gap-2 py-3 border border-white/10 text-xs font-bold text-white/40 hover:border-white/30 hover:text-white/70 transition-colors"
+                className="w-full flex items-center justify-center gap-2 py-3 border border-white/10 text-xs font-bold text-white/60 hover:border-white/30 hover:text-white/70 transition-colors"
               >
                 {copiedPhone ? <IconCheckCircle size={13} className="text-green-400" /> : <IconCopy size={13} />}
                 {copiedPhone ? "Copied!" : `Copy: +91 ${phone}`}
@@ -180,7 +180,7 @@ export function PorterActionClient({ orderRef, phone, customerName }: { orderRef
             </AnimatePresence>
 
             {status !== "error" && (
-              <p className="text-center text-[9px] text-white/15 mt-2 flex items-center justify-center gap-1 uppercase tracking-wider">
+              <p className="text-center text-[9px] text-white/60 mt-2 flex items-center justify-center gap-1 uppercase tracking-wider">
                 <IconAlertCircle size={10} />
                 Mock mode — no actual drivers booked
               </p>

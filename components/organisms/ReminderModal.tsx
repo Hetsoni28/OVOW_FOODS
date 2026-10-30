@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useDialog } from "@/hooks/useDialog";
 import { IconX, IconBell, IconCalendar } from "@/components/atoms/Icons";
 
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
@@ -43,6 +44,7 @@ export function ReminderButton({ productName, productPrice }: ReminderModalProps
   const [selectedDay, setSelectedDay] = useState(0);
   const [selectedTime, setSelectedTime] = useState("7:00 PM");
   const [sent, setSent] = useState(false);
+  const dialogRef = useDialog<HTMLDivElement>(open, () => setOpen(false));
 
   function handleConfirm() {
     const dayLabel = getDateLabel(DAY_OPTIONS[selectedDay]);
@@ -71,7 +73,8 @@ export function ReminderButton({ productName, productPrice }: ReminderModalProps
       {/* Trigger Button */}
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2.5 border border-[#C9A24A]/40 text-[#C9A24A] hover:bg-[#C9A24A]/10 px-5 py-3 text-xs font-bold uppercase tracking-widest transition-all duration-300 rounded-sm"
+        aria-haspopup="dialog"
+        className="inline-flex items-center gap-2.5 border border-[#C9A24A]/40 text-[#86671C] hover:bg-[#C9A24A]/10 px-5 py-3 text-xs font-bold uppercase tracking-widest transition-all duration-300 rounded-sm"
       >
         <IconBell size={15} />
         Set Pre-Order Reminder
@@ -92,17 +95,23 @@ export function ReminderButton({ productName, productPrice }: ReminderModalProps
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 30, scale: 0.96 }}
               transition={{ duration: 0.4, ease: EASE }}
+              ref={dialogRef}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="reminder-title"
+              tabIndex={-1}
               className="bg-[#0B2118] w-full max-w-md rounded-sm border border-[#C9A24A]/20 shadow-2xl overflow-hidden"
             >
               {/* Header */}
               <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
                 <div>
                   <p className="text-[10px] uppercase tracking-widest text-[#C9A24A] font-bold mb-1">Pre-Order Reminder</p>
-                  <h3 className="font-serif text-xl text-white">{productName}</h3>
+                  <h3 id="reminder-title" className="font-serif text-xl text-white">{productName}</h3>
                 </div>
                 <button
                   onClick={() => setOpen(false)}
-                  className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:text-white hover:border-white/40 transition-colors"
+                  aria-label="Close reminder"
+                  className="w-11 h-11 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:text-white hover:border-white/40 transition-colors"
                 >
                   <IconX size={16} />
                 </button>
@@ -111,15 +120,16 @@ export function ReminderButton({ productName, productPrice }: ReminderModalProps
               <div className="px-6 py-6 space-y-6">
                 {/* Day Picker */}
                 <div>
-                  <p className="text-[10px] uppercase tracking-widest text-white/50 font-bold mb-3">Choose Day</p>
+                  <p className="text-[10px] uppercase tracking-widest text-white/60 font-bold mb-3">Choose Day</p>
                   <div className="grid grid-cols-2 gap-2">
                     {DAY_OPTIONS.map((opt, i) => (
                       <button
                         key={opt.label}
                         onClick={() => setSelectedDay(i)}
+                        aria-pressed={selectedDay === i}
                         className={`px-4 py-3 rounded-sm text-left transition-all duration-200 border ${
                           selectedDay === i
-                            ? "bg-[#C9A24A] border-[#C9A24A] text-white"
+                            ? "bg-[#C9A24A] border-[#C9A24A] text-[#0B2118]"
                             : "border-white/10 text-white/70 hover:border-[#C9A24A]/40 hover:text-white"
                         }`}
                       >
@@ -132,15 +142,16 @@ export function ReminderButton({ productName, productPrice }: ReminderModalProps
 
                 {/* Time Picker */}
                 <div>
-                  <p className="text-[10px] uppercase tracking-widest text-white/50 font-bold mb-3">Choose Time</p>
+                  <p className="text-[10px] uppercase tracking-widest text-white/60 font-bold mb-3">Choose Time</p>
                   <div className="grid grid-cols-5 gap-2">
                     {TIME_OPTIONS.map((t) => (
                       <button
                         key={t}
                         onClick={() => setSelectedTime(t)}
+                        aria-pressed={selectedTime === t}
                         className={`py-2 text-[10px] font-bold rounded-sm border transition-all duration-200 ${
                           selectedTime === t
-                            ? "bg-[#C9A24A] border-[#C9A24A] text-white"
+                            ? "bg-[#C9A24A] border-[#C9A24A] text-[#0B2118]"
                             : "border-white/10 text-white/60 hover:border-[#C9A24A]/40 hover:text-white"
                         }`}
                       >
@@ -160,7 +171,7 @@ export function ReminderButton({ productName, productPrice }: ReminderModalProps
                       <span className="text-white font-medium">{getDateLabel(DAY_OPTIONS[selectedDay])}</span> at{" "}
                       <span className="text-white font-medium">{selectedTime}</span>
                     </p>
-                    <p className="text-[10px] text-white/40 mt-1">
+                    <p className="text-[10px] text-white/60 mt-1">
                       We'll send your Pre-Order request via WhatsApp
                     </p>
                   </div>

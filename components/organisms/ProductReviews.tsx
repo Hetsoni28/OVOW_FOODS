@@ -28,7 +28,7 @@ export function ProductReviews({
             Customer Reviews
           </h2>
         </div>
-        <p className="text-primary/50 text-lg">
+        <p className="text-primary/70 text-lg">
           No reviews yet for {productName}. Be the first to share your experience!
         </p>
       </section>
@@ -48,7 +48,7 @@ export function ProductReviews({
               Customer Reviews
             </h2>
           </div>
-          <p className="text-primary/50 text-sm uppercase tracking-widest font-bold">
+          <p className="text-primary/70 text-sm uppercase tracking-widest font-bold">
             {productName}
           </p>
         </div>
@@ -70,7 +70,7 @@ export function ProductReviews({
           </div>
           <div className="border-l border-white/10 pl-4">
             <p className="text-white font-bold text-lg">{reviews.length}</p>
-            <p className="text-white/40 text-xs uppercase tracking-widest font-bold">
+            <p className="text-white/60 text-xs uppercase tracking-widest font-bold">
               Review{reviews.length !== 1 ? "s" : ""}
             </p>
           </div>
@@ -104,7 +104,7 @@ export function ProductReviews({
             </div>
             <div className="relative z-10 flex items-center justify-between border-t border-primary/10 pt-5 mt-auto">
               <p className="font-bold text-xs uppercase tracking-widest text-primary">{review.name}</p>
-              <p className="text-[10px] uppercase tracking-widest text-primary/40 font-bold">{review.date}</p>
+              <p className="text-[10px] uppercase tracking-widest text-primary/70 font-bold">{review.date}</p>
             </div>
           </motion.div>
         ))}

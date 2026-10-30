@@ -104,3 +104,33 @@ html.menu-open body {
   );
   animation: shimmer-sweep 1.6s ease-in-out infinite;
 }
+
+/* ── Accessibility ─────────────────────────────────────────────────────────
+   One consistent keyboard focus indicator. Bronze #86671C keeps ≥3:1 contrast
+   on both the cream (4.8:1) and dark green (3.2:1) backgrounds. !important so
+   it also wins over `focus:outline-none` used on custom-styled inputs. */
+:focus-visible {
+  outline: 3px solid #86671C !important;
+  outline-offset: 2px !important;
+}
+/* Programmatic focus target for the skip link — no ring needed on the container */
+#main-content:focus {
+  outline: none !important;
+}
+
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 10000; /* above splash cover and nav */
+  padding: 12px 20px;
+  background: #0B2118;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  transform: translateY(-200%);
+  transition: transform 0.15s ease;
+}
+.skip-link:focus {
+  transform: translateY(0);
+}

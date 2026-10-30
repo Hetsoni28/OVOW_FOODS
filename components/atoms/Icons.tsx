@@ -20,6 +20,10 @@ const defaults = (size = 20) => ({
   strokeWidth: 1.75,
   strokeLinecap: "round" as const,
   strokeLinejoin: "round" as const,
+  // Decorative by default — icons sit next to visible text or inside a labelled
+  // button. Pass aria-hidden={false} + aria-label for a standalone meaningful icon.
+  "aria-hidden": true,
+  focusable: "false" as const,
 });
 
 export function IconShoppingBag({ size = 20, className, ...p }: IconProps) {
@@ -71,7 +75,7 @@ export function IconCheckCircle({ size = 20, className, ...p }: IconProps) {
 
 export function IconChili({ size = 20, className, ...p }: IconProps) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} {...p}>
+    <svg aria-hidden="true" focusable="false" width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} {...p}>
       {/* Curved green stem */}
       <path
         d="M12 4C12 4 12 2.5 13.5 2C14.5 1.5 15.5 2 15.5 2"
@@ -313,7 +317,7 @@ export function IconVolumeX({ size = 20, className, ...p }: IconProps) {
  */
 export function IconTrophy({ size = 20, className, ...p }: IconProps) {
   return (
-    <svg
+    <svg aria-hidden="true" focusable="false"
       width={size} height={size} viewBox="0 0 24 24"
       fill="none" stroke="currentColor"
       strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"
@@ -678,7 +682,7 @@ export function IconStatusAvailable({ size = 12, className }: { size?: number; c
         style={{ width: size, height: size }}
       />
       {/* Solid filled circle */}
-      <svg width={size} height={size} viewBox="0 0 12 12" fill="none" className="relative z-10">
+      <svg aria-hidden="true" focusable="false" width={size} height={size} viewBox="0 0 12 12" fill="none" className="relative z-10">
         <circle cx="6" cy="6" r="5.5" fill="#2E7D4F" />
         {/* White check mark */}
         <polyline
@@ -697,7 +701,7 @@ export function IconStatusAvailable({ size = 12, className }: { size?: number; c
 /** 🟠 Limited — amber circle with exclamation mark */
 export function IconStatusLimited({ size = 12, className }: { size?: number; className?: string }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" className={`shrink-0 ${className ?? ""}`}>
+    <svg aria-hidden="true" focusable="false" width={size} height={size} viewBox="0 0 12 12" fill="none" className={`shrink-0 ${className ?? ""}`}>
       {/* Outer filled amber circle */}
       <circle cx="6" cy="6" r="5.5" fill="#F59E0B" />
       {/* Exclamation mark stem */}
@@ -711,7 +715,7 @@ export function IconStatusLimited({ size = 12, className }: { size?: number; cla
 /** 🔴 Sold Out — red circle with X mark */
 export function IconStatusSoldOut({ size = 12, className }: { size?: number; className?: string }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" className={`shrink-0 ${className ?? ""}`}>
+    <svg aria-hidden="true" focusable="false" width={size} height={size} viewBox="0 0 12 12" fill="none" className={`shrink-0 ${className ?? ""}`}>
       {/* Outer filled red circle */}
       <circle cx="6" cy="6" r="5.5" fill="#DC2626" />
       {/* X strokes */}
@@ -728,7 +732,7 @@ export function IconStatusSoldOut({ size = 12, className }: { size?: number; cla
  */
 export function IconKidsSpecial({ size = 20, className, ...p }: IconProps) {
   return (
-    <svg
+    <svg aria-hidden="true" focusable="false"
       width={size} height={size} viewBox="0 0 24 24"
       fill="none" stroke="currentColor"
       strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"
@@ -760,7 +764,7 @@ export function IconKidsSpecial({ size = 20, className, ...p }: IconProps) {
  */
 export function IconPreOrder({ size = 20, className, ...p }: IconProps) {
   return (
-    <svg
+    <svg aria-hidden="true" focusable="false"
       width={size} height={size} viewBox="0 0 24 24"
       fill="none" stroke="currentColor"
       strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"
@@ -790,7 +794,7 @@ export function IconPreOrder({ size = 20, className, ...p }: IconProps) {
  */
 export function IconSignatureDish({ size = 20, className, ...p }: IconProps) {
   return (
-    <svg
+    <svg aria-hidden="true" focusable="false"
       width={size} height={size} viewBox="0 0 24 24"
       fill="none" stroke="currentColor"
       strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"
@@ -829,7 +833,7 @@ export function IconSignatureDish({ size = 20, className, ...p }: IconProps) {
  */
 export function IconBestsellerFire({ size = 20, className, ...p }: IconProps) {
   return (
-    <svg
+    <svg aria-hidden="true" focusable="false"
       width={size} height={size} viewBox="0 0 24 24"
       fill="none" stroke="currentColor" strokeWidth="1.6"
       strokeLinecap="round" strokeLinejoin="round"
@@ -855,7 +859,7 @@ export function IconBestsellerFire({ size = 20, className, ...p }: IconProps) {
  */
 export function IconSwaminarayan({ size = 24, className }: { size?: number; className?: string }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
+    <svg aria-hidden="true" focusable="false" width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
 
       {/* ── Deep-green background disc ── */}
       <circle cx="12" cy="12" r="12" fill="#0B2118" />
@@ -940,7 +944,7 @@ export function IconSwaminarayan({ size = 24, className }: { size?: number; clas
 // ── Extra Paneer Icon — stylised cube with texture lines ──────────────────────
 export function IconPaneer({ size = 24, className, ...p }: IconProps) {
   return (
-    <svg
+    <svg aria-hidden="true" focusable="false"
       width={size} height={size} viewBox="0 0 24 24"
       fill="none" stroke="currentColor" strokeWidth="1.6"
       strokeLinecap="round" strokeLinejoin="round"
@@ -965,7 +969,7 @@ export function IconPaneer({ size = 24, className, ...p }: IconProps) {
 // ── Extra Cheese Icon — classic wedge with holes ──────────────────────────────
 export function IconCheese({ size = 24, className, ...p }: IconProps) {
   return (
-    <svg
+    <svg aria-hidden="true" focusable="false"
       width={size} height={size} viewBox="0 0 24 24"
       fill="none" stroke="currentColor" strokeWidth="1.6"
       strokeLinecap="round" strokeLinejoin="round"
@@ -986,7 +990,7 @@ export function IconCheese({ size = 24, className, ...p }: IconProps) {
 // ── Extra Raita Icon — bowl with yogurt ripple + garnish dot ─────────────────
 export function IconRaita({ size = 24, className, ...p }: IconProps) {
   return (
-    <svg
+    <svg aria-hidden="true" focusable="false"
       width={size} height={size} viewBox="0 0 24 24"
       fill="none" stroke="currentColor" strokeWidth="1.6"
       strokeLinecap="round" strokeLinejoin="round"

@@ -42,7 +42,7 @@ export function GalleryClient({ initialImages }: { initialImages: GalleryMedia[]
       </motion.div>
 
       {filteredImages.length === 0 && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-primary/50 py-32">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-primary/70 py-32">
           No videos found in this category yet.
         </motion.div>
       )}

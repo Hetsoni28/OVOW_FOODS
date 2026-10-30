@@ -31,6 +31,7 @@ function RecommendationRow({
 
   function handleAdd() {
     addItem({
+      _id: item._id, // needed so the next recommendations call excludes this product
       slug: item.slug,
       name: item.name,
       price: item.price,
@@ -61,7 +62,7 @@ function RecommendationRow({
               sizes="48px"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-primary/20">
+            <div className="w-full h-full flex items-center justify-center text-primary/70">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
             </div>
           )}
@@ -71,7 +72,7 @@ function RecommendationRow({
       {/* Info */}
       <div className="flex-1 min-w-0">
         {item.isBestSeller && (
-          <p className="text-[8px] font-black uppercase tracking-widest text-[#C9A24A] mb-0.5">
+          <p className="text-[8px] font-black uppercase tracking-widest text-[#86671C] mb-0.5">
             ★ Bestseller
           </p>
         )}
@@ -80,7 +81,7 @@ function RecommendationRow({
             {item.name}
           </h4>
         </Link>
-        <p className="text-xs font-bold text-primary/60 mt-0.5 tabular-nums">
+        <p className="text-xs font-bold text-primary/70 mt-0.5 tabular-nums">
           ₹{item.price}
         </p>
       </div>
@@ -90,7 +91,8 @@ function RecommendationRow({
         suppressHydrationWarning
         onClick={handleAdd}
         disabled={added}
-        className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 border ${
+        aria-label={added ? `${item.name} added to cart` : `Add ${item.name} to cart`}
+        className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 border ${
           added
             ? "bg-[#2E7D4F] border-[#2E7D4F] text-white"
             : "border-primary/20 text-primary hover:bg-[#C9A24A] hover:border-[#C9A24A] hover:text-white"
@@ -116,6 +118,7 @@ export function CrossSellSection() {
     const cartItemIds = items.map((i) => i._id).filter(Boolean);
     const cartCategories = [...new Set(items.map((i) => i.category).filter(Boolean))];
 
+    let cancelled = false; // a newer cart change supersedes this request
     setLoading(true);
     fetch("/api/recommendations", {
       method: "POST",
@@ -123,9 +126,10 @@ export function CrossSellSection() {
       body: JSON.stringify({ cartItemIds, cartCategories }),
     })
       .then((r) => r.json())
-      .then(({ recommendations }) => setRecommendations(recommendations ?? []))
-      .catch(() => setRecommendations([]))
-      .finally(() => setLoading(false));
+      .then(({ recommendations }) => { if (!cancelled) setRecommendations(recommendations ?? []); })
+      .catch(() => { if (!cancelled) setRecommendations([]); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, [items]);
 
   if (items.length === 0 || recommendations.length === 0) return null;
@@ -135,16 +139,16 @@ export function CrossSellSection() {
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#C9A24A] mb-0.5">
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#86671C] mb-0.5">
             Your order is almost complete
           </p>
-          <p className="text-xs text-primary/40 font-medium">
+          <p className="text-xs text-primary/70 font-medium">
             You might also enjoy
           </p>
         </div>
         <Link
           href="/menu"
-          className="text-[9px] font-bold uppercase tracking-widest text-primary/30 hover:text-[#C9A24A] transition-colors"
+          className="text-[9px] font-bold uppercase tracking-widest text-primary/70 hover:text-[#C9A24A] transition-colors"
         >
           Full menu →
         </Link>

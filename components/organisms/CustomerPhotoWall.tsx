@@ -38,9 +38,9 @@ export function CustomerPhotoWall() {
         transition={{ duration: 0.6, ease: EASE }}
         className="text-center mb-12"
       >
-        <p className="text-[10px] font-bold uppercase tracking-widest text-[#C9A24A] mb-3">Community</p>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-[#86671C] mb-3">Community</p>
         <h2 className="font-serif text-4xl md:text-5xl text-primary mb-4">OVOW Moments</h2>
-        <p className="text-primary/60 max-w-md mx-auto text-sm leading-relaxed">
+        <p className="text-primary/70 max-w-md mx-auto text-sm leading-relaxed">
           Real food. Real smiles. Real OVOW. Share your experience and get featured here.
         </p>
       </motion.div>
@@ -59,7 +59,7 @@ export function CustomerPhotoWall() {
             <div className="mb-4">{moment.icon}</div>
             <p className="text-sm text-primary/80 leading-relaxed mb-3 italic">"{moment.caption}"</p>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#C9A24A]">— {moment.name}</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[#86671C]">— {moment.name}</span>
             </div>
             <div className="flex gap-0.5 mt-2">
               {[1,2,3,4,5].map(s => (
@@ -84,7 +84,7 @@ export function CustomerPhotoWall() {
           <div className="w-16 h-16 bg-[#C9A24A]/20 border border-[#C9A24A]/30 rounded-full flex items-center justify-center mx-auto mb-6">
             <IconCamera size={28} className="text-[#C9A24A]" />
           </div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[#C9A24A] mb-3">Be Featured</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#86671C] mb-3">Be Featured</p>
           <h3 className="font-serif text-3xl md:text-4xl text-white mb-4">
             Share Your OVOW Moment
           </h3>
@@ -99,7 +99,7 @@ export function CustomerPhotoWall() {
             Send My Photo
             <IconArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
           </button>
-          <p className="text-white/30 text-[10px] uppercase tracking-widest mt-4">
+          <p className="text-white/60 text-[10px] uppercase tracking-widest mt-4">
             via WhatsApp · Photos reviewed before publishing
           </p>
         </div>

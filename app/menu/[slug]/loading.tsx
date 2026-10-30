@@ -1,6 +1,6 @@
 export default function ProductLoading() {
   return (
-    <main className="min-h-screen bg-[#F8F4EA] pt-32 pb-20">
+    <div className="min-h-screen bg-[#F8F4EA] pt-32 pb-20">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
 
         {/* Back button skeleton */}
@@ -85,6 +85,6 @@ export default function ProductLoading() {
         </div>
 
       </div>
-    </main>
+    </div>
   );
 }

@@ -2,9 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { client } from "@/sanity/lib/client";
 import { RECOMMENDATIONS_QUERY } from "@/sanity/lib/queries";
 
+const toStringArray = (v: unknown): string[] =>
+  Array.isArray(v) ? v.filter((x): x is string => typeof x === "string").slice(0, 50) : [];
+
 export async function POST(req: NextRequest) {
+  let cartItemIds: string[];
+  let cartCategories: string[];
   try {
-    const { cartItemIds = [], cartCategories = [] } = await req.json();
+    const body = await req.json();
+    cartItemIds = toStringArray(body?.cartItemIds);
+    cartCategories = toStringArray(body?.cartCategories);
+  } catch {
+    return NextResponse.json({ recommendations: [] }, { status: 400 });
+  }
+
+  try {
 
     // Fetch products that are:
     // - NOT sold out

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { IconPhone, IconInstagram, IconFacebook, IconMapPin } from "@/components/atoms/Icons";
 import { Logo } from "@/components/atoms/Logo";
 import { COMPANY_CONFIG } from "@/lib/config";
@@ -18,7 +19,7 @@ export function Footer() {
                 <IconPhone size={24} className="fill-tertiary" />
               </div>
               <div className="flex flex-col text-left">
-                <span className="text-tertiary text-[10px] uppercase tracking-widest font-bold">Order Now</span>
+                <span className="text-[#C9A24A] text-[10px] uppercase tracking-widest font-bold">Order Now</span>
                 <span className="text-white text-xl md:text-2xl font-bold tracking-wider">{COMPANY_CONFIG.phone}</span>
               </div>
             </a>
@@ -65,28 +66,28 @@ export function Footer() {
           </h2>
         </div>
         <div className="flex flex-wrap justify-center gap-5 text-xs opacity-70 uppercase tracking-widest font-medium">
-          <Link href="/about" className="hover:text-[#C9A24A] hover:opacity-100 transition-colors">
+          <Link href="/about" className="inline-block py-2 hover:text-[#C9A24A] hover:opacity-100 transition-colors">
             About Us
           </Link>
-          <Link href="/privacy-policy" className="hover:text-[#C9A24A] hover:opacity-100 transition-colors">
+          <Link href="/privacy-policy" className="inline-block py-2 hover:text-[#C9A24A] hover:opacity-100 transition-colors">
             Privacy Policy
           </Link>
-          <Link href="/terms-and-conditions" className="hover:text-[#C9A24A] hover:opacity-100 transition-colors">
+          <Link href="/terms-and-conditions" className="inline-block py-2 hover:text-[#C9A24A] hover:opacity-100 transition-colors">
             Terms & Conditions
           </Link>
-          <Link href="/contact" className="hover:text-[#C9A24A] hover:opacity-100 transition-colors">
+          <Link href="/contact" className="inline-block py-2 hover:text-[#C9A24A] hover:opacity-100 transition-colors">
             Contact Us
           </Link>
         </div>
 
         <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 mt-6 w-full max-w-4xl mx-auto px-4">
-          <Link href="/menu" className="flex-1 min-w-[160px] bg-[#C9A24A] text-white px-5 py-3 text-xs font-bold tracking-widest uppercase hover:bg-[#1D5A40] hover:border-[#1D5A40] hover:text-[#C9A24A] transition-colors shadow-sm border border-[#C9A24A]">
+          <Link href="/menu" className="flex-1 min-w-[160px] bg-[#C9A24A] text-[#0B2118] px-5 py-3 text-xs font-bold tracking-widest uppercase hover:bg-[#1D5A40] hover:border-[#1D5A40] hover:text-[#C9A24A] transition-colors shadow-sm border border-[#C9A24A]">
             Order Now
           </Link>
-          <Link href="/menu" className="flex-1 min-w-[160px] bg-[#C9A24A] text-white px-5 py-3 text-xs font-bold tracking-widest uppercase hover:bg-[#1D5A40] hover:border-[#1D5A40] hover:text-[#C9A24A] transition-colors shadow-sm border border-[#C9A24A]">
+          <Link href="/menu" className="flex-1 min-w-[160px] bg-[#C9A24A] text-[#0B2118] px-5 py-3 text-xs font-bold tracking-widest uppercase hover:bg-[#1D5A40] hover:border-[#1D5A40] hover:text-[#C9A24A] transition-colors shadow-sm border border-[#C9A24A]">
             Pre-Order Now
           </Link>
-          <Link href="/party-bulk-orders" className="flex-1 min-w-[160px] bg-[#C9A24A] text-white px-5 py-3 text-xs font-bold tracking-widest uppercase hover:bg-[#1D5A40] hover:border-[#1D5A40] hover:text-[#C9A24A] transition-colors shadow-sm border border-[#C9A24A]">
+          <Link href="/party-bulk-orders" className="flex-1 min-w-[160px] bg-[#C9A24A] text-[#0B2118] px-5 py-3 text-xs font-bold tracking-widest uppercase hover:bg-[#1D5A40] hover:border-[#1D5A40] hover:text-[#C9A24A] transition-colors shadow-sm border border-[#C9A24A]">
             Catering / Bulk Order
           </Link>
         </div>
@@ -97,7 +98,7 @@ export function Footer() {
           <div className="border-t border-white/[0.05] pt-5 pb-2 flex flex-col sm:flex-row items-center justify-between gap-4 px-2">
             
             {/* Copyright */}
-            <p className="text-white/25 text-[10px] tracking-widest uppercase font-medium order-2 sm:order-1">
+            <p className="text-white/60 text-[10px] tracking-widest uppercase font-medium order-2 sm:order-1">
               &copy; {new Date().getFullYear()} OVOW Foods. All rights reserved.
             </p>
 
@@ -110,27 +111,28 @@ export function Footer() {
             >
               {/* Avatar — SH Logo */}
               <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-[#C9A24A]/40 group-hover:border-[#C9A24A]/80 transition-all duration-300 shrink-0 group-hover:scale-110">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src="/sh-logo.jpg"
-                  alt="SH"
+                  alt=""
+                  width={36}
+                  height={36}
                   className="w-full h-full object-cover rounded-full"
                 />
               </div>
 
               {/* Text */}
               <div className="flex flex-col text-left">
-                <span className="text-white/20 text-[8px] uppercase tracking-[0.25em] font-medium group-hover:text-white/40 transition-colors duration-300">
+                <span className="text-white/60 text-[8px] uppercase tracking-[0.25em] font-medium group-hover:text-white/40 transition-colors duration-300">
                   Designed &amp; Developed by
                 </span>
-                <span className="text-[#C9A24A]/60 group-hover:text-[#C9A24A] transition-colors duration-300 text-[11px] font-bold uppercase tracking-[0.15em]">
+                <span className="text-[#C9A24A] group-hover:text-white transition-colors duration-300 text-[11px] font-bold uppercase tracking-[0.15em]">
                   Soni Het
                 </span>
               </div>
 
               {/* Arrow */}
               <svg
-                className="w-3 h-3 text-white/10 group-hover:text-[#C9A24A]/60 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300"
+                className="w-3 h-3 text-white/60 group-hover:text-[#C9A24A]/60 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300"
                 fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
               >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M7 7h10v10" />

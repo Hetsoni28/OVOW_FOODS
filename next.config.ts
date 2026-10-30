@@ -45,6 +45,14 @@ const nextConfig: NextConfig = {
   reactStrictMode: false,
   // Silence Turbopack error caused by next-pwa injecting Webpack config
   turbopack: {},
+  // Static media in /public isn't content-hashed, so cache for 30 days and
+  // revalidate in the background rather than marking it immutable.
+  async headers() {
+    const mediaCache = [{ key: "Cache-Control", value: "public, max-age=2592000, stale-while-revalidate=86400" }];
+    return ["/videos/:path*", "/images/:path*", "/logo/:path*", "/icons/:path*", "/og-image.jpg", "/noise.png"].map(
+      (source) => ({ source, headers: mediaCache })
+    );
+  },
 };
 
 export default withPWA(nextConfig);

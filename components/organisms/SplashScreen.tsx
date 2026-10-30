@@ -269,7 +269,7 @@ export function SplashScreen() {
                       initial={{ opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 1.55, duration: 0.7, ease: "easeOut" }}
-                      className={`tracking-[0.28em] text-white/35 uppercase font-light ${
+                      className={`tracking-[0.28em] text-white/60 uppercase font-light ${
                         isMobile ? "text-[7px]" : "text-[9px]"
                       }`}
                     >
@@ -321,7 +321,7 @@ export function SplashScreen() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 2, duration: 0.7 }}
                 onClick={handleSplashEnd}
-                className="absolute top-6 right-6 md:top-8 md:right-8 z-[10000] text-white/40 hover:text-white/90 transition-all duration-300 flex items-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-2 md:px-5 md:py-2.5 rounded-full text-[9px] md:text-[10px] tracking-[0.2em] uppercase font-semibold backdrop-blur-lg border border-white/5 hover:border-white/20"
+                className="absolute top-6 right-6 md:top-8 md:right-8 z-[10000] text-white/60 hover:text-white/90 transition-all duration-300 flex items-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-2 md:px-5 md:py-2.5 rounded-full text-[9px] md:text-[10px] tracking-[0.2em] uppercase font-semibold backdrop-blur-lg border border-white/5 hover:border-white/20"
               >
                 Skip <IconX size={12} strokeWidth={2.5} />
               </motion.button>

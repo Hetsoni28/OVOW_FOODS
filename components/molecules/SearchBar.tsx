@@ -18,12 +18,12 @@ export function SearchBar({ searchQuery, setSearchQuery }: SearchBarProps) {
       />
       <IconSearch
         size={13}
-        className="absolute left-2.5 top-1/2 -translate-y-1/2 text-primary/40 pointer-events-none"
+        className="absolute left-2.5 top-1/2 -translate-y-1/2 text-primary/70 pointer-events-none"
       />
       {searchQuery && (
         <button suppressHydrationWarning
           onClick={() => setSearchQuery("")}
-          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-primary/40 hover:text-primary transition-colors"
+          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-primary/70 hover:text-primary transition-colors"
         >
           <IconX size={13} />
         </button>

@@ -5,16 +5,19 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { IconPlus, IconCheck, IconStar, IconFlame, IconArrowRight } from "@/components/atoms/Icons";
 import { LazyVideo } from "@/components/atoms/LazyVideo";
+import { sanityImageUrl } from "@/lib/sanityImage";
+import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import type { Product } from "@/types";
+import { productImageAlt } from "@/lib/seo";
 
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
 function RelatedCard({ product, fallbackVideo, index }: { product: Product; fallbackVideo?: string; index: number }) {
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
-  const isSoldOut = product.available === false;
-  const displayVideo = product.previewVideo || fallbackVideo;
+  const isSoldOut = product.availabilityStatus === 'soldout' || product.available === false;
+  const displayVideo = product.previewVideo || (product.thumbnailUrl ? undefined : fallbackVideo);
 
   function handleAdd(e: React.MouseEvent) {
     e.preventDefault();
@@ -39,10 +42,17 @@ function RelatedCard({ product, fallbackVideo, index }: { product: Product; fall
         {/* Video / Thumbnail */}
         <div className="relative aspect-[4/3] overflow-hidden bg-primary/5">
           {displayVideo ? (
-            <LazyVideo src={displayVideo} className="w-full h-full object-cover" />
+            <LazyVideo
+              src={displayVideo}
+              poster={sanityImageUrl(product.thumbnailUrl, 480, 360)}
+              className="w-full h-full object-cover"
+              deferUntilIdle // Sanity product videos are 2–3 MB each — never compete with page load
+            />
+          ) : product.thumbnailUrl ? (
+            <Image src={product.thumbnailUrl} alt={productImageAlt(product)} fill sizes="(min-width: 768px) 33vw, 256px" className="object-cover" />
           ) : (
-            <div className="w-full h-full bg-primary/10 flex items-center justify-center text-primary/30 text-xs font-bold tracking-widest uppercase">
-              No Video
+            <div className="w-full h-full bg-primary/10 flex items-center justify-center text-primary/70 text-xs font-bold tracking-widest uppercase">
+              No Image
             </div>
           )}
 
@@ -57,7 +67,7 @@ function RelatedCard({ product, fallbackVideo, index }: { product: Product; fall
               </span>
             )}
             {!isSoldOut && ((product as any).signature || product.isSignature) && (
-              <span className="bg-[#C9A24A] text-white px-2.5 py-1 text-[8px] uppercase tracking-widest font-bold flex items-center gap-1 shadow-md">
+              <span className="bg-[#C9A24A] text-[#0B2118] px-2.5 py-1 text-[8px] uppercase tracking-widest font-bold flex items-center gap-1 shadow-md">
                 <IconStar size={8} fill="white" /> Signature
               </span>
             )}
@@ -78,7 +88,7 @@ function RelatedCard({ product, fallbackVideo, index }: { product: Product; fall
 
         {/* Info */}
         <div className="px-4 pt-3 pb-4">
-          <p className="text-[9px] uppercase tracking-[0.2em] font-bold text-[#C9A24A] mb-1">
+          <p className="text-[9px] uppercase tracking-[0.2em] font-bold text-[#86671C] mb-1">
             {typeof product.category === "string" ? product.category : product.category?.name || "Dish"}
           </p>
           <h3 className="font-serif text-base md:text-lg text-primary leading-snug mb-3 group-hover:text-[#C9A24A] transition-colors">
@@ -89,7 +99,8 @@ function RelatedCard({ product, fallbackVideo, index }: { product: Product; fall
             <button
               onClick={handleAdd}
               disabled={isSoldOut}
-              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 ${
+              aria-label={isSoldOut ? `${product.name} is sold out` : added ? `${product.name} added to cart` : `Add ${product.name} to cart`}
+              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
                 isSoldOut
                   ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                   : added
@@ -114,7 +125,7 @@ export function RelatedProductsRow({ products, allProducts }: { products: Produc
       {/* Section Header */}
       <div className="flex items-end justify-between mb-8">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[#C9A24A] mb-2">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#86671C] mb-2">
             Curated for You
           </p>
           <h2 className="font-serif text-3xl md:text-4xl text-primary">
@@ -123,7 +134,7 @@ export function RelatedProductsRow({ products, allProducts }: { products: Produc
         </div>
         <Link
           href="/menu"
-          className="hidden md:inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-primary/50 hover:text-[#C9A24A] transition-colors"
+          className="hidden md:inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-primary/70 hover:text-[#C9A24A] transition-colors"
         >
           View All <IconArrowRight size={14} />
         </Link>
@@ -147,7 +158,7 @@ export function RelatedProductsRow({ products, allProducts }: { products: Produc
       <div className="mt-6 text-center md:hidden">
         <Link
           href="/menu"
-          className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary/60 hover:text-[#C9A24A] transition-colors"
+          className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary/70 hover:text-[#C9A24A] transition-colors"
         >
           Explore Full Menu <IconArrowRight size={14} />
         </Link>

@@ -21,15 +21,20 @@ export function Field({
     <motion.div variants={childAnim} className="space-y-1.5">
       <label
         htmlFor={id}
-        className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest font-bold text-primary/45"
+        className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest font-bold text-primary/70"
       >
         {label}
-        {required && <span className="text-[#C9A24A] font-black">·</span>}
+        {required && (
+          <>
+            <span aria-hidden="true" className="text-[#86671C] font-black">·</span>
+            <span className="sr-only">(required)</span>
+          </>
+        )}
       </label>
       {children}
       {error && (
-        <p className="text-red-500 text-[11px] flex items-center gap-1.5">
-          <span className="w-1 h-1 rounded-full bg-red-500 inline-block" />
+        <p id={`${id}-error`} role="alert" className="text-red-700 text-[11px] flex items-center gap-1.5">
+          <span aria-hidden="true" className="w-1 h-1 rounded-full bg-red-700 inline-block" />
           {error}
         </p>
       )}

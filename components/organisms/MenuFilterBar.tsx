@@ -29,13 +29,27 @@ export function MenuFilterBar({ categories, activeCategory, setActiveCategory, s
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Escape closes the list and returns focus to the trigger
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Escape" && isOpen) {
+      e.stopPropagation();
+      setIsOpen(false);
+      triggerRef.current?.focus();
+    }
+  }
+
   return (
     <div className="sticky top-[73px] md:top-[81px] z-40 bg-[#F8F4EA]/95 backdrop-blur-xl border-b border-primary/5 py-4 px-4 md:px-8 shadow-sm">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center gap-4">
         {/* Custom Select Dropdown */}
-        <div className="relative w-full md:w-80" ref={dropdownRef}>
+        <div className="relative w-full md:w-80" ref={dropdownRef} onKeyDown={handleKeyDown}>
           <button suppressHydrationWarning
+            ref={triggerRef}
             onClick={() => setIsOpen(!isOpen)}
+            aria-expanded={isOpen}
+            aria-controls="category-filter-list"
+            aria-label={`Filter by category: ${activeCategory === "All" ? "All menu items" : activeCategory}`}
             className={`w-full flex items-center justify-between bg-white border px-5 py-3.5 shadow-sm transition-all duration-300 outline-none rounded-sm ${
               isOpen ? "border-[#C9A24A]" : "border-[#C9A24A]/50 hover:border-[#C9A24A]"
             }`}
@@ -49,7 +63,7 @@ export function MenuFilterBar({ categories, activeCategory, setActiveCategory, s
               animate={{ rotate: isOpen ? 180 : 0 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2E1B4D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2E1B4D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </motion.div>
@@ -64,7 +78,7 @@ export function MenuFilterBar({ categories, activeCategory, setActiveCategory, s
                 transition={{ duration: 0.15, ease: "easeOut" }}
                 className="absolute top-full left-0 right-0 mt-1 bg-[#F8F4EA] border border-[#C9A24A]/20 shadow-2xl z-50 rounded-sm overflow-hidden transform-gpu origin-top"
               >
-                <div className="max-h-[320px] overflow-y-auto overscroll-contain [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black/10 hover:[&::-webkit-scrollbar-thumb]:bg-black/20 [&::-webkit-scrollbar-thumb]:rounded-full">
+                <div id="category-filter-list" role="group" aria-label="Menu categories" className="max-h-[320px] overflow-y-auto overscroll-contain [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black/10 hover:[&::-webkit-scrollbar-thumb]:bg-black/20 [&::-webkit-scrollbar-thumb]:rounded-full">
                   {allOptions.map((cat) => {
                     const isActive =
                       cat.name === "All"
@@ -74,9 +88,11 @@ export function MenuFilterBar({ categories, activeCategory, setActiveCategory, s
                     return (
                       <button suppressHydrationWarning
                         key={cat._id}
+                        aria-pressed={isActive}
                         onClick={() => {
                           setActiveCategory(cat.name === "All" ? "All" : cat.name);
                           setIsOpen(false);
+                          triggerRef.current?.focus();
                         }}
                         className={`w-full flex items-center justify-between px-5 py-4 text-left transition-colors border-b border-black/5 last:border-0 ${
                           isActive 
@@ -85,13 +101,13 @@ export function MenuFilterBar({ categories, activeCategory, setActiveCategory, s
                         }`}
                       >
                         <span className={`text-[12px] uppercase tracking-[0.1em] font-semibold transition-colors ${
-                          isActive ? "text-[#C9A24A]" : "text-primary"
+                          isActive ? "text-[#86671C]" : "text-primary"
                         }`}>
                           {cat.name === "All" ? "ALL MENU ITEMS" : cat.name}
                         </span>
 
                         {/* Custom Checkbox Icon */}
-                        <div className={`w-4 h-4 border flex items-center justify-center transition-colors rounded-none ${
+                        <div aria-hidden="true" className={`w-4 h-4 border flex items-center justify-center transition-colors rounded-none ${
                           isActive ? "border-[#C9A24A]" : "border-primary/20"
                         }`}>
                           {isActive && (

@@ -60,14 +60,14 @@ function SuggestionCard({ item, index }: { item: SuggestedItem; index: number })
       <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#C9A24A]/60 to-transparent rounded-l-sm opacity-0 group-hover:opacity-100 transition-opacity" />
 
       <div className="flex-1 min-w-0">
-        <p className="text-[9px] font-bold uppercase tracking-widest text-[#C9A24A] mb-1">
+        <p className="text-[9px] font-bold uppercase tracking-widest text-[#86671C] mb-1">
           Ordered {item.orderCount}×
         </p>
         <h3 className="font-serif text-base md:text-lg text-primary leading-snug truncate">
           {item.name}
         </h3>
         {item.size && (
-          <p className="text-xs text-primary/50 uppercase tracking-widest mt-0.5">{item.size}</p>
+          <p className="text-xs text-primary/70 uppercase tracking-widest mt-0.5">{item.size}</p>
         )}
         <p className="font-medium text-primary/70 mt-1.5 text-sm tabular-nums">₹{item.price}</p>
       </div>
@@ -77,7 +77,7 @@ function SuggestionCard({ item, index }: { item: SuggestedItem; index: number })
         className={`flex-shrink-0 flex items-center gap-2 px-4 py-2.5 text-xs font-bold uppercase tracking-widest transition-all duration-300 ${
           added
             ? "bg-[#1D5A40] text-white"
-            : "bg-[#C9A24A] text-white hover:bg-[#0B2118]"
+            : "bg-[#C9A24A] text-[#0B2118] hover:bg-[#0B2118] hover:text-white"
         }`}
       >
         {added ? (
@@ -116,7 +116,7 @@ export function OrderSuggestionsSection() {
               <IconSparkles size={18} className="text-[#C9A24A]" />
             </div>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-[#C9A24A] mb-1">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[#86671C] mb-1">
                 Based on Your Orders
               </p>
               <h2 className="font-serif text-2xl md:text-3xl text-white">Order Again?</h2>
@@ -124,7 +124,7 @@ export function OrderSuggestionsSection() {
           </div>
           <Link
             href="/menu"
-            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/50 hover:text-[#C9A24A] transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/60 hover:text-[#C9A24A] transition-colors"
           >
             Browse Full Menu <IconArrowRight size={14} />
           </Link>

@@ -26,7 +26,7 @@ export async function MenuPreviewSection() {
         <DynamicCuratedMasterpieces products={featuredProducts} />
         
         <div className="mt-12 md:mt-16 text-center">
-          <Link href="/menu" className="inline-flex items-center justify-center border border-[#C9A24A] text-[#C9A24A] px-8 py-3 text-sm tracking-[0.2em] uppercase hover:bg-[#C9A24A] hover:text-white transition-colors duration-300">
+          <Link href="/menu" className="inline-flex items-center justify-center border border-[#C9A24A] text-[#86671C] px-8 py-3 text-sm tracking-[0.2em] uppercase hover:bg-[#C9A24A] hover:text-white transition-colors duration-300">
             Explore Full Menu
           </Link>
         </div>

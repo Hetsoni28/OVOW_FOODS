@@ -6,8 +6,6 @@ import { getOrderFromStorage } from "@/lib/storage";
 import { Logo } from "@/components/atoms/Logo";
 import { IconCheckCircle, IconDownload, IconChevronLeft, IconMapPin, IconReceiptText, IconClock } from "@/components/atoms/Icons";
 import Link from "next/link";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import { motion } from "framer-motion";
 
 export function OrderReceipt({ orderId }: { orderId: string }) {
@@ -30,6 +28,11 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
     setDownloading(true);
 
     try {
+      // Heavy PDF libs (~500 KB) are only downloaded when the user asks for a PDF
+      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+        import("html2canvas"),
+        import("jspdf"),
+      ]);
       const original = receiptRef.current;
 
       // Clone off-screen so we don't mess with the visible UI
@@ -93,8 +96,17 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
       });
 
       const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      // Long receipts: draw the same image shifted up one page-height per page
+      let offset = 0;
       pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+      while (pdfHeight - offset > pageHeight + 1) {
+        offset += pageHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, -offset, pdfWidth, pdfHeight);
+      }
       pdf.save(`OVOW-Invoice-${order.orderId}.pdf`);
     } catch (err) {
       console.error("PDF generation failed:", err);
@@ -116,7 +128,7 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#F9F6F0] p-4 text-center">
         <IconReceiptText size={48} className="text-primary/20 mb-4" />
         <h1 className="font-serif text-3xl text-primary mb-2">Receipt Not Found</h1>
-        <p className="text-primary/60 mb-8 max-w-md">
+        <p className="text-primary/70 mb-8 max-w-md">
           We couldn&apos;t find this order on your device. If you cleared your browser data or used a different device, the receipt cannot be displayed.
         </p>
         <Link href="/" className="bg-primary text-white px-8 py-4 uppercase text-xs font-bold tracking-widest hover:bg-primary/90 transition-colors">
@@ -130,13 +142,13 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
     <div className="min-h-screen bg-[#F9F6F0] py-12 px-4 sm:px-6 flex flex-col items-center">
       {/* Top Action Bar */}
       <div className="w-full max-w-3xl mb-8 flex justify-between items-center px-2">
-        <Link href="/menu" className="flex items-center gap-2 text-primary/60 hover:text-primary transition-colors text-sm font-bold uppercase tracking-widest">
+        <Link href="/menu" className="flex items-center gap-2 text-primary/70 hover:text-primary transition-colors text-sm font-bold uppercase tracking-widest">
           <IconChevronLeft size={16} /> Back
         </Link>
         <button suppressHydrationWarning
           onClick={handleDownloadPDF}
           disabled={downloading}
-          className="flex items-center gap-2 bg-[#C9A24A] text-white px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-[#b08b3e] transition-all shadow-[0_4px_14px_rgba(201,162,74,0.3)] hover:shadow-[0_6px_20px_rgba(201,162,74,0.4)] disabled:opacity-50 disabled:shadow-none hover:-translate-y-0.5"
+          className="flex items-center gap-2 bg-[#C9A24A] text-[#0B2118] px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-[#b08b3e] transition-all shadow-[0_4px_14px_rgba(201,162,74,0.3)] hover:shadow-[0_6px_20px_rgba(201,162,74,0.4)] disabled:opacity-50 disabled:shadow-none hover:-translate-y-0.5"
         >
           <IconDownload size={16} />
           {downloading ? "Generating PDF..." : "Download PDF"}
@@ -173,8 +185,8 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
           <div className="flex flex-col items-center border-b-[2px] border-dashed border-primary/20 pb-8 mb-8 relative z-10">
             <Logo className="w-20 h-20 mb-5" />
             <h1 className="font-serif text-4xl font-bold tracking-tight text-primary">OVOW FOODS</h1>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9A24A] font-bold mt-2">Taste the Wow. Experience OVOW.</p>
-            <p className="text-[9px] uppercase tracking-[0.2em] text-primary/40 font-bold mt-1">100% Pure Vegetarian</p>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[#86671C] font-bold mt-2">Taste the Wow. Experience OVOW.</p>
+            <p className="text-[9px] uppercase tracking-[0.2em] text-primary/70 font-bold mt-1">100% Pure Vegetarian</p>
             
             <div className="flex flex-wrap justify-center items-center gap-3 md:gap-5 mt-7 text-xs text-primary/70 font-mono bg-[#F9F6F0] border border-primary/10 px-6 py-2.5">
               <span>{new Date(order.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase()}</span>
@@ -189,21 +201,21 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
           <div className="grid md:grid-cols-2 gap-10 border-b-[2px] border-dashed border-primary/20 pb-8 mb-8 relative z-10">
             {/* Customer Details */}
             <div className="bg-[#F9F6F0] p-6 border border-primary/5">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 mb-4 border-b border-primary/10 pb-2">Billed To</h3>
+              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/70 mb-4 border-b border-primary/10 pb-2">Billed To</h3>
               <p className="font-bold text-primary text-lg mb-1">{order.customer.name}</p>
               <p className="text-primary/70 text-sm font-mono mb-1">+91 {order.customer.phone}</p>
-              {order.customer.email && <p className="text-primary/60 text-sm">{order.customer.email}</p>}
+              {order.customer.email && <p className="text-primary/70 text-sm">{order.customer.email}</p>}
             </div>
 
             {/* Delivery Details */}
             <div className="bg-[#F9F6F0] p-6 border border-primary/5">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 mb-4 border-b border-primary/10 pb-2 flex items-center gap-2">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/70 mb-4 border-b border-primary/10 pb-2 flex items-center gap-2">
                 <IconMapPin size={12} /> Delivery Address
               </h3>
               <p className="text-primary leading-relaxed text-sm whitespace-pre-wrap">{order.delivery.address}</p>
               {order.delivery.instructions && (
                 <div className="mt-4 bg-white p-3 border-l-2 border-[#C9A24A]">
-                  <span className="font-bold text-[9px] uppercase tracking-widest text-primary/40 block mb-1">Instructions</span>
+                  <span className="font-bold text-[9px] uppercase tracking-widest text-primary/70 block mb-1">Instructions</span>
                   <span className="text-xs text-primary/80 italic">{order.delivery.instructions}</span>
                 </div>
               )}
@@ -212,9 +224,9 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
 
           {/* Items Table */}
           <div className="mb-8 relative z-10">
-            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 mb-4 pl-2">Order Summary</h3>
+            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/70 mb-4 pl-2">Order Summary</h3>
             <div className="w-full text-left">
-              <div className="hidden md:grid grid-cols-12 gap-4 border-b-2 border-primary/80 pb-3 mb-4 text-[10px] uppercase tracking-[0.15em] font-bold text-primary/60 pl-2 pr-2">
+              <div className="hidden md:grid grid-cols-12 gap-4 border-b-2 border-primary/80 pb-3 mb-4 text-[10px] uppercase tracking-[0.15em] font-bold text-primary/70 pl-2 pr-2">
                 <div className="col-span-6">Item</div>
                 <div className="col-span-2 text-center">Qty</div>
                 <div className="col-span-2 text-right">Price</div>
@@ -226,14 +238,14 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
                   <div key={item.productId} className={`grid grid-cols-12 gap-4 items-center py-4 px-2 ${idx !== order.items.length - 1 ? 'border-b border-dashed border-primary/15' : ''}`}>
                     <div className="col-span-12 md:col-span-6">
                       <p className="font-bold text-primary text-base">{item.name}</p>
-                      {item.servingSize && <p className="text-[11px] text-primary/50 mt-1 uppercase tracking-wider">{item.servingSize}</p>}
+                      {item.servingSize && <p className="text-[11px] text-primary/70 mt-1 uppercase tracking-wider">{item.servingSize}</p>}
                     </div>
                     <div className="col-span-4 md:col-span-2 md:text-center text-primary font-mono text-sm">
-                      <span className="md:hidden text-[10px] text-primary/40 mr-2 uppercase tracking-widest">Qty:</span>
+                      <span className="md:hidden text-[10px] text-primary/70 mr-2 uppercase tracking-widest">Qty:</span>
                       {item.quantity}
                     </div>
                     <div className="col-span-4 md:col-span-2 text-right text-primary font-mono text-sm">
-                      <span className="md:hidden text-[10px] text-primary/40 mr-2 uppercase tracking-widest">Price:</span>
+                      <span className="md:hidden text-[10px] text-primary/70 mr-2 uppercase tracking-widest">Price:</span>
                       ₹{item.unitPrice}
                     </div>
                     <div className="col-span-4 md:col-span-2 text-right font-bold text-primary text-lg">
@@ -251,7 +263,7 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
             {/* Left side: Payment & Delivery Method */}
             <div className="w-full lg:w-[55%] space-y-6">
               <div>
-                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 mb-3 pl-2">Logistics</h3>
+                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/70 mb-3 pl-2">Logistics</h3>
                 <div className="bg-white border-2 border-primary/5 p-4 flex gap-4 items-center">
                 <div className="w-10 h-10 bg-[#F9F6F0] rounded-full flex items-center justify-center border border-primary/10">
                     <svg className="w-5 h-5 text-primary/60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" /></svg>
@@ -260,7 +272,7 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
                     <p className="font-bold text-primary text-sm uppercase tracking-wide">
                       {order.delivery.method === "PORTER" ? "Porter Delivery" : "Free OVOW Delivery"}
                     </p>
-                    <p className="text-[11px] text-primary/50 mt-0.5">
+                    <p className="text-[11px] text-primary/70 mt-0.5">
                       {order.delivery.method === "PORTER" 
                         ? "Managed by OVOW logistics team" 
                         : "Handled by internal delivery fleet"}
@@ -270,7 +282,7 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
               </div>
               
               <div>
-                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 mb-3 pl-2">Transaction</h3>
+                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/70 mb-3 pl-2">Transaction</h3>
                 <div className={`border-2 p-4 flex items-start gap-4 transition-colors ${
                     (order.payment.method === "COD" || order.payment.customerConfirmation === "CUSTOMER_MARKED_PAID")
                       ? "border-green-600/20 bg-green-50/30"
@@ -286,7 +298,7 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
                   </div>
                   <div>
                     <p className="font-bold text-primary text-sm mb-1 uppercase tracking-wide">
-                      {order.payment.method === "COD" ? "Cash on Delivery" : "UPI / QR Payment"} <span className="text-primary/40 mx-2">—</span> ₹{order.payment.amount.toLocaleString("en-IN")}
+                      {order.payment.method === "COD" ? "Cash on Delivery" : "UPI / QR Payment"} <span className="text-primary/70 mx-2">—</span> ₹{order.payment.amount.toLocaleString("en-IN")}
                     </p>
                     <p className={`text-xs font-medium ${
                       (order.payment.method === "COD" || order.payment.customerConfirmation === "CUSTOMER_MARKED_PAID")
@@ -308,7 +320,7 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
             <div className="w-full lg:w-[40%] bg-primary p-7 text-white shadow-xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
               
-              <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 mb-5 border-b border-white/10 pb-2">Order Total</h3>
+              <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/60 mb-5 border-b border-white/10 pb-2">Order Total</h3>
               
               <div className="space-y-4 mb-5 pb-5 border-b border-white/10 text-sm">
                 <div className="flex justify-between items-center text-white/80">
@@ -368,9 +380,9 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
             </div>
 
             <p className="font-serif text-2xl text-primary mb-2">Thank you for choosing OVOW.</p>
-            <p className="text-[10px] text-primary/40 uppercase tracking-[0.25em] mb-6 font-bold">Experience the extraordinary.</p>
+            <p className="text-[10px] text-primary/70 uppercase tracking-[0.25em] mb-6 font-bold">Experience the extraordinary.</p>
             
-            <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 text-[10px] font-bold tracking-wider text-primary/50">
+            <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 text-[10px] font-bold tracking-wider text-primary/70">
               <span className="uppercase text-primary/70">WhatsApp: +91 756 756 6214</span>
               <span className="w-1.5 h-1.5 bg-[#C9A24A]/40 rounded-full hidden sm:block" />
               <span className="uppercase text-primary/70">Insta: @ovowfoods</span>

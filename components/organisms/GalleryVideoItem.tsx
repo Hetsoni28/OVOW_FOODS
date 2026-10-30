@@ -49,7 +49,7 @@ export function GalleryVideoItem({
       </motion.div>
 
       {/* Cinematic Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-700 ease-out flex flex-col items-center justify-center p-6 z-[2]">
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 transition-opacity duration-700 ease-out flex flex-col items-center justify-center p-6 z-[2]">
         
         {/* Play Button */}
         <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl flex items-center justify-center mb-6 transform translate-y-0 opacity-100 md:translate-y-8 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 transition-all duration-500 delay-[50ms] ease-out">
@@ -62,9 +62,12 @@ export function GalleryVideoItem({
         </p>
       </div>
 
-      {/* Full-card touch interceptor */}
-      <div
-        className="absolute inset-0 z-[3]"
+      {/* Full-card touch interceptor — a real button so keyboard users can open it */}
+      <button
+        type="button"
+        aria-label={`Play video: ${img.caption}`}
+        aria-haspopup="dialog"
+        className="absolute inset-0 z-[3] w-full h-full rounded-2xl md:rounded-3xl"
         onClick={onClick}
         onTouchStart={(e) => { e.preventDefault(); onClick(); }}
       />

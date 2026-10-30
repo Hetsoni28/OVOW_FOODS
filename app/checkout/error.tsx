@@ -31,7 +31,7 @@ export default function CheckoutError({
         </div>
 
         <h1 className="font-serif text-2xl text-[#0B2118] mb-2">Something went wrong</h1>
-        <p className="text-sm text-[#0B2118]/50 mb-8 leading-relaxed">
+        <p className="text-sm text-[#0B2118]/70 mb-8 leading-relaxed">
           Your cart is safe. Please try again or return to the menu.
         </p>
 

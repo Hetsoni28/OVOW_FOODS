@@ -10,6 +10,15 @@ import { useCart } from "@/context/CartContext";
 import { MobileMenu } from "@/components/layout/MobileMenu";
 import { InstallAppButton } from "@/components/atoms/InstallAppButton";
 
+const NAV_LINKS = [
+  { href: "/", label: "Home" },
+  { href: "/menu", label: "Menu" },
+  { href: "/orders", label: "Orders" },
+  { href: "/about", label: "About" },
+  { href: "/gallery", label: "Gallery" },
+  { href: "/reviews", label: "Reviews" },
+];
+
 export function Navbar() {
   const { count, openCart } = useCart();
   const pathname = usePathname();
@@ -44,7 +53,7 @@ export function Navbar() {
   const isTransparent = isDarkHero && !isScrolled;
 
   return (
-    <nav suppressHydrationWarning
+    <header suppressHydrationWarning
       className={`w-full z-50 transition-all duration-300 fixed top-0 ${
         isTransparent
           ? "text-white border-transparent shadow-none"
@@ -64,7 +73,7 @@ export function Navbar() {
 
       <div className={`container-x flex items-center justify-between transition-all duration-300 ${isTransparent ? "py-5" : "py-3"}`}>
         {/* Logo + Brand */}
-        <Link href="/" className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3" aria-label="OVOW FOODS — home">
           <span className="font-serif text-2xl md:text-3xl font-bold tracking-tight">
             OVOW
           </span>
@@ -75,20 +84,25 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden gap-10 text-[15px] md:flex">
-          <Link href="/" className="hover:opacity-70 transition-opacity">Home</Link>
-          <Link href="/menu" className="hover:opacity-70 transition-opacity">Menu</Link>
-          <Link href="/orders" className="hover:opacity-70 transition-opacity">Orders</Link>
-          <Link href="/about" className="hover:opacity-70 transition-opacity">About</Link>
-          <Link href="/gallery" className="hover:opacity-70 transition-opacity">Gallery</Link>
-          <Link href="/reviews" className="hover:opacity-70 transition-opacity">Reviews</Link>
-        </div>
+        <nav aria-label="Main" className="hidden gap-10 text-[15px] md:flex">
+          {NAV_LINKS.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              aria-current={pathname === l.href ? "page" : undefined}
+              className="py-2 hover:opacity-70 transition-opacity aria-[current=page]:underline underline-offset-8 decoration-[#C9A24A] decoration-2"
+            >
+              {l.label}
+            </Link>
+          ))}
+        </nav>
 
         {/* Right Actions */}
         <div className="flex items-center gap-4">
           <Link
             href="/party-bulk-orders"
-            className="hidden md:flex items-center gap-2 text-[15px] hover:opacity-70 transition-opacity"
+            aria-current={pathname === "/party-bulk-orders" ? "page" : undefined}
+            className="hidden md:flex items-center gap-2 py-2 text-[15px] hover:opacity-70 transition-opacity"
           >
             Bulk Order
           </Link>
@@ -96,8 +110,8 @@ export function Navbar() {
           {/* Cart Icon */}
           <motion.button
             onClick={openCart}
-            className="relative flex items-center gap-1.5 text-inherit hover:opacity-70 transition-opacity"
-            aria-label="Open cart"
+            className="relative flex items-center justify-center w-11 h-11 text-inherit hover:opacity-70 transition-opacity"
+            aria-label={mounted && count > 0 ? `Open cart, ${count} ${count === 1 ? "item" : "items"}` : "Open cart"}
             suppressHydrationWarning
             animate={isWiggling ? { 
               rotate: [0, -15, 15, -15, 15, 0],
@@ -111,7 +125,8 @@ export function Navbar() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 key={count}
-                className="absolute -top-2 -right-2 bg-[#C9A24A] text-white text-[9px] font-bold w-4.5 h-4.5 min-w-[18px] min-h-[18px] flex items-center justify-center leading-none px-1"
+                aria-hidden="true"
+                className="absolute top-0 right-0 bg-[#C9A24A] text-[#0B2118] text-[9px] font-bold w-4.5 h-4.5 min-w-[18px] min-h-[18px] flex items-center justify-center leading-none px-1"
               >
                 {count > 99 ? "99+" : count}
               </motion.span>
@@ -123,6 +138,8 @@ export function Navbar() {
             onClick={() => setIsMobileMenuOpen(true)}
             className="md:hidden flex items-center justify-center w-12 h-12 -mr-3 text-inherit hover:opacity-70 transition-opacity"
             aria-label="Open menu"
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-menu"
             suppressHydrationWarning
           >
             <IconMenu size={28} className="pointer-events-none" />
@@ -132,6 +149,6 @@ export function Navbar() {
       
       {/* Mobile Menu Drawer */}
       <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
-    </nav>
+    </header>
   );
 }

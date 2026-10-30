@@ -1,3 +1,7 @@
+// Canonical site URL used for metadata, JSON-LD, sitemap and robots.
+// Set NEXT_PUBLIC_SITE_URL when a custom domain goes live.
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://ovowfoods.com").replace(/\/$/, "");
+
 // Central company config — change these before going to production
 export const COMPANY_CONFIG = {
   whatsapp: "917567566214", // Replace with real WhatsApp number (country code + number, no +)

@@ -2,11 +2,16 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { IconArrowLeft, IconCheck } from "@/components/atoms/Icons";
 import { Reveal } from "@/components/atoms/Reveal";
+import { cmsPageMetadata } from "@/lib/pageSeo";
 
-export const metadata: Metadata = {
-  title: "Terms & Conditions | OVOW FOODS",
-  description: "Terms and Conditions for OVOW FOODS",
-};
+// Defaults below; editors can override them in Sanity Studio → Page SEO → "terms-and-conditions"
+export function generateMetadata(): Promise<Metadata> {
+  return cmsPageMetadata("terms-and-conditions", {
+    title: "Terms & Conditions",
+    description: "Terms and conditions for ordering from OVOW FOODS, including payments, delivery and cancellations.",
+    path: "/terms-and-conditions",
+  });
+}
 
 export default function TermsAndConditionsPage() {
   return (
@@ -32,7 +37,7 @@ export default function TermsAndConditionsPage() {
       <div className="container-x max-w-4xl mx-auto -mt-24 relative z-20 pb-32">
         <Reveal delay={0.2} className="bg-white p-8 md:p-16 shadow-2xl shadow-primary/5 border border-primary/10 rounded-sm">
           <div className="prose prose-lg prose-primary max-w-none text-primary/80">
-            <p className="text-sm font-bold uppercase tracking-widest text-[#C9A24A] text-center mb-12">
+            <p className="text-sm font-bold uppercase tracking-widest text-[#86671C] text-center mb-12">
               Last Updated: [Date]
             </p>
 
@@ -114,7 +119,7 @@ export default function TermsAndConditionsPage() {
               <p className="mb-4">
                 Customers must inform OVOW FOODS about any food allergies or specific dietary requirements before placing an order.
               </p>
-              <p className="text-primary/60 italic">
+              <p className="text-primary/70 italic">
                 Although we take reasonable precautions, cross-contact with other ingredients may occur in a shared kitchen environment.
               </p>
             </Section>
@@ -151,7 +156,7 @@ export default function TermsAndConditionsPage() {
               
               <div className="text-center py-12 border-t border-primary/10">
                 <p className="font-serif text-2xl text-primary mb-2">CURATING THE EXTRAORDINARY</p>
-                <p className="text-[#C9A24A] tracking-widest uppercase text-sm font-bold">Taste the WOW. Experience OVOW.</p>
+                <p className="text-[#86671C] tracking-widest uppercase text-sm font-bold">Taste the WOW. Experience OVOW.</p>
               </div>
             </Section>
           </div>

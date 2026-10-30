@@ -232,8 +232,10 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [mode, setMode] = useState<"default" | "search" | "filled">(value ? "filled" : "default");
   const [recentAddresses, setRecentAddresses] = useState<string[]>([]);
+  const [activeIdx, setActiveIdx] = useState(-1); // keyboard-highlighted suggestion
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const searchSeqRef = useRef(0); // ignores responses from searches that are no longer the latest
   const wrapperRef  = useRef<HTMLDivElement>(null);
 
   // Load recent addresses from localStorage (client only)
@@ -255,9 +257,8 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
     try {
       // zoom=18 = building-level detail (returns amenity/building names)
       const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1&zoom=18&accept-language=en`;
-      const res = await fetch(url, {
-        headers: { "User-Agent": "OvowFoodsApp/1.0 contact@ovowfoods.com" },
-      });
+      // No custom User-Agent: browsers ignore it, and it forces a CORS preflight in Firefox
+      const res = await fetch(url);
       if (!res.ok) throw new Error("Nominatim failed");
       const data: NominatimReverseResult = await res.json();
 
@@ -322,42 +323,27 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
 
 
 
-  /* ── Dual-engine Search: Photon + Nominatim in PARALLEL ──────────── */
+  /* ── Search: Photon first, Nominatim only as a fallback ──────────────
+     Photon is built for search-as-you-type. Nominatim's public usage policy
+     forbids autocomplete, so it is only queried when Photon finds nothing. */
   const doSearch = useCallback((q: string) => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (q.trim().length < 3) { setSuggestions([]); setShowSuggestions(false); return; }
+    const seq = ++searchSeqRef.current;
+    if (q.trim().length < 3) { setSuggestions([]); setShowSuggestions(false); setSearching(false); return; }
 
     debounceRef.current = setTimeout(async () => {
       setSearching(true);
       try {
-        // Run both engines simultaneously
-        const [photonSettled, nomSettled] = await Promise.allSettled([
-          // 1. Photon — fast, biased to Ahmedabad bounding box
-          fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=10&lang=en&bbox=${AMD_BBOX}`)
-            .then(r => r.json() as Promise<{ features: PhotonFeature[] }>),
-
-          // 2. Nominatim — broader DB, namedetails+extratags for full address info
-          fetch(
-            `https://nominatim.openstreetmap.org/search?` +
-            new URLSearchParams({
-              q:             `${q}, Ahmedabad, Gujarat`,
-              format:        "json",
-              addressdetails:"1",
-              namedetails:   "1",
-              extratags:     "1",
-              limit:         "8",
-              countrycodes:  "in",
-              viewbox:       AMD_BBOX,
-              bounded:       "0",
-            }).toString(),
-            { headers: { "User-Agent": "OvowFoodsApp/1.0 contact@ovowfoods.com" } }
-          ).then(r => r.json() as Promise<NominatimSearchResult[]>),
-        ]);
+        // 1. Photon — fast, biased to Ahmedabad bounding box
+        const photonSettled = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=10&lang=en&bbox=${AMD_BBOX}`)
+          .then(r => r.json() as Promise<{ features?: PhotonFeature[] }>)
+          .then(value => ({ status: "fulfilled" as const, value }), () => ({ status: "rejected" as const }));
+        if (seq !== searchSeqRef.current) return;
 
         // ── Process Photon results
         const photonResults: AddressSuggestion[] =
           photonSettled.status === "fulfilled"
-            ? photonSettled.value.features
+            ? (photonSettled.value.features ?? [])
                 .filter(f => {
                   const [lon, lat] = f.geometry.coordinates;
                   return lat >= ZONE.minLat - 0.1 && lat <= ZONE.maxLat + 0.1 &&
@@ -378,10 +364,31 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
                 })
             : [];
 
+        // 2. Nominatim — broader DB, only when Photon had nothing in our zone
+        const nomSettled = photonResults.length > 0
+          ? { status: "rejected" as const }
+          : await fetch(
+            `https://nominatim.openstreetmap.org/search?` +
+            new URLSearchParams({
+              q:             `${q}, Ahmedabad, Gujarat`,
+              format:        "json",
+              addressdetails:"1",
+              namedetails:   "1",
+              extratags:     "1",
+              limit:         "8",
+              countrycodes:  "in",
+              viewbox:       AMD_BBOX,
+              bounded:       "0",
+            }).toString()
+          )
+            .then(r => r.json() as Promise<NominatimSearchResult[]>)
+            .then(value => ({ status: "fulfilled" as const, value }), () => ({ status: "rejected" as const }));
+        if (seq !== searchSeqRef.current) return;
+
         // ── Process Nominatim results (uses structured address fields)
         const nomResults: AddressSuggestion[] =
           nomSettled.status === "fulfilled"
-            ? nomSettled.value
+            ? (Array.isArray(nomSettled.value) ? nomSettled.value : [])
                 .filter(r => {
                   const lat = parseFloat(r.lat), lon = parseFloat(r.lon);
                   return lat >= ZONE.minLat - 0.15 && lat <= ZONE.maxLat + 0.15 &&
@@ -418,11 +425,13 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
 
         setSuggestions(merged.slice(0, 8));
         setShowSuggestions(merged.length > 0);
+        setActiveIdx(-1);
       } catch {
+        if (seq !== searchSeqRef.current) return;
         setSuggestions([]);
         setShowSuggestions(false);
       } finally {
-        setSearching(false);
+        if (seq === searchSeqRef.current) setSearching(false);
       }
     }, 380);
   }, []);
@@ -437,6 +446,28 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
     setLocSuccess(true);
     setMode("filled");
     setTimeout(() => setLocSuccess(false), 4000);
+  }
+
+  // Combobox keyboard support: ↑/↓ to move, Enter to pick, Escape to close
+  function handleSearchKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (!showSuggestions || suggestions.length === 0) {
+      if (e.key === "Escape") setSearchQuery("");
+      return;
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveIdx((i) => (i + 1) % suggestions.length);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveIdx((i) => (i <= 0 ? suggestions.length - 1 : i - 1));
+    } else if (e.key === "Enter" && activeIdx >= 0) {
+      e.preventDefault();
+      handleSelect(suggestions[activeIdx]);
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      setShowSuggestions(false);
+      setActiveIdx(-1);
+    }
   }
 
   function handleSelectRecent(addr: string) {
@@ -458,7 +489,7 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
         <div className="grid grid-cols-2 gap-2">
           {/* GPS Button */}
           <button type="button" onClick={handleUseLocation} disabled={locLoading}
-            className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2 sm:px-4 py-3 border-2 border-dashed border-[#C9A24A]/40 rounded-xl text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.08em] sm:tracking-widest text-[#C9A24A] hover:border-[#C9A24A] hover:bg-[#C9A24A]/5 transition-all disabled:opacity-50 disabled:cursor-wait group leading-tight text-center">
+            className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2 sm:px-4 py-3 border-2 border-dashed border-[#C9A24A]/40 rounded-xl text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.08em] sm:tracking-widest text-[#86671C] hover:border-[#C9A24A] hover:bg-[#C9A24A]/5 transition-all disabled:opacity-50 disabled:cursor-wait group leading-tight text-center">
             {locLoading
               ? <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
               : <svg className="w-4 h-4 flex-shrink-0 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8" strokeDasharray="3 3"/></svg>}
@@ -467,7 +498,7 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
 
           {/* Search Button */}
           <button type="button" onClick={() => { setMode("search"); setLocError(null); }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2 sm:px-4 py-3 border-2 border-dashed border-primary/20 rounded-xl text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.08em] sm:tracking-widest text-primary/50 hover:border-primary/40 hover:text-primary transition-all group leading-tight text-center">
+            className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2 sm:px-4 py-3 border-2 border-dashed border-primary/20 rounded-xl text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.08em] sm:tracking-widest text-primary/70 hover:border-primary/40 hover:text-primary transition-all group leading-tight text-center">
             <svg className="w-4 h-4 flex-shrink-0 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
             <span>Search Address</span>
           </button>
@@ -481,19 +512,19 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
           {/* Recent addresses — shown above input when available */}
           {recentAddresses.length > 0 && !searchQuery && (
             <div className="mb-2 space-y-1">
-              <p className="text-[9px] font-bold uppercase tracking-widest text-primary/30 mb-1.5">Recent</p>
+              <p className="text-[9px] font-bold uppercase tracking-widest text-primary/70 mb-1.5">Recent</p>
               {recentAddresses.map((addr, i) => (
-                <button key={i} type="button" onMouseDown={() => handleSelectRecent(addr)}
+                <button key={i} type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => handleSelectRecent(addr)}
                   className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border border-primary/8 hover:border-[#C9A24A]/30 hover:bg-[#C9A24A]/5 transition-all text-left group">
                   <svg className="w-3.5 h-3.5 flex-shrink-0 text-primary/30 group-hover:text-[#C9A24A] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
                   </svg>
-                  <span className="text-xs text-primary/60 truncate group-hover:text-primary transition-colors">{addr}</span>
+                  <span className="text-xs text-primary/70 truncate group-hover:text-primary transition-colors">{addr}</span>
                 </button>
               ))}
               <div className="flex items-center gap-2 pt-1">
                 <div className="flex-1 h-px bg-primary/6"/>
-                <span className="text-[9px] font-bold uppercase tracking-widest text-primary/20">or search new</span>
+                <span className="text-[9px] font-bold uppercase tracking-widest text-primary/70">or search new</span>
                 <div className="flex-1 h-px bg-primary/6"/>
               </div>
             </div>
@@ -503,6 +534,14 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
             <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/30 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
             {searching && <svg className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin w-4 h-4 text-[#C9A24A]" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>}
             <input autoFocus type="text" value={searchQuery}
+              role="combobox"
+              aria-label="Search for your delivery address"
+              aria-autocomplete="list"
+              aria-expanded={showSuggestions && suggestions.length > 0}
+              aria-controls="address-suggestions"
+              aria-activedescendant={activeIdx >= 0 ? `address-option-${activeIdx}` : undefined}
+              autoComplete="off"
+              onKeyDown={handleSearchKeyDown}
               onChange={(e) => { setSearchQuery(e.target.value); doSearch(e.target.value); }}
               placeholder="Area, building, street or landmark…"
               className="w-full border-2 border-[#C9A24A]/40 focus:border-[#C9A24A] bg-white rounded-xl pl-10 pr-10 py-3 text-sm text-primary placeholder:text-primary/30 focus:outline-none transition-colors"/>
@@ -510,25 +549,33 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
 
           {showSuggestions && suggestions.length > 0 && (
             /* max-h-48 on mobile keeps dropdown above keyboard; 64 on sm+ */
-            <div className="absolute top-full left-0 right-0 z-50 mt-1.5 bg-white border border-primary/10 rounded-xl shadow-2xl overflow-hidden max-h-48 sm:max-h-64 overflow-y-auto">
-              {suggestions.map((s) => (
-                <button key={s.id} type="button" onMouseDown={() => handleSelect(s)}
-                  className="w-full flex items-start gap-3 px-4 py-3 hover:bg-[#C9A24A]/5 transition-colors text-left border-b border-primary/[0.06] last:border-0">
+            <ul id="address-suggestions" role="listbox" aria-label="Address suggestions"
+              className="absolute top-full left-0 right-0 z-50 mt-1.5 bg-white border border-primary/10 rounded-xl shadow-2xl overflow-hidden max-h-48 sm:max-h-64 overflow-y-auto">
+              {suggestions.map((s, idx) => (
+                <li key={s.id} id={`address-option-${idx}`} role="option" aria-selected={idx === activeIdx}
+                  onMouseDown={(e) => e.preventDefault() /* keep focus in the input */}
+                  onClick={() => handleSelect(s)}
+                  onMouseEnter={() => setActiveIdx(idx)}
+                  className={`w-full flex items-start gap-3 px-4 py-3 cursor-pointer transition-colors text-left border-b border-primary/[0.06] last:border-0 ${idx === activeIdx ? "bg-[#C9A24A]/15" : "hover:bg-[#C9A24A]/5"}`}>
                   <IconMapPin size={13} className="text-[#C9A24A] mt-0.5 flex-shrink-0"/>
                   <div className="min-w-0">
                     <p className="text-xs font-semibold text-primary leading-snug truncate">{s.title}</p>
                     {s.subtitle && (
-                      <p className="text-[10px] text-primary/40 leading-snug mt-0.5 truncate">{s.subtitle}</p>
+                      <p className="text-[10px] text-primary/70 leading-snug mt-0.5 truncate">{s.subtitle}</p>
                     )}
                   </div>
-                </button>
+                </li>
               ))}
-            </div>
+            </ul>
           )}
+          {/* Screen-reader status for the search */}
+          <p className="sr-only" role="status" aria-live="polite">
+            {searching ? "Searching addresses…" : searchQuery.length >= 3 ? `${suggestions.length} address suggestion${suggestions.length === 1 ? "" : "s"} available` : ""}
+          </p>
           {/* No results message */}
           {!searching && searchQuery.length >= 3 && !showSuggestions && (
             <div className="absolute top-full left-0 right-0 z-50 mt-1.5 bg-white border border-primary/10 rounded-xl shadow-lg px-4 py-3">
-              <p className="text-xs text-primary/40 text-center">No results found. Try a nearby landmark or type the address manually.</p>
+              <p className="text-xs text-primary/70 text-center">No results found. Try a nearby landmark or type the address manually.</p>
             </div>
           )}
         </div>
@@ -538,7 +585,7 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
       {(mode === "default" || mode === "search") && (
         <div className="flex items-center gap-3">
           <div className="flex-1 h-px bg-primary/8"/>
-          <span className="text-[10px] font-bold uppercase tracking-widest text-primary/25">or type manually</span>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-primary/70">or type manually</span>
           <div className="flex-1 h-px bg-primary/8"/>
         </div>
       )}
@@ -551,6 +598,8 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
           </svg>
           <input
             type="text"
+            aria-label="Flat, floor or wing (optional)"
+            autoComplete="address-line2"
             placeholder="Flat / Floor / Wing (optional)"
             className="w-full border-b-2 border-primary/10 focus:border-[#C9A24A] pl-8 py-2.5 text-sm text-primary placeholder:text-primary/25 bg-transparent focus:outline-none transition-colors"
             onBlur={(e) => {
@@ -566,8 +615,12 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
       {/* Editable textarea — always shown */}
       <div className="relative group">
         <IconMapPin size={18}
-          className={`absolute left-0 top-3 pointer-events-none transition-colors ${locSuccess ? "text-green-500" : "text-primary/30 group-focus-within:text-[#C9A24A]"}`}/>
+          className={`absolute left-0 top-3 pointer-events-none transition-colors ${locSuccess ? "text-green-500" : "text-primary/70 group-focus-within:text-[#C9A24A]"}`}/>
         <textarea id="address" rows={2} value={value}
+          autoComplete="street-address"
+          aria-required="true"
+          aria-invalid={!!error}
+          aria-describedby={error ? "address-error" : undefined}
           onChange={(e) => { onChange(e.target.value); if (mode === "default" && e.target.value) setMode("filled"); }}
           placeholder="Full delivery address with landmark"
           className={`${inputCls(error)} pl-8 resize-none`}/>
@@ -580,7 +633,7 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
         )}
         {mode === "filled" && !locSuccess && (
           <button type="button" onClick={() => { setMode("default"); setLocError(null); }}
-            className="absolute right-0 bottom-2 text-[9px] font-bold uppercase tracking-widest text-[#C9A24A] hover:opacity-70 transition-opacity">
+            className="absolute right-0 bottom-2 text-[9px] font-bold uppercase tracking-widest text-[#86671C] hover:opacity-70 transition-opacity">
             Change
           </button>
         )}
@@ -588,7 +641,7 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
 
       {/* Error message */}
       {locError && (
-        <p className="text-xs text-red-500 flex items-center gap-1.5 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+        <p role="alert" className="text-xs text-red-700 flex items-center gap-1.5 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
           <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
           {locError}
         </p>

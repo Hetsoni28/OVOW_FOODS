@@ -38,7 +38,7 @@ export function MenuFilters({
               onClick={() => setActiveCategory("All")}
               className={`shrink-0 px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${
                 activeCategory === "All"
-                  ? "bg-[#C9A24A] text-white border-[#C9A24A]"
+                  ? "bg-[#C9A24A] text-[#0B2118] border-[#C9A24A]"
                   : "bg-white border border-primary/20 text-primary hover:border-primary/50"
               }`}
             >
@@ -50,7 +50,7 @@ export function MenuFilters({
                 onClick={() => setActiveCategory(category.name)}
                 className={`shrink-0 px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-colors ${
                   activeCategory === category.name
-                    ? "bg-[#C9A24A] text-white border-[#C9A24A]"
+                    ? "bg-[#C9A24A] text-[#0B2118] border-[#C9A24A]"
                     : "bg-white border border-primary/20 text-primary hover:border-primary/50"
                 }`}
               >
@@ -62,7 +62,7 @@ export function MenuFilters({
       </div>
 
       {/* Results Info */}
-      <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-widest text-primary/50 mt-2">
+      <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-widest text-primary/70 mt-2">
         <div className="flex items-center gap-2">
           <IconSlidersHorizontal size={14} />
           <span>

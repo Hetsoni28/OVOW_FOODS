@@ -7,6 +7,8 @@ import { bulkOrderType } from './bulkOrder'
 import { categoryType } from './category'
 import { siteSettingsType } from './siteSettings'
 import { orderEventType } from './orderEvent'
+import { seoType } from './seo'
+import { pageSeoType } from './pageSeo'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -17,5 +19,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     galleryType,
     bulkOrderType,
     orderEventType,
+    pageSeoType,
+    seoType,
   ],
 }

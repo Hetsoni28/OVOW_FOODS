@@ -30,8 +30,8 @@ export function ContactGrid() {
           <WhatsAppIcon className="w-6 h-6 text-[#25D366]" />
         </div>
         <div className="relative z-10">
-          <h3 className="font-serif text-3xl md:text-4xl text-primary mb-2">WhatsApp</h3>
-          <p className="text-sm md:text-base text-primary/60 font-medium">Quick replies for orders and enquiries</p>
+          <h2 className="font-serif text-3xl md:text-4xl text-primary mb-2">WhatsApp</h2>
+          <p className="text-sm md:text-base text-primary/70 font-medium">Quick replies for orders and enquiries</p>
         </div>
       </motion.a>
 
@@ -49,8 +49,8 @@ export function ContactGrid() {
           <IconPhone size={20} className="text-primary group-hover:text-[#C9A24A] transition-colors" />
         </div>
         <div className="relative z-10">
-          <h3 className="font-bold text-primary mb-1">Call Us</h3>
-          <p className="text-primary/60">{COMPANY_CONFIG.phone}</p>
+          <h2 className="font-bold text-primary mb-1">Call Us</h2>
+          <p className="text-primary/70">{COMPANY_CONFIG.phone}</p>
         </div>
       </motion.a>
 
@@ -68,8 +68,8 @@ export function ContactGrid() {
           <IconMail size={20} className="text-primary" />
         </div>
         <div className="relative z-10">
-          <h3 className="font-bold text-primary mb-1">Email</h3>
-          <p className="text-primary/60">{COMPANY_CONFIG.email}</p>
+          <h2 className="font-bold text-primary mb-1">Email</h2>
+          <p className="text-primary/70">{COMPANY_CONFIG.email}</p>
         </div>
       </motion.a>
 
@@ -86,7 +86,7 @@ export function ContactGrid() {
           <IconClock size={24} className="text-[#C9A24A]" />
         </div>
         <div className="relative z-10">
-          <h3 className="font-serif text-3xl md:text-4xl text-white mb-2">Opening Hours</h3>
+          <h2 className="font-serif text-3xl md:text-4xl text-white mb-2">Opening Hours</h2>
           <p className="text-sm md:text-base text-white/70 font-medium">{COMPANY_CONFIG.hours}</p>
         </div>
       </motion.div>

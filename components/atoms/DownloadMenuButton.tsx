@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { IconDownload, IconLoader } from "@/components/atoms/Icons";
 import type { Product } from "@/types";
-import { COMPANY_CONFIG } from "@/lib/config";
+import { COMPANY_CONFIG, SITE_URL } from "@/lib/config";
 
 interface Props { products: Product[] }
 
@@ -291,7 +291,7 @@ class OvowPDF {
     this.textCol(TEXT);
     this.normal(7);
     this.doc.text(`WhatsApp: ${COMPANY_CONFIG.phone}`, MX, fy + 5);
-    this.doc.text("ovowfoods.com", W - MX, fy + 5, { align: "right" });
+    this.doc.text(SITE_URL.replace(/^https?:\/\//, ""), W - MX, fy + 5, { align: "right" });
     this.doc.text(`${pageNum}`, W / 2, fy + 5, { align: "center" });
   }
 

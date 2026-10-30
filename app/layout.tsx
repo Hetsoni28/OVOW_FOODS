@@ -1,5 +1,5 @@
 import "./globals.css";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Manrope } from "next/font/google";
 import { Navbar } from "@/components/organisms/Navbar";
 import { Footer } from "@/components/organisms/Footer";
@@ -9,113 +9,95 @@ import { FloatingWhatsApp } from "@/components/ui/FloatingWhatsApp";
 import { Breadcrumbs } from "@/components/molecules/Breadcrumbs";
 import { MobileBottomBar } from "@/components/layout/MobileBottomBar";
 import { FloatingCartBar } from "@/components/layout/FloatingCartBar";
-import { ErrorBoundary } from "@/components/layout/ErrorBoundary";
+import { RouteErrorBoundary } from "@/components/layout/ErrorBoundary";
 import { MotionProvider } from "@/components/layout/MotionProvider";
 import { SmoothScrollProvider } from "@/components/layout/SmoothScrollProvider";
 import { HideOnStudio } from "@/components/layout/HideOnStudio";
 
 import { SplashScreen } from "@/components/organisms/SplashScreen";
+import { SITE_URL } from "@/lib/config";
+import { DEFAULT_DESCRIPTION, DEFAULT_OG_IMAGE, SITE_NAME, jsonLd, restaurantJsonLd, websiteJsonLd } from "@/lib/seo";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair",
+  display: "swap",
 });
 
 const manrope = Manrope({
   subsets: ["latin"],
   variable: "--font-manrope",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ovowfoods.com"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "OVOW FOODS | Taste the WOW. Experience OVOW.",
     template: "%s | OVOW FOODS",
   },
-  description:
-    "Premium 100% pure vegetarian food experience. Order Dum Matka Biryani, Paneer, Comfort Meals & more.",
+  description: DEFAULT_DESCRIPTION,
+  applicationName: SITE_NAME,
+  keywords: [
+    "OVOW FOODS",
+    "pure vegetarian food Ahmedabad",
+    "veg cloud kitchen Ahmedabad",
+    "dum matka biryani",
+    "paneer delivery Ahmedabad",
+    "Swaminarayan food",
+    "party catering Ahmedabad",
+  ],
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  category: "food",
   openGraph: {
-    title: "OVOW FOODS | Premium Vegetarian Food",
-    description: "Taste the WOW. Experience OVOW. Premium pure vegetarian cloud kitchen.",
-    url: "https://ovowfoods.com",
-    siteName: "OVOW FOODS",
-    images: [
-      {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "OVOW Foods Premium Vegetarian",
-      },
-    ],
-    locale: "en_IN",
     type: "website",
+    siteName: SITE_NAME,
+    locale: "en_IN",
+    url: SITE_URL,
+    title: "OVOW FOODS | Premium Pure Vegetarian Food, Ahmedabad",
+    description: DEFAULT_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "OVOW FOODS | Premium Pure Vegetarian Food, Ahmedabad",
+    description: DEFAULT_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE.url],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
   },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "OVOW FOODS",
+    title: SITE_NAME,
   },
   formatDetection: {
     telephone: false,
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#0B2118",
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
-        {/* Preload hero images — browser starts downloading immediately with page HTML to prevent dark flashes */}
-        <link rel="preload" as="image" href="/images/hero-bg-poster.jpg" />
-        <link rel="preload" as="image" href="/images/hero-poster.jpg" />
-        {/* Preload logo — ensures splash screen logo shows instantly, zero blank flash */}
-        <link rel="preload" as="image" href="/logo/ovow-foods-logo.png" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Restaurant",
-              name: "OVOW FOODS",
-              image: "https://ovowfoods.com/og-image.jpg",
-              "@id": "https://ovowfoods.com",
-              url: "https://ovowfoods.com",
-              telephone: "+917567566214",
-              address: {
-                "@type": "PostalAddress",
-                addressLocality: "Ahmedabad",
-                addressRegion: "Gujarat",
-                postalCode: "382481",
-                addressCountry: "IN",
-              },
-              geo: {
-                "@type": "GeoCoordinates",
-                latitude: 23.0525,
-                longitude: 72.5337,
-              },
-              openingHoursSpecification: {
-                "@type": "OpeningHoursSpecification",
-                dayOfWeek: [
-                  "Monday",
-                  "Tuesday",
-                  "Wednesday",
-                  "Thursday",
-                  "Friday",
-                  "Saturday",
-                  "Sunday",
-                ],
-                opens: "11:00",
-                closes: "04:00",
-              },
-              servesCuisine: "Vegetarian",
-              priceRange: "₹₹",
-            }),
-          }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd([restaurantJsonLd(), websiteJsonLd()])} />
       </head>
       <body
         className={`${playfair.variable} ${manrope.variable} font-sans flex min-h-screen flex-col overflow-x-hidden`}
         suppressHydrationWarning
       >
+        <a href="#main-content" className="skip-link">Skip to main content</a>
         {/* Raw splash cover — green background before JS loads, prevents hero flash on first visit. */}
         <div
           id="splash-cover"
@@ -138,9 +120,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `
               (function(){
                 try {
-                  var seen = sessionStorage.getItem('ovow_splash_seen');
                   var el = document.getElementById('splash-cover');
-                  if (seen && el) { el.style.display = 'none'; }
+                  // The splash never runs on /studio, so nothing else would remove the cover there
+                  var isStudio = location.pathname.indexOf('/studio') === 0;
+                  if (el && (isStudio || sessionStorage.getItem('ovow_splash_seen'))) { el.style.display = 'none'; }
                 } catch(e) {}
               })();
             `,
@@ -170,12 +153,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Breadcrumbs />
                 <CartDrawer />
               </HideOnStudio>
-              <ErrorBoundary>
-                <main className="flex-1 pb-16 md:pb-0">{children}</main>
+              <RouteErrorBoundary>
+                <main id="main-content" tabIndex={-1} className="flex-1 pb-16 md:pb-0">{children}</main>
                 <HideOnStudio>
                   <Footer />
                 </HideOnStudio>
-              </ErrorBoundary>
+              </RouteErrorBoundary>
               <HideOnStudio>
                 <FloatingCartBar />
                 <MobileBottomBar />

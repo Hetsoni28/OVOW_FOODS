@@ -43,7 +43,7 @@ export function MobileBottomBar() {
   ];
 
   return (
-    <motion.nav
+    <motion.nav aria-label="Quick actions"
       variants={{
         visible: { y: 0 },
         hidden: { y: "100%" }
@@ -57,8 +57,9 @@ export function MobileBottomBar() {
         <Link
           key={href}
           href={href}
+          aria-current={pathname === href ? "page" : undefined}
           className={`flex flex-1 flex-col items-center justify-center py-3 gap-1 text-[10px] uppercase tracking-widest font-semibold transition-colors ${
-            pathname === href ? "text-primary" : "text-primary/40 hover:text-primary"
+            pathname === href ? "text-primary" : "text-primary/70 hover:text-primary"
           }`}
         >
           <Icon size={18} strokeWidth={1.5} />
@@ -70,12 +71,13 @@ export function MobileBottomBar() {
       <button 
         onClick={openCart}
         suppressHydrationWarning
-        className="flex flex-1 flex-col items-center justify-center gap-1 text-[10px] uppercase tracking-widest font-semibold text-primary/40 hover:text-primary transition-colors relative"
+        aria-label={mounted && count > 0 ? `Cart, ${count} ${count === 1 ? "item" : "items"}` : "Cart"}
+        className="flex flex-1 flex-col items-center justify-center gap-1 text-[10px] uppercase tracking-widest font-semibold text-primary/70 hover:text-primary transition-colors relative"
       >
         <span className="relative">
           <IconShoppingBag size={18} strokeWidth={1.5} />
           {mounted && count > 0 && (
-            <span className="absolute -top-2 -right-2 bg-[#C9A24A] text-white text-[9px] font-bold min-w-[16px] h-4 flex items-center justify-center px-0.5">
+            <span aria-hidden="true" className="absolute -top-2 -right-2 bg-[#C9A24A] text-[#0B2118] text-[9px] font-bold min-w-[16px] h-4 flex items-center justify-center px-0.5">
               {count > 9 ? "9+" : count}
             </span>
           )}
@@ -87,7 +89,8 @@ export function MobileBottomBar() {
       <button 
         onClick={() => openWhatsAppInquiry()}
         suppressHydrationWarning
-        className="flex flex-1 flex-col items-center justify-center gap-1 text-[10px] uppercase tracking-widest font-semibold text-[#25D366] hover:opacity-80 transition-opacity"
+        aria-label="Chat on WhatsApp (opens WhatsApp)"
+        className="flex flex-1 flex-col items-center justify-center gap-1 text-[10px] uppercase tracking-widest font-semibold text-[#075E54] hover:opacity-80 transition-opacity"
       >
         <WhatsAppIcon className="w-[18px] h-[18px]" />
         WhatsApp

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { IconX } from "@/components/atoms/Icons";
 import { LazyVideo } from "@/components/atoms/LazyVideo";
 import type { GalleryMedia } from "@/lib/types";
+import { useDialog } from "@/hooks/useDialog";
 
 interface GalleryLightboxProps {
   selectedImage: GalleryMedia;
@@ -11,8 +12,16 @@ interface GalleryLightboxProps {
 }
 
 export function GalleryLightbox({ selectedImage, onClose }: GalleryLightboxProps) {
+  // Rendered only while open → focus trap + Escape + focus return
+  const dialogRef = useDialog<HTMLDivElement>(true, onClose);
+
   return (
     <motion.div
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label={selectedImage.caption || "Gallery video"}
+      tabIndex={-1}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -20,14 +29,17 @@ export function GalleryLightbox({ selectedImage, onClose }: GalleryLightboxProps
       className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-12 cursor-zoom-out"
     >
       {/* Solid Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/95" 
+      <div
+        className="absolute inset-0 bg-black/95"
+        aria-hidden="true"
         onClick={onClose}
       />
       
       {/* Close Button */}
       <button suppressHydrationWarning 
         onClick={onClose}
+        aria-label="Close video"
+        data-autofocus
         className="absolute top-6 right-6 md:top-10 md:right-10 w-12 h-12 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-colors z-[110]"
       >
         <IconX size={24} />
@@ -46,6 +58,7 @@ export function GalleryLightbox({ selectedImage, onClose }: GalleryLightboxProps
             src={selectedImage.videoUrl}
             controls={false}
             muted={false}
+            userInitiated
             className="w-full h-full object-cover pointer-events-none z-0"
             threshold={0}
             rootMargin="0px"

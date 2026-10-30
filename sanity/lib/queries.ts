@@ -21,10 +21,12 @@ export const ALL_PRODUCTS_QUERY = groq`*[_type == "product"] | order(sortOrder a
   "category": category->name,
   "previewVideo": video.asset->url,
   "thumbnailUrl": thumbnail.asset->url,
+  "thumbnailAlt": thumbnail.alt,
   isSpicy,
   isKidsSpecial,
   isBestSeller,
   signature,
+  vegetarian,
   size,
   servingSize,
   includedRaita,
@@ -47,12 +49,15 @@ export const PRODUCT_BY_SLUG_QUERY = groq`*[_type == "product" && slug.current =
   "category": category->name,
   "previewVideo": video.asset->url,
   "thumbnailUrl": thumbnail.asset->url,
+  "thumbnailAlt": thumbnail.alt,
   isSpicy,
   isKidsSpecial,
   isBestSeller,
   signature,
+  vegetarian,
   servingSize,
-  includedRaita
+  includedRaita,
+  "seo": seo{ title, description, heading, canonicalUrl, noIndex, "image": image.asset->url, "imageAlt": image.alt }
 }`
 
 export const RELATED_PRODUCTS_QUERY = groq`*[_type == "product" && category->name == $category && slug.current != $slug && available != false][0...3] {
@@ -61,9 +66,11 @@ export const RELATED_PRODUCTS_QUERY = groq`*[_type == "product" && category->nam
   "slug": slug.current,
   price,
   available,
+  availabilityStatus,
   "category": category->name,
   "previewVideo": video.asset->url,
   "thumbnailUrl": thumbnail.asset->url,
+  "thumbnailAlt": thumbnail.alt,
   signature,
   isBestSeller
 }`
@@ -79,6 +86,7 @@ export const HOME_FEATURED_PRODUCTS_QUERY = groq`*[_type == "product" && availab
   "category": category->name,
   "previewVideo": video.asset->url,
   "thumbnailUrl": thumbnail.asset->url,
+  "thumbnailAlt": thumbnail.alt,
   signature,
   isKidsSpecial,
   isBestSeller,
@@ -120,6 +128,7 @@ export const RECOMMENDATIONS_QUERY = groq`*[_type == "product" && availabilitySt
   availabilityStatus,
   "category": category->name,
   "thumbnailUrl": thumbnail.asset->url,
+  "thumbnailAlt": thumbnail.alt,
   isBestSeller,
   signature
 }`
@@ -133,4 +142,24 @@ export const RECENT_ORDER_EVENTS_QUERY = groq`*[_type == "orderEvent"] | order(p
   itemCount,
   paymentMethod,
   placedAt
+}`
+
+// Lightweight: only what's needed to pick a fallback video for products without one
+export const PRODUCT_VIDEOS_QUERY = groq`*[_type == "product" && defined(video.asset)] | order(sortOrder asc) {
+  "category": category->name,
+  "previewVideo": video.asset->url
+}`
+
+// For generateStaticParams / sitemap
+export const PRODUCT_SLUGS_QUERY = groq`*[_type == "product" && defined(slug.current)].slug.current`
+
+// SEO overrides for a fixed site page (see sanity/schemaTypes/pageSeo.ts)
+export const PAGE_SEO_QUERY = groq`*[_type == "pageSeo" && page == $page][0].seo{
+  title, description, canonicalUrl, noIndex, "image": image.asset->url, "imageAlt": image.alt
+}`
+
+// Pages and products hidden from Google (excluded from the sitemap)
+export const NOINDEX_QUERY = groq`{
+  "pages": *[_type == "pageSeo" && seo.noIndex == true].page,
+  "products": *[_type == "product" && seo.noIndex == true].slug.current
 }`

@@ -9,6 +9,10 @@
  * ✅ Only plays when scrolled into view (IntersectionObserver)
  * ✅ Pauses when scrolled off-screen (saves battery + data)
  * ✅ Works on mobile, desktop, Low Power Mode, slow connections
+ * ✅ deferUntilIdle — above-the-fold videos wait for page load + idle time,
+ *    so they never compete with the first paint
+ * ✅ Skips the download entirely on Data Saver / 2G and for prefers-reduced-motion
+ *    (the poster stays visible instead)
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -26,6 +30,39 @@ interface LazyVideoProps {
   onCanPlay?: () => void;
   /** Set false to hide the shimmer skeleton (e.g. Hero already has a static image fallback) */
   showSkeleton?: boolean;
+  /** Wait for window load + browser idle before downloading (use for above-the-fold videos) */
+  deferUntilIdle?: boolean;
+  /** The visitor explicitly asked for this video (e.g. lightbox) — never skip it */
+  userInitiated?: boolean;
+}
+
+type NetworkInformationLike = { saveData?: boolean; effectiveType?: string };
+
+/** True when we should not download/autoplay video at all */
+function prefersNoVideo(): boolean {
+  const conn = (navigator as Navigator & { connection?: NetworkInformationLike }).connection;
+  if (conn?.saveData || /(^|-)2g$/.test(conn?.effectiveType ?? "")) return true;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+/** Resolves after the window "load" event and the next idle period */
+function whenIdleAfterLoad(cb: () => void): () => void {
+  let cancelled = false;
+  let idleId: number | undefined;
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const schedule = () => {
+    if (cancelled) return;
+    if ("requestIdleCallback" in window) idleId = window.requestIdleCallback(cb, { timeout: 3000 });
+    else timeoutId = setTimeout(cb, 1500);
+  };
+  if (document.readyState === "complete") schedule();
+  else window.addEventListener("load", schedule, { once: true });
+  return () => {
+    cancelled = true;
+    window.removeEventListener("load", schedule);
+    if (idleId !== undefined) window.cancelIdleCallback(idleId);
+    clearTimeout(timeoutId);
+  };
 }
 
 export function LazyVideo({
@@ -40,6 +77,8 @@ export function LazyVideo({
   rootMargin = "200px",
   onCanPlay,
   showSkeleton = true,
+  deferUntilIdle = false,
+  userInitiated = false,
 }: LazyVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const loadedRef = useRef(false);
@@ -48,6 +87,12 @@ export function LazyVideo({
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+
+    // Background loops only — a video with controls was opened on purpose
+    if (!controls && !userInitiated && prefersNoVideo()) {
+      setSkeletonVisible(false); // poster (or the static image behind) stays visible
+      return;
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -66,9 +111,16 @@ export function LazyVideo({
       { threshold, rootMargin }
     );
 
-    observer.observe(video);
-    return () => observer.disconnect();
-  }, [threshold, rootMargin]);
+    if (!deferUntilIdle) {
+      observer.observe(video);
+      return () => observer.disconnect();
+    }
+    const cancelIdle = whenIdleAfterLoad(() => observer.observe(video));
+    return () => {
+      cancelIdle();
+      observer.disconnect();
+    };
+  }, [threshold, rootMargin, deferUntilIdle, controls, userInitiated]);
 
   const videoSrc = src.includes('#t=') ? src : `${src}#t=0.5`;
 
@@ -86,6 +138,9 @@ export function LazyVideo({
         preload="none"
         disablePictureInPicture
         disableRemotePlayback
+        // Muted background loops are decorative — keep them out of the a11y tree
+        aria-hidden={controls ? undefined : true}
+        tabIndex={controls ? undefined : -1}
         onCanPlay={() => {
           setSkeletonVisible(false);
           onCanPlay?.();

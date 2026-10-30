@@ -5,6 +5,7 @@ import { InstallAppButton } from "@/components/atoms/InstallAppButton";
 import { motion } from "framer-motion";
 import { fadeUpSlow, staggerFast } from "@/lib/animations";
 import { LazyVideo } from "@/components/atoms/LazyVideo";
+import Image from "next/image";
 
 export function HeroSection() {
   return (
@@ -18,14 +19,14 @@ export function HeroSection() {
       */}
 
       {/* Layer 1: Static image — instant, works on every device */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <Image
         src="/images/hero-bg-poster.jpg"
         alt=""
         aria-hidden="true"
-        fetchPriority="high"
-        decoding="async"
-        className="absolute inset-0 w-full h-full object-cover z-0"
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover z-0"
       />
 
       {/* Layer 2: Video — loads lazily, covers image when ready */}
@@ -34,6 +35,7 @@ export function HeroSection() {
         className="absolute inset-0 w-full h-full object-cover z-[1]"
         threshold={0}
         rootMargin="0px"
+        deferUntilIdle
         showSkeleton={false}
       />
 
@@ -50,6 +52,9 @@ export function HeroSection() {
           variants={fadeUpSlow}
           className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl xl:text-[96px] leading-[1.1] tracking-tight max-w-5xl text-center"
         >
+          <span className="block font-sans text-[11px] md:text-sm font-bold uppercase tracking-[0.35em] text-[#C9A24A] mb-5">
+            Pure Vegetarian Cloud Kitchen · Ahmedabad
+          </span>
           CURATING THE
           <br />
           EXTRAORDINARY

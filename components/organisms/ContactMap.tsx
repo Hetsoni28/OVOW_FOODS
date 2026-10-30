@@ -31,6 +31,7 @@ export function ContactMap() {
       {/* Mobile: 4:3 ratio (not too tall); Desktop: cinematic 21:9 */}
       <div className="relative w-full aspect-[4/3] md:aspect-[21/9] bg-primary/5 overflow-hidden group">
         <iframe
+            title="OVOW FOODS location on Google Maps"
           src={mapUrl}
           width="100%"
           height="100%"
@@ -64,7 +65,7 @@ export function ContactMap() {
             <IconMapPin size={16} className="text-[#C9A24A]" />
           </div>
           <div className="min-w-0">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-primary/40 mb-1">Our Location</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-1">Our Location</p>
             <p className="text-sm font-medium text-primary leading-relaxed">
               {COMPANY_CONFIG.address}
             </p>
@@ -77,7 +78,7 @@ export function ContactMap() {
             <ClockIcon />
           </div>
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-primary/40 mb-0.5">Delivery Hours</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-0.5">Delivery Hours</p>
             <p className="text-sm font-medium text-primary">Open Daily · Until 4:00 AM</p>
           </div>
         </div>

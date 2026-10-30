@@ -40,7 +40,7 @@ export function OrderCard({ order, index }: { order: OrderItem; index: number })
       <div className="px-6 md:px-8 py-5 border-b border-primary/5 flex flex-wrap items-start justify-between gap-4 bg-primary/[0.02]">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <p className="text-[10px] font-bold text-primary/60 uppercase tracking-widest bg-white border border-primary/10 px-2 py-0.5 rounded-sm">
+            <p className="text-[10px] font-bold text-primary/70 uppercase tracking-widest bg-white border border-primary/10 px-2 py-0.5 rounded-sm">
               Order #{order.id}
             </p>
             <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#1D5A40] uppercase tracking-widest bg-[#1D5A40]/10 px-2 py-0.5 rounded-sm">
@@ -59,7 +59,7 @@ export function OrderCard({ order, index }: { order: OrderItem; index: number })
           <p className="font-serif text-2xl md:text-3xl font-bold text-[#0B2118] tabular-nums">
             ₹{order.total.toLocaleString("en-IN")}
           </p>
-          <p className="text-[10px] uppercase tracking-widest text-primary/40 font-bold mt-1">
+          <p className="text-[10px] uppercase tracking-widest text-primary/70 font-bold mt-1">
             {order.method === "cod" ? "Cash on Delivery" : "UPI Payment"}
           </p>
         </div>
@@ -73,7 +73,7 @@ export function OrderCard({ order, index }: { order: OrderItem; index: number })
                 <span className="bg-primary/5 text-primary px-2 py-1 rounded-sm text-xs font-bold w-8 text-center">{item.quantity}x</span>
                 <span>
                   {item.name} 
-                  {item.size && <span className="block text-xs text-primary/50 mt-0.5 uppercase tracking-widest">{item.size}</span>}
+                  {item.size && <span className="block text-xs text-primary/70 mt-0.5 uppercase tracking-widest">{item.size}</span>}
                 </span>
               </span>
               <span className="text-primary/80 tabular-nums font-serif text-lg">
@@ -86,7 +86,7 @@ export function OrderCard({ order, index }: { order: OrderItem; index: number })
         <div className="flex justify-end">
           <button
             onClick={handleReorder}
-            className="inline-flex items-center justify-center gap-2 bg-[#C9A24A] text-white px-8 py-3.5 text-xs font-bold uppercase tracking-widest hover:bg-[#0B2118] transition-all shadow-md hover:shadow-xl w-full sm:w-auto"
+            className="inline-flex items-center justify-center gap-2 bg-[#C9A24A] text-[#0B2118] px-8 py-3.5 text-xs font-bold uppercase tracking-widest hover:bg-[#0B2118] hover:text-white transition-all shadow-md hover:shadow-xl w-full sm:w-auto"
           >
             <IconShoppingBag size={16} />
             Reorder Items

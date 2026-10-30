@@ -8,6 +8,12 @@ import { BulkOrderSelect } from "./BulkOrderSelect";
 import { BulkOrderTextarea } from "./BulkOrderTextarea";
 import { BulkOrderSubmit } from "./BulkOrderSubmit";
 
+// YYYY-MM-DD in the user's local timezone (toISOString() would use UTC)
+function todayLocal() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 export function BulkOrderForm() {
   const [details, setDetails] = useState<BulkInquiryDetails>({
     name: "", mobile: "", eventType: "", eventDate: "",
@@ -23,7 +29,8 @@ export function BulkOrderForm() {
     if (!details.mobile.trim() || !/^\d{10}$/.test(details.mobile.trim())) e.mobile = "10-digit number required";
     if (!details.eventType) e.eventType = "Required";
     if (!details.eventDate) e.eventDate = "Required";
-    if (!details.guestCount) e.guestCount = "Required";
+    else if (details.eventDate < todayLocal()) e.eventDate = "Date can't be in the past";
+    if (!details.guestCount || Number(details.guestCount) < 1) e.guestCount = "Required";
     if (!details.location.trim()) e.location = "Required";
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -34,15 +41,19 @@ export function BulkOrderForm() {
     setSubmitError("");
     if (!validate()) return;
     
+    // Open WhatsApp synchronously inside the click — browsers (esp. iOS Safari)
+    // block window.open() calls that happen after an await.
+    openWhatsAppBulkOrder(details);
+
     setIsSubmitting(true);
     const result = await submitBulkOrderAction(details);
     setIsSubmitting(false);
 
     if (result.success) {
-      openWhatsAppBulkOrder(details);
       setDetails({ name: "", mobile: "", eventType: "", eventDate: "", guestCount: "", location: "", preferredItems: "", notes: "" });
     } else {
-      setSubmitError(result.error || "Failed to submit. Please try again.");
+      // WhatsApp already has the full inquiry, so this is a soft warning only
+      setSubmitError("Your WhatsApp message has the details, but we couldn't save a copy. Please make sure you sent it.");
     }
   }
 

@@ -14,7 +14,7 @@ export function BulkOrderSubmit({ isSubmitting, submitError }: BulkOrderSubmitPr
         type="submit"
         disabled={isSubmitting}
         suppressHydrationWarning
-        className="w-full mt-6 bg-[#25D366] text-white flex items-center justify-center gap-3 py-5 text-xs font-bold uppercase tracking-[0.2em] hover:bg-[#1DA851] hover:scale-[1.02] transition-all shadow-lg disabled:opacity-70 disabled:hover:scale-100"
+        className="w-full mt-6 bg-[#25D366] text-[#0B2118] flex items-center justify-center gap-3 py-5 text-xs font-bold uppercase tracking-[0.2em] hover:bg-[#1DA851] hover:scale-[1.02] transition-all shadow-lg disabled:opacity-70 disabled:hover:scale-100"
       >
         {isSubmitting ? (
           "Sending Inquiry..."
@@ -31,7 +31,7 @@ export function BulkOrderSubmit({ isSubmitting, submitError }: BulkOrderSubmitPr
         </p>
       )}
 
-      <p className="text-center text-xs text-primary/50 mt-4 uppercase tracking-widest font-bold">
+      <p className="text-center text-xs text-primary/70 mt-4 uppercase tracking-widest font-bold">
         We typically respond within 30 minutes
       </p>
     </>

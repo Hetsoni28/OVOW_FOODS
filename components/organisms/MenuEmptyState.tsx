@@ -15,12 +15,12 @@ export function MenuEmptyState({ onClear }: MenuEmptyStateProps) {
       <p className="font-serif text-3xl md:text-4xl text-primary mb-4">
         No dishes found
       </p>
-      <p className="text-base text-primary/60 mb-8 max-w-md">
+      <p className="text-base text-primary/70 mb-8 max-w-md">
         We couldn't find any dishes matching your current filters. Try adjusting your search or category.
       </p>
       <button suppressHydrationWarning
         onClick={onClear}
-        className="px-8 py-4 bg-[#C9A24A] text-white text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-[#0B2118] transition-all duration-300"
+        className="px-8 py-4 bg-[#C9A24A] text-[#0B2118] text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-[#0B2118] hover:text-white transition-all duration-300"
       >
         Explore Full Menu
       </button>

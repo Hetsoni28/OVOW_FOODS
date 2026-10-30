@@ -14,11 +14,27 @@ interface CheckoutStepDetailsProps {
   onNext: () => void;
 }
 
+const TIME_SLOTS = [
+  { label: "11:00 AM - 1:00 PM", startHour: 11 },
+  { label: "1:00 PM - 3:00 PM", startHour: 13 },
+  { label: "6:00 PM - 8:00 PM", startHour: 18 },
+  { label: "8:00 PM - 10:00 PM", startHour: 20 },
+];
+const LEAD_TIME_MINUTES = 60; // kitchen needs at least an hour for a scheduled slot
+
 export function CheckoutStepDetails({ details, errors, onChange, onScheduleReset, onNext }: CheckoutStepDetailsProps) {
+  // Slots still bookable today (start time at least LEAD_TIME_MINUTES from now)
+  const todaySlots = useMemo(() => {
+    const now = new Date();
+    const earliest = now.getHours() * 60 + now.getMinutes() + LEAD_TIME_MINUTES;
+    return TIME_SLOTS.filter((s) => s.startHour * 60 >= earliest).map((s) => s.label);
+  }, []);
+
   const availableDates = useMemo(() => {
     const dates: string[] = [];
     const today = new Date();
     for (let i = 0; i < 4; i++) {
+      if (i === 0 && todaySlots.length === 0) continue; // nothing left today
       const d = new Date(today);
       d.setDate(today.getDate() + i);
       const dateStr = d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
@@ -26,14 +42,18 @@ export function CheckoutStepDetails({ details, errors, onChange, onScheduleReset
       dates.push(label);
     }
     return dates;
-  }, []);
+  }, [todaySlots]);
 
-  const timeSlots = [
-    "11:00 AM - 1:00 PM",
-    "1:00 PM - 3:00 PM",
-    "6:00 PM - 8:00 PM",
-    "8:00 PM - 10:00 PM",
-  ];
+  const isTodaySelected = details.scheduleDate?.startsWith("Today") ?? false;
+  const timeSlots = isTodaySelected ? todaySlots : TIME_SLOTS.map((s) => s.label);
+
+  const handleDateChange = (date: string) => {
+    onChange("scheduleDate", date);
+    // Clear a previously chosen time that has already passed for today
+    if (date.startsWith("Today") && details.scheduleTime && !todaySlots.includes(details.scheduleTime)) {
+      onChange("scheduleTime", "");
+    }
+  };
 
   const isLater = details.scheduleType === "later";
 
@@ -41,25 +61,25 @@ export function CheckoutStepDetails({ details, errors, onChange, onScheduleReset
     <div className="bg-white p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-primary/5">
       <div className="mb-10">
         <h2 className="font-serif text-3xl md:text-4xl text-primary mb-3">Delivery Details</h2>
-        <p className="text-primary/50 text-sm">Please provide your details so we can deliver your order.</p>
+        <p className="text-primary/70 text-sm">Please provide your details so we can deliver your order.</p>
       </div>
 
       <div className="space-y-8">
 
         {/* ── Delivery Method ── */}
         <div>
-          <p className="text-xs font-bold uppercase tracking-widest text-primary/40 mb-3">Delivery</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-3">Delivery</p>
           <div className="flex items-center gap-4 p-4 border-2 border-[#C9A24A] bg-[#C9A24A]/5 rounded-lg">
-            <div className="p-2 rounded-full bg-[#C9A24A] text-white flex-shrink-0">
+            <div className="p-2 rounded-full bg-[#C9A24A] text-[#0B2118] flex-shrink-0">
               <IconTruck size={16} />
             </div>
             <div className="flex-1">
               <p className="font-bold text-sm text-primary">Porter Delivery</p>
-              <p className="text-xs text-primary/50 mt-0.5">Booked and managed by OVOW for you</p>
+              <p className="text-xs text-primary/70 mt-0.5">Booked and managed by OVOW for you</p>
             </div>
             <div className="text-right">
               <p className="text-sm font-bold text-[#2E7D4F]">FREE</p>
-              <p className="text-xs text-primary/40">₹0</p>
+              <p className="text-xs text-primary/70">₹0</p>
             </div>
             <div className="w-5 h-5 rounded-full bg-[#C9A24A] flex items-center justify-center flex-shrink-0">
               <IconCheckCircle size={14} className="text-white" />
@@ -75,7 +95,7 @@ export function CheckoutStepDetails({ details, errors, onChange, onScheduleReset
             className={`flex items-center justify-center gap-2 py-3 px-4 rounded-md text-xs font-bold uppercase tracking-widest transition-all duration-200 ${
               !isLater
                 ? "bg-white text-primary shadow-sm"
-                : "text-primary/40 hover:text-primary"
+                : "text-primary/70 hover:text-primary"
             }`}
           >
             {/* Lightning bolt — hand-crafted SVG */}
@@ -90,7 +110,7 @@ export function CheckoutStepDetails({ details, errors, onChange, onScheduleReset
             className={`flex items-center justify-center gap-2 py-3 px-4 rounded-md text-xs font-bold uppercase tracking-widest transition-all duration-200 ${
               isLater
                 ? "bg-white text-primary shadow-sm"
-                : "text-primary/40 hover:text-primary"
+                : "text-primary/70 hover:text-primary"
             }`}
           >
             {/* Calendar — hand-crafted SVG */}
@@ -119,8 +139,11 @@ export function CheckoutStepDetails({ details, errors, onChange, onScheduleReset
                 <IconCalendar size={16} className="absolute left-2 top-1/2 -translate-y-1/2 text-primary/40 pointer-events-none" />
                 <select
                   id="scheduleDate"
+                  aria-required="true"
+                  aria-invalid={!!errors.scheduleDate}
+              aria-describedby={errors.scheduleDate ? "scheduleDate-error" : undefined}
                   value={details.scheduleDate || ""}
-                  onChange={(e) => onChange("scheduleDate", e.target.value)}
+                  onChange={(e) => handleDateChange(e.target.value)}
                   className={`${inputCls(errors.scheduleDate)} pl-8 bg-white appearance-none cursor-pointer`}
                 >
                   <option value="" disabled>Choose a day</option>
@@ -136,6 +159,9 @@ export function CheckoutStepDetails({ details, errors, onChange, onScheduleReset
                 <IconClock size={16} className="absolute left-2 top-1/2 -translate-y-1/2 text-primary/40 pointer-events-none" />
                 <select
                   id="scheduleTime"
+                  aria-required="true"
+                  aria-invalid={!!errors.scheduleTime}
+              aria-describedby={errors.scheduleTime ? "scheduleTime-error" : undefined}
                   value={details.scheduleTime || ""}
                   onChange={(e) => onChange("scheduleTime", e.target.value)}
                   className={`${inputCls(errors.scheduleTime)} pl-8 bg-white appearance-none cursor-pointer`}
@@ -157,6 +183,10 @@ export function CheckoutStepDetails({ details, errors, onChange, onScheduleReset
             <input
               id="name"
               type="text"
+              autoComplete="name"
+              aria-required="true"
+              aria-invalid={!!errors.name}
+              aria-describedby={errors.name ? "name-error" : undefined}
               value={details.name}
               onChange={(e) => onChange("name", e.target.value)}
               placeholder="Type your name"
@@ -169,10 +199,15 @@ export function CheckoutStepDetails({ details, errors, onChange, onScheduleReset
         <Field id="mobile" label="Mobile Number" required error={errors.mobile}>
           <div className="relative group">
             <IconPhone size={18} className="absolute left-0 top-1/2 -translate-y-1/2 text-primary/30 group-focus-within:text-[#C9A24A] transition-colors" />
-            <span className="absolute left-8 top-1/2 -translate-y-1/2 text-primary/40 text-sm">+91</span>
+            <span className="absolute left-8 top-1/2 -translate-y-1/2 text-primary/70 text-sm">+91</span>
             <input
               id="mobile"
               type="tel"
+              autoComplete="tel-national"
+              inputMode="numeric"
+              aria-required="true"
+              aria-invalid={!!errors.mobile}
+              aria-describedby={errors.mobile ? "mobile-error" : undefined}
               maxLength={10}
               value={details.mobile}
               onChange={(e) => onChange("mobile", e.target.value.replace(/\D/g, "").slice(0, 10))}
@@ -207,7 +242,7 @@ export function CheckoutStepDetails({ details, errors, onChange, onScheduleReset
         <button suppressHydrationWarning
           type="button"
           onClick={onNext}
-          className="w-full flex items-center justify-between bg-[#C9A24A] text-white px-8 py-5 group hover:bg-[#0B2118] transition-all hover:shadow-xl hover:shadow-[#0B2118]/20 hover:-translate-y-0.5 mt-2"
+          className="w-full flex items-center justify-between bg-[#C9A24A] text-[#0B2118] px-8 py-5 group hover:bg-[#0B2118] hover:text-white transition-all hover:shadow-xl hover:shadow-[#0B2118]/20 hover:-translate-y-0.5 mt-2"
         >
           <span className="text-xs font-bold uppercase tracking-[0.2em]">Continue to Payment</span>
           <IconCheckCircle size={20} className="group-hover:scale-110 transition-transform text-white" />

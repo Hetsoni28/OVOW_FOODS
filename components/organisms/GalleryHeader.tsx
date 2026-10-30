@@ -11,10 +11,10 @@ export function GalleryHeader() {
       animate="visible"
       className="max-w-3xl mx-auto text-center mb-16"
     >
-      <motion.p variants={fadeUp} className="text-xs uppercase tracking-widest text-primary/40 font-bold mb-4">
-        The OVOW Experience
-      </motion.p>
       <motion.h1 variants={fadeUp} className="font-serif text-5xl md:text-7xl leading-tight">
+        <span className="block font-sans text-xs uppercase tracking-widest text-primary/70 font-bold mb-4">
+          OVOW FOODS Gallery · Pure Veg Dishes &amp; Kitchen
+        </span>
         A feast for the eyes.
       </motion.h1>
       <motion.p variants={fadeUp} className="mt-6 text-lg text-primary/70 max-w-xl mx-auto">

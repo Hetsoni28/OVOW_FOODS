@@ -5,6 +5,17 @@ export interface Category {
   sortOrder: number;
 }
 
+/** Editor-controlled SEO block from Sanity (all optional) */
+export interface SeoFields {
+  title?: string;
+  description?: string;
+  heading?: string;
+  image?: string;
+  imageAlt?: string;
+  canonicalUrl?: string;
+  noIndex?: boolean;
+}
+
 export interface Product {
   _id?: string;
   slug: string;
@@ -19,6 +30,8 @@ export interface Product {
   allergens?: string;
   previewVideo?: string;
   thumbnailUrl?: string;
+  thumbnailAlt?: string; // Sanity alt text for the thumbnail
+  seo?: SeoFields | null;
   video?: {
     asset?: {
       url: string;
@@ -29,7 +42,9 @@ export interface Product {
   vegetarian?: boolean;
   signature?: boolean;
   isSignature?: boolean; // Legacy
-  isBestseller?: boolean;
+  isBestseller?: boolean; // Legacy (local data/products.ts)
+  isBestSeller?: boolean; // Sanity field name
+  isKidsSpecial?: boolean;
   available?: boolean;
   isAvailable?: boolean; // Legacy
   availabilityStatus?: 'available' | 'limited' | 'soldout' | 'preorder';

@@ -21,7 +21,7 @@ export function GalleryFilters({ categories, activeCategory, setActiveCategory }
             onClick={() => setActiveCategory(cat)}
             className={`relative z-10 px-6 py-3 text-xs font-bold uppercase tracking-widest transition-colors duration-300 ${
               activeCategory === cat
-                ? "text-white"
+                ? "text-[#0B2118]"
                 : "text-primary hover:text-primary/70"
             }`}
           >

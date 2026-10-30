@@ -22,12 +22,12 @@ export function OrderEmptyState() {
         <IconShoppingBag size={36} className="text-[#C9A24A]" />
       </motion.div>
       <h2 className="font-serif text-3xl md:text-4xl text-primary mb-4">No culinary history yet</h2>
-      <p className="text-sm md:text-base text-primary/60 mb-10 max-w-sm mx-auto leading-relaxed">
+      <p className="text-sm md:text-base text-primary/70 mb-10 max-w-sm mx-auto leading-relaxed">
         Your order history is waiting to be written. Discover our pure vegetarian specialties and start your journey.
       </p>
       <Link
         href="/menu"
-        className="inline-flex items-center justify-center gap-2 bg-[#C9A24A] text-white px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-[#0B2118] transition-colors shadow-lg shadow-[#C9A24A]/20"
+        className="inline-flex items-center justify-center gap-2 bg-[#C9A24A] text-[#0B2118] px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-[#0B2118] hover:text-white transition-colors shadow-lg shadow-[#C9A24A]/20"
       >
         Explore Our Menu
       </Link>

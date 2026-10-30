@@ -9,6 +9,7 @@ import { buildCheckoutWhatsAppMessage } from "@/lib/whatsapp";
 import { COMPANY_CONFIG } from "@/lib/config";
 import { useOrderHistory } from "@/hooks/useOrderHistory";
 import { saveOrderToStorage } from "@/lib/storage";
+import { extractLocality } from "@/lib/locality";
 import { CheckoutEmptyState } from "@/components/organisms/CheckoutEmptyState";
 import { ProgressBar } from "@/components/organisms/ProgressBar";
 import { CheckoutStepDetails } from "@/components/organisms/CheckoutStepDetails";
@@ -60,18 +61,16 @@ export function CheckoutClient() {
       if (!details.scheduleTime) e.scheduleTime = "Time required";
     }
     setErrors(e);
+    // Send keyboard / screen-reader users straight to the first problem
+    const firstInvalid = (["scheduleDate", "scheduleTime", "name", "mobile", "address"] as const).find((k) => e[k]);
+    if (firstInvalid) requestAnimationFrame(() => document.getElementById(firstInvalid)?.focus());
     return Object.keys(e).length === 0;
   };
 
   const goToPayment = () => {
     if (!validateDetails()) return;
     if (items.length === 0 && step === 1) return;
-    const ref = generateOrderRef();
-    setOrderId(ref);
-    if (paymentMethod === "upi") {
-      setUpiUri(buildUpiUri(total, ref));
-      setQrUrl(buildQrUrl(total, ref));
-    }
+    setOrderId(generateOrderRef());
     setStep(2);
   };
 
@@ -125,33 +124,37 @@ export function CheckoutClient() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         orderId,
-        area: details.address,
+        area: extractLocality(details.address), // only the locality ever leaves the device
         itemCount: items.reduce((sum, i) => sum + i.quantity, 0),
         paymentMethod: method,
       }),
     }).catch(() => {}); // silently ignore errors — non-critical
   };
 
-  const handleProcessOrder = (isCod: boolean) => {
-    addOrder({
-      id: orderId,
-      items: [...items],
-      total: total,
-      method: isCod ? "cod" : "upi"
-    });
+  // Order history is only written once the order is actually placed (COD submit
+  // or UPI "I've Paid"), so abandoned UPI checkouts never show up in /orders.
+  const recordOrder = (method: "upi" | "cod") => {
+    addOrder({ id: orderId, items: [...items], total, method });
+  };
 
+  const handleProcessOrder = (isCod: boolean) => {
     if (isCod) {
+      recordOrder("cod");
       saveSnapshot("COD", false);
       setFinalCart({ items: [...items], total, method: "cod" });
       clearCart();
       fireOrderEvent("cod");
       setStep(4);
     } else {
+      // Build the QR from the payment method chosen on this step, not step 1
+      setUpiUri(buildUpiUri(total, orderId));
+      setQrUrl(buildQrUrl(total, orderId));
       setStep(3); // Go to QR code for UPI, wait for user to confirm payment
     }
   };
 
   const handleConfirmPayment = () => {
+    recordOrder("upi");
     saveSnapshot("UPI", true);
     setFinalCart({ items: [...items], total, method: "upi" });
     clearCart();
@@ -161,16 +164,16 @@ export function CheckoutClient() {
 
   if (!mounted) {
     return (
-      <main className="min-h-screen bg-[#F9F6F0] pt-24 pb-32 flex items-center justify-center">
+      <div className="min-h-screen bg-[#F9F6F0] pt-24 pb-32 flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-      </main>
+      </div>
     );
   }
 
   if (items.length === 0 && step === 1) return <CheckoutEmptyState />;
 
   return (
-    <main className="min-h-screen bg-[#F9F6F0] pt-24 pb-32">
+    <div className="min-h-screen bg-[#F9F6F0] pt-24 pb-32">
       <div className="max-w-5xl mx-auto px-4 md:px-8">
         <ProgressBar step={step} />
         
@@ -222,6 +225,6 @@ export function CheckoutClient() {
           )}
         </AnimatePresence>
       </div>
-    </main>
+    </div>
   );
 }

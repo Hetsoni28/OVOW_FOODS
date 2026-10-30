@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useLayoutEffect } from "react";
 import { IconDownload, IconX, IconShare } from "@/components/atoms/Icons";
+import { useDialog } from "@/hooks/useDialog";
 import { createPortal } from "react-dom";
 
 const useIsomorphicLayoutEffect =
@@ -20,6 +21,8 @@ function InstallGuidePopup({
   isIOS: boolean;
   onClose: () => void;
 }) {
+  const dialogRef = useDialog<HTMLDivElement>(true, onClose);
+
   // Close on scroll
   useEffect(() => {
     const handler = () => onClose();
@@ -35,14 +38,16 @@ function InstallGuidePopup({
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        aria-hidden="true"
         onClick={onClose}
       />
       {/* Card — max-height so it never hides behind nav bar on small phones */}
-      <div className="relative w-full max-w-sm bg-[#0d2d20] rounded-2xl p-6 shadow-2xl border border-white/10 z-10 overflow-y-auto max-h-[85vh]">
+      <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="install-title" tabIndex={-1} className="relative w-full max-w-sm bg-[#0d2d20] rounded-2xl p-6 shadow-2xl border border-white/10 z-10 overflow-y-auto max-h-[85vh]">
         {/* X close button */}
         <button suppressHydrationWarning
           onClick={onClose}
-          className="absolute top-4 right-4 text-white/50 hover:text-white"
+          aria-label="Close"
+          className="absolute top-2 right-2 w-11 h-11 flex items-center justify-center text-white/60 hover:text-white"
         >
           <IconX size={18} />
         </button>
@@ -52,8 +57,8 @@ function InstallGuidePopup({
             <IconDownload size={18} className="text-[#C9A24A]" />
           </div>
           <div>
-            <p className="text-white font-bold text-sm">Install OVOW FOODS</p>
-            <p className="text-white/50 text-xs">Add to your Home Screen</p>
+            <p id="install-title" className="text-white font-bold text-sm">Install OVOW FOODS</p>
+            <p className="text-white/60 text-xs">Add to your Home Screen</p>
           </div>
         </div>
 
@@ -83,7 +88,7 @@ function InstallGuidePopup({
           </button>
           <button suppressHydrationWarning
             onClick={onClose}
-            className="flex-1 bg-[#C9A24A] hover:bg-[#b8912e] text-white font-bold py-3 text-sm tracking-widest uppercase transition-colors"
+            className="flex-1 bg-[#C9A24A] hover:bg-[#b8912e] text-[#0B2118] font-bold py-3 text-sm tracking-widest uppercase transition-colors"
           >
             Got it!
           </button>
@@ -101,12 +106,12 @@ function InstallGuidePopup({
 function Step({ n, title, sub }: { n: number; title: React.ReactNode; sub: string }) {
   return (
     <div className="flex items-start gap-3">
-      <span className="w-6 h-6 bg-[#C9A24A] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+      <span className="w-6 h-6 bg-[#C9A24A] text-[#0B2118] text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
         {n}
       </span>
       <div>
         <p className="text-white text-sm font-medium">{title}</p>
-        <p className="text-white/50 text-xs mt-0.5">{sub}</p>
+        <p className="text-white/60 text-xs mt-0.5">{sub}</p>
       </div>
     </div>
   );
@@ -169,7 +174,7 @@ export function InstallAppButton() {
   if (isInstalled) return null;
 
   const buttonCls =
-    "flex items-center gap-2 bg-[#C9A24A] text-white px-4 py-2 text-[11px] font-bold uppercase tracking-widest hover:bg-[#0B2118] transition-all duration-300 shadow-lg shadow-[#C9A24A]/20";
+    "flex items-center gap-2 bg-[#C9A24A] text-[#0B2118] px-4 py-2 text-[11px] font-bold uppercase tracking-widest hover:bg-[#0B2118] hover:text-white transition-all duration-300 shadow-lg shadow-[#C9A24A]/20";
 
   // ── iOS ────────────────────────────────────────────────────────────────────
   if (isIOS) {

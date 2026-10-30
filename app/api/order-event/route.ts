@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "next-sanity";
+import { extractLocality } from "@/lib/locality";
 
 // Write client — uses the existing SANITY_API_TOKEN already set in Vercel
 const writeClient = createClient({
@@ -10,30 +11,53 @@ const writeClient = createClient({
   useCdn: false,
 });
 
+// Matches lib/order.ts → OVOW-YYMMDD-XXXX
+const ORDER_ID_RE = /^OVOW-\d{6}-[A-HJ-NP-Z2-9]{4}$/;
+
+// Basic per-IP rate limit (in-memory, per serverless instance)
+const RATE_LIMIT = 10;
+const RATE_WINDOW_MS = 60 * 60 * 1000;
+const hits = new Map<string, number[]>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const recent = (hits.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
+  recent.push(now);
+  hits.set(ip, recent);
+  return recent.length > RATE_LIMIT;
+}
+
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
+  if (isRateLimited(ip)) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
+  let body: Record<string, unknown>;
   try {
-    const body = await req.json();
-    const { orderId, area, itemCount, paymentMethod } = body;
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
 
-    if (!orderId || !itemCount) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
+  const { orderId, area, itemCount, paymentMethod } = body ?? {};
+  const count = Number(itemCount);
 
-    // Extract just the locality from the address (first word/comma-segment)
-    const cleanArea = area
-      ? area.split(",")[0].split(" ").slice(0, 2).join(" ").trim()
-      : "Ahmedabad";
+  if (typeof orderId !== "string" || !ORDER_ID_RE.test(orderId) || !Number.isInteger(count) || count < 1 || count > 100) {
+    return NextResponse.json({ error: "Missing or invalid fields" }, { status: 400 });
+  }
 
-    const doc = {
+  try {
+    // Deterministic _id → the same order can only ever create one ticker event
+    const result = await writeClient.createIfNotExists({
+      _id: `orderEvent-${orderId}`,
       _type: "orderEvent",
       orderId,
-      area: cleanArea,
-      itemCount: Number(itemCount),
-      paymentMethod: paymentMethod || "upi",
+      area: extractLocality(area),
+      itemCount: count,
+      paymentMethod: paymentMethod === "cod" ? "cod" : "upi",
       placedAt: new Date().toISOString(),
-    };
-
-    const result = await writeClient.create(doc);
+    });
     return NextResponse.json({ success: true, id: result._id });
   } catch (err) {
     console.error("[order-event API]", err);

@@ -9,7 +9,7 @@ import React, {
   useState,
 } from "react";
 import { CartItem, Product } from "@/types";
-import { loadCart, saveCart, clearStoredCart, getCartTotal, getCartCount } from "@/lib/cart";
+import { loadCart, saveCart, clearStoredCart, getCartTotal, getCartCount, getLineKey } from "@/lib/cart";
 
 // ── State & Actions ───────────────────────────────────────────────────────────
 
@@ -20,9 +20,9 @@ interface CartState {
 
 type CartAction =
   | { type: "ADD_ITEM"; product: Omit<CartItem, "quantity"> }
-  | { type: "REMOVE_ITEM"; slug: string; addonKey?: string }
-  | { type: "INCREMENT"; slug: string; addonKey?: string }
-  | { type: "DECREMENT"; slug: string; addonKey?: string }
+  | { type: "REMOVE_ITEM"; lineKey: string }
+  | { type: "INCREMENT"; lineKey: string }
+  | { type: "DECREMENT"; lineKey: string }
   | { type: "CLEAR" }
   | { type: "OPEN_DRAWER" }
   | { type: "CLOSE_DRAWER" }
@@ -34,18 +34,11 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       return { ...state, items: action.items };
 
     case "ADD_ITEM": {
-      // Build a composite key so Biryani+Raita and Biryani (no Raita) are separate items
-      const addonKey = action.product.addons?.wantsRaita ? "raita" : "";
-      const existing = state.items.find(
-        (i) => i.slug === action.product.slug && (i.addons?.wantsRaita ? "raita" : "") === addonKey
-      );
+      // Same dish + same variant/raita/extras → one line; anything different → its own line
+      const key = getLineKey(action.product);
+      const existing = state.items.some((i) => getLineKey(i) === key);
       const items = existing
-        ? state.items.map((i) => {
-            const iAddonKey = i.addons?.wantsRaita ? "raita" : "";
-            return i.slug === action.product.slug && iAddonKey === addonKey
-              ? { ...i, quantity: i.quantity + 1 }
-              : i;
-          })
+        ? state.items.map((i) => (getLineKey(i) === key ? { ...i, quantity: i.quantity + 1 } : i))
         : [...state.items, { ...action.product, quantity: 1 }];
       return { ...state, items };
     }
@@ -53,14 +46,14 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     case "REMOVE_ITEM":
       return {
         ...state,
-        items: state.items.filter((i) => i.slug !== action.slug),
+        items: state.items.filter((i) => getLineKey(i) !== action.lineKey),
       };
 
     case "INCREMENT":
       return {
         ...state,
         items: state.items.map((i) =>
-          i.slug === action.slug ? { ...i, quantity: i.quantity + 1 } : i
+          getLineKey(i) === action.lineKey ? { ...i, quantity: i.quantity + 1 } : i
         ),
       };
 
@@ -69,7 +62,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         ...state,
         items: state.items
           .map((i) =>
-            i.slug === action.slug ? { ...i, quantity: i.quantity - 1 } : i
+            getLineKey(i) === action.lineKey ? { ...i, quantity: i.quantity - 1 } : i
           )
           .filter((i) => i.quantity > 0),
       };
@@ -96,9 +89,10 @@ interface CartContextValue {
   total: number;
   count: number;
   addItem: (product: Omit<CartItem, "quantity">) => void;
-  removeItem: (slug: string) => void;
-  increment: (slug: string) => void;
-  decrement: (slug: string) => void;
+  /** All three take a line key from getLineKey(item) */
+  removeItem: (lineKey: string) => void;
+  increment: (lineKey: string) => void;
+  decrement: (lineKey: string) => void;
   clearCart: () => void;
   openCart: () => void;
   closeCart: () => void;
@@ -124,9 +118,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [state.items, hydrated]);
 
   const addItem = useCallback((product: Omit<CartItem, "quantity">) => dispatch({ type: "ADD_ITEM", product }), []);
-  const removeItem = useCallback((slug: string) => dispatch({ type: "REMOVE_ITEM", slug }), []);
-  const increment = useCallback((slug: string) => dispatch({ type: "INCREMENT", slug }), []);
-  const decrement = useCallback((slug: string) => dispatch({ type: "DECREMENT", slug }), []);
+  const removeItem = useCallback((lineKey: string) => dispatch({ type: "REMOVE_ITEM", lineKey }), []);
+  const increment = useCallback((lineKey: string) => dispatch({ type: "INCREMENT", lineKey }), []);
+  const decrement = useCallback((lineKey: string) => dispatch({ type: "DECREMENT", lineKey }), []);
   const clearCart = useCallback(() => {
     dispatch({ type: "CLEAR" });
     clearStoredCart();

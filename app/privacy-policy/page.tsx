@@ -2,11 +2,16 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { IconArrowLeft, IconCheck } from "@/components/atoms/Icons";
 import { Reveal } from "@/components/atoms/Reveal";
+import { cmsPageMetadata } from "@/lib/pageSeo";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy | OVOW FOODS",
-  description: "Privacy Policy for OVOW FOODS",
-};
+// Defaults below; editors can override them in Sanity Studio → Page SEO → "privacy-policy"
+export function generateMetadata(): Promise<Metadata> {
+  return cmsPageMetadata("privacy-policy", {
+    title: "Privacy Policy",
+    description: "How OVOW FOODS collects, uses and protects your personal information when you browse and order.",
+    path: "/privacy-policy",
+  });
+}
 
 export default function PrivacyPolicyPage() {
   return (
@@ -76,7 +81,7 @@ export default function PrivacyPolicyPage() {
               <p className="mb-4">
                 We take reasonable technical and organizational measures to protect your personal information from unauthorized access, misuse or disclosure.
               </p>
-              <p className="text-primary/60 italic">
+              <p className="text-primary/70 italic">
                 However, no internet-based system can be guaranteed to be completely secure.
               </p>
             </Section>

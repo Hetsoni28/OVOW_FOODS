@@ -4,6 +4,7 @@ import { motion, Variants } from "framer-motion";
 import { IconCheckCircle, IconClock, IconScale, IconChili } from "@/components/atoms/Icons";
 import { AddToCartBlock } from "@/app/menu/[slug]/AddToCartBlock";
 import type { Product } from "@/types";
+import { pureVegLabel } from "@/lib/seo";
 
 const container: Variants = {
   hidden: { opacity: 0 },
@@ -55,14 +56,17 @@ export function ProductDetails({ product }: { product: Product }) {
 
       {/* Luxury Typography */}
       <motion.h1 variants={item} className="font-serif text-5xl md:text-6xl lg:text-7xl text-primary leading-tight mb-4">
-        {product.name}
+        {product.seo?.heading?.trim() || product.name}
+        <span className="block font-sans text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-primary/70 mt-3">
+          {pureVegLabel(product.category)} · OVOW FOODS Ahmedabad
+        </span>
       </motion.h1>
       <motion.div variants={item} className="w-16 h-1 bg-[#C9A24A] mb-8 rounded-none" />
       
       <motion.p variants={item} className="text-2xl md:text-3xl font-serif text-primary mb-8">
         ₹{product.price.toLocaleString("en-IN")}
         {product.originalPrice && (
-          <span className="ml-4 text-lg text-primary/40 line-through">
+          <span className="ml-4 text-lg text-primary/70 line-through">
             ₹{product.originalPrice.toLocaleString("en-IN")}
           </span>
         )}
@@ -72,14 +76,14 @@ export function ProductDetails({ product }: { product: Product }) {
       <motion.div variants={item} className="grid grid-cols-2 gap-4 mb-8 pb-8 border-b border-primary/10">
         <div className="bg-white p-5 rounded-none shadow-sm border border-primary/5 flex flex-col gap-2 transition-transform hover:-translate-y-1 duration-300">
           <IconScale size={20} className="text-[#C9A24A]" />
-          <p className="text-[10px] font-bold uppercase tracking-widest text-primary/40">Portion Size</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70">Portion Size</p>
           {/* @ts-ignore */}
           <p className="text-lg font-medium text-primary">{product.servingSize || product.size || "1 Portion"}</p>
         </div>
         <div className="bg-white p-5 rounded-none shadow-sm border border-primary/5 flex flex-col gap-2 transition-transform hover:-translate-y-1 duration-300">
           <IconClock size={20} className="text-[#C9A24A]" />
-          <p className="text-[10px] font-bold uppercase tracking-widest text-primary/40">Prep Time</p>
-          <p className="text-lg font-medium text-primary">40-45 mins <span className="text-sm text-primary/60">+ Delivery</span></p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70">Prep Time</p>
+          <p className="text-lg font-medium text-primary">40-45 mins <span className="text-sm text-primary/70">+ Delivery</span></p>
         </div>
       </motion.div>
 

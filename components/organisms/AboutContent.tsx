@@ -23,7 +23,7 @@ export function AboutContent() {
         variants={staggerFast} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }}
         className="max-w-4xl"
       >
-        <motion.p variants={fadeUp} className="text-[#C9A24A] text-sm font-bold uppercase tracking-[0.2em] mb-4">Our Story</motion.p>
+        <motion.p variants={fadeUp} className="text-[#86671C] text-sm font-bold uppercase tracking-[0.2em] mb-4">Our Story</motion.p>
         <motion.h2 variants={fadeUp} className="font-serif text-4xl md:text-6xl text-primary mb-8">About OVOW FOODS</motion.h2>
         <motion.div variants={fadeUp} className="space-y-6 text-lg md:text-xl text-primary/70 font-serif leading-relaxed">
           <p>
@@ -43,7 +43,7 @@ export function AboutContent() {
         variants={staggerFast} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }}
         className="bg-primary/5 p-8 md:p-16 border border-primary/10 max-w-5xl"
       >
-        <motion.p variants={fadeUp} className="text-[#C9A24A] text-sm font-bold uppercase tracking-[0.2em] mb-4">The Promise</motion.p>
+        <motion.p variants={fadeUp} className="text-[#86671C] text-sm font-bold uppercase tracking-[0.2em] mb-4">The Promise</motion.p>
         <motion.h2 variants={fadeUp} className="font-serif text-3xl md:text-5xl text-primary mb-8">Our Direct Ordering Promise</motion.h2>
         <motion.div variants={fadeUp} className="space-y-6 text-lg text-primary/80">
           <p>We believe in building a direct relationship with our customers.</p>
@@ -77,7 +77,7 @@ export function AboutContent() {
             <p>This helps us plan the ingredients, preparation and cooking process properly so that your food reaches you fresh and at the quality we promise.</p>
             <div className="bg-white p-6 shadow-sm border border-primary/10 mt-8">
               <p className="font-serif text-xl font-bold text-primary mb-2 italic">BOOK TODAY. TASTE TOMORROW.</p>
-              <p className="flex items-center gap-2 text-sm font-bold tracking-widest uppercase text-primary/60">
+              <p className="flex items-center gap-2 text-sm font-bold tracking-widest uppercase text-primary/70">
                 <IconPhone size={16} /> Pre-Order / Direct Order: <a href="https://wa.me/917567566214" className="text-[#C9A24A] hover:underline">756 756 6214</a>
               </p>
             </div>
@@ -102,7 +102,7 @@ export function AboutContent() {
               ))}
             </ul>
             <p className="pt-4 font-bold text-primary/90">For Catering & Bulk Orders, Advance Booking is Recommended.</p>
-            <p className="flex items-center gap-2 text-sm font-bold tracking-widest uppercase text-primary/60 mb-6">
+            <p className="flex items-center gap-2 text-sm font-bold tracking-widest uppercase text-primary/70 mb-6">
               <IconPhone size={16} /> Catering Enquiries: <a href="https://wa.me/917567566214" className="text-[#C9A24A] hover:underline">756 756 6214</a>
             </p>
             <Link href="/party-bulk-orders" className="inline-flex items-center justify-center bg-primary text-white px-6 py-3 text-xs font-bold tracking-widest uppercase hover:bg-[#C9A24A] transition-colors shadow-sm">
@@ -140,8 +140,8 @@ export function AboutContent() {
 
         <motion.div variants={fadeUp} className="inline-block border-t border-primary/20 pt-12 px-12">
           <p className="font-serif text-3xl text-primary mb-2">OVOW FOODS</p>
-          <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#C9A24A] mb-4">Curating The Extraordinary</p>
-          <p className="font-serif italic text-primary/60 text-lg">Taste the WOW. Experience OVOW.</p>
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#86671C] mb-4">Curating The Extraordinary</p>
+          <p className="font-serif italic text-primary/70 text-lg">Taste the WOW. Experience OVOW.</p>
         </motion.div>
       </motion.section>
 

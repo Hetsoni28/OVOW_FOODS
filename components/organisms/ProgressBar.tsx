@@ -19,15 +19,15 @@ export function ProgressBar({ step }: { step: number }) {
                   done
                     ? "bg-primary border-primary text-white"
                     : active
-                    ? "bg-[#C9A24A] border-[#C9A24A] text-white shadow-[0_2px_12px_rgba(201,162,74,0.35)]"
-                    : "border-primary/12 text-primary/20 bg-transparent"
+                    ? "bg-[#C9A24A] border-[#C9A24A] text-[#0B2118] shadow-[0_2px_12px_rgba(201,162,74,0.35)]"
+                    : "border-primary/12 text-primary/70 bg-transparent"
                 }`}
               >
                 {done ? <IconCheck size={14} strokeWidth={2.5} /> : n}
               </div>
               <span
                 className={`text-[10px] font-bold uppercase tracking-widest absolute mt-12 transition-colors ${
-                  active || done ? "text-primary" : "text-primary/30"
+                  active || done ? "text-primary" : "text-primary/70"
                 }`}
               >
                 {label}

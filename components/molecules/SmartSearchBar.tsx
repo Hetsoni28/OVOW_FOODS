@@ -43,14 +43,16 @@ export function SmartSearchBar({ value, onChange, placeholder = "Search dishes..
         setExpanded(true);
         setTimeout(() => inputRef.current?.focus(), 100);
       }
-      if (e.key === "Escape") {
+      // Only react to Escape while the search is open — otherwise closing the
+      // cart drawer with Escape would also wipe the search
+      if (e.key === "Escape" && expanded) {
         setExpanded(false);
         onChange("");
       }
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [onChange]);
+  }, [onChange, expanded]);
 
   function handleOpen() {
     setExpanded(true);
@@ -78,11 +80,13 @@ export function SmartSearchBar({ value, onChange, placeholder = "Search dishes..
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.2, ease: EASE }}
             onClick={handleOpen}
-            className="flex items-center gap-2 px-4 py-2.5 border border-primary/20 hover:border-[#C9A24A]/50 text-primary/50 hover:text-[#C9A24A] rounded-full text-xs font-bold tracking-widest transition-all duration-300 group"
+            aria-label="Search dishes"
+            aria-keyshortcuts="Control+K Meta+K"
+            className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] border border-primary/20 hover:border-[#C9A24A]/50 text-primary/70 hover:text-[#C9A24A] rounded-full text-xs font-bold tracking-widest transition-all duration-300 group"
           >
             <IconSearch size={14} className="text-[#C9A24A]" />
             <span className="hidden sm:inline">Search</span>
-            <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-primary/5 border border-primary/10 rounded text-[9px] font-mono text-primary/40 group-hover:border-[#C9A24A]/20">
+            <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-primary/5 border border-primary/10 rounded text-[9px] font-mono text-primary/70 group-hover:border-[#C9A24A]/20">
               ⌘K
             </kbd>
           </motion.button>
@@ -98,10 +102,11 @@ export function SmartSearchBar({ value, onChange, placeholder = "Search dishes..
             <IconSearch size={14} className="flex-shrink-0 text-[#C9A24A]" />
             <input
               ref={inputRef}
-              type="text"
               value={value}
               onChange={(e) => onChange(e.target.value)}
               placeholder={placeholder}
+              aria-label="Search dishes"
+              type="search"
               className="flex-1 bg-transparent outline-none text-sm text-primary placeholder:text-primary/40 font-medium min-w-0"
               autoComplete="off"
             />
@@ -110,14 +115,16 @@ export function SmartSearchBar({ value, onChange, placeholder = "Search dishes..
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 onClick={handleClear}
-                className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary/50 hover:bg-[#C9A24A]/20 hover:text-[#C9A24A] transition-colors"
+                aria-label="Clear search"
+                className="flex-shrink-0 w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-primary/70 hover:bg-[#C9A24A]/20 hover:text-[#C9A24A] transition-colors"
               >
                 <IconX size={10} />
               </motion.button>
             )}
             <button
               onClick={handleClose}
-              className="flex-shrink-0 text-[10px] font-bold tracking-widest text-primary/30 hover:text-[#C9A24A] transition-colors uppercase"
+              aria-label="Close search"
+              className="flex-shrink-0 px-2 py-1.5 text-[10px] font-bold tracking-widest text-primary/70 hover:text-[#C9A24A] transition-colors uppercase"
             >
               Esc
             </button>

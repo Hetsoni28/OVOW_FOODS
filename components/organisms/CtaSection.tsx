@@ -24,7 +24,7 @@ export function CtaSection() {
             >
               <div className="flex items-center gap-4 mb-6">
                 <span className="w-12 h-[1px] bg-[#C9A24A]"></span>
-                <p className="text-tertiary text-[10px] md:text-xs uppercase tracking-[0.3em] font-bold m-0">
+                <p className="text-[#C9A24A] text-[10px] md:text-xs uppercase tracking-[0.3em] font-bold m-0">
                   Planning Something Special?
                 </p>
                 <span className="w-12 h-[1px] bg-[#C9A24A]"></span>
@@ -45,7 +45,7 @@ export function CtaSection() {
                 />
                 <Link
                   href="/party-bulk-orders"
-                  className="inline-flex items-center justify-center whitespace-nowrap px-10 py-4 text-xs font-bold uppercase tracking-widest bg-[#C9A24A] text-white hover:bg-white hover:text-[#0B2118] transition-colors"
+                  className="inline-flex items-center justify-center whitespace-nowrap px-10 py-4 text-xs font-bold uppercase tracking-widest bg-[#C9A24A] text-[#0B2118] hover:bg-white hover:text-[#0B2118] transition-colors"
                 >
                   Inquire Now
                 </Link>

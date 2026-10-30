@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
+import { LazyVideo } from "@/components/atoms/LazyVideo";
 import { fadeUp, staggerFast } from "@/lib/animations";
 import { Button } from "@/components/atoms/Button";
 
 export function SignatureDishSection() {
-  const [videoLoaded, setVideoLoaded] = useState(false);
   return (
     <section className="bg-primary text-white py-12 md:py-16 overflow-hidden">
       <div className="container-x">
@@ -20,36 +20,20 @@ export function SignatureDishSection() {
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             className="relative aspect-square bg-white/5 overflow-hidden shadow-2xl"
           >
-            {/* Layer 1: Static poster — shows in <100ms, ALWAYS visible instantly */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            {/* Layer 1: Static poster (lazy, responsive) — visible until the video can play */}
+            <Image
               src="/images/dum-biryani-poster.jpg"
-              alt=""
-              aria-hidden="true"
-              fetchPriority="high"
-              decoding="sync"
-              className="absolute inset-0 w-full h-full object-cover z-0"
+              alt="Dum Matka Biryani slow-cooked in a sealed clay pot – OVOW FOODS signature pure veg biryani, Ahmedabad"
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover z-0"
             />
 
-            {/* Layer 2: Shimmer on top of image while video downloads */}
-            {!videoLoaded && (
-              <div className="absolute inset-0 z-[1] overflow-hidden">
-                <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-              </div>
-            )}
-
-            {/* Layer 3: Video — fades in smoothly when ready, covers image */}
-            <video
+            {/* Layer 2: Video — only downloads when scrolled into view */}
+            <LazyVideo
               src="/videos/dum-biryani.mp4"
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="auto"
-              disablePictureInPicture
-              disableRemotePlayback
-              onLoadedData={() => setVideoLoaded(true)}
-              className={`absolute inset-0 w-full h-full object-cover z-[1] transition-opacity duration-700 pointer-events-none ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+              poster="/images/dum-biryani-poster.jpg"
+              className="absolute inset-0 w-full h-full object-cover z-[1] pointer-events-none"
             />
 
             {/* Invisible touch-blocker: prevents Android from stealing taps */}
@@ -60,7 +44,7 @@ export function SignatureDishSection() {
             />
 
             {/* Badge */}
-            <div className="absolute top-6 left-6 bg-tertiary text-white px-4 py-2 text-xs font-bold uppercase tracking-widest shadow-lg z-10">
+            <div className="absolute top-6 left-6 bg-tertiary text-[#0B2118] px-4 py-2 text-xs font-bold uppercase tracking-widest shadow-lg z-10">
               Signature Dish
             </div>
           </motion.div>
@@ -73,7 +57,7 @@ export function SignatureDishSection() {
             viewport={{ once: true, margin: "-100px" }}
             className="flex flex-col items-start"
           >
-            <motion.p variants={fadeUp} className="text-xs uppercase tracking-widest text-tertiary font-bold mb-4">
+            <motion.p variants={fadeUp} className="text-xs uppercase tracking-widest text-[#C9A24A] font-bold mb-4">
               The Crown Jewel
             </motion.p>
             <motion.h2 variants={fadeUp} className="font-serif text-5xl md:text-7xl leading-tight mb-8">

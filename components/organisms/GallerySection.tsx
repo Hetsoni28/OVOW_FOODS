@@ -21,7 +21,7 @@ export function GallerySection() {
         viewport={{ once: true, margin: "-100px" }}
         variants={stagger}
       >
-        <motion.p variants={fadeUp} className="text-tertiary text-xs uppercase tracking-[.3em] mb-4">
+        <motion.p variants={fadeUp} className="text-[#86671C] text-xs uppercase tracking-[.3em] mb-4">
           Crave It
         </motion.p>
         <motion.h2 variants={fadeUp} className="font-serif text-5xl">Visual Stories.</motion.h2>
@@ -45,7 +45,7 @@ export function GallerySection() {
           >
             <Image
               src={img}
-              alt="Gallery image"
+              alt={`OVOW FOODS pure vegetarian dish ${idx + 1} – Ahmedabad`}
               fill
               sizes="(max-width: 768px) 85vw, 40vw"
               loading="lazy"

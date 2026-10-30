@@ -1,6 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
+import Image from "next/image";
+import { LazyVideo } from "@/components/atoms/LazyVideo";
 import { IconPlay, IconVolume2, IconVolumeX } from "@/components/atoms/Icons";
 
 const videos = [
@@ -33,12 +35,8 @@ const videos = [
 export function VideoReelSection() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [muted, setMuted] = useState(true);
-  const [videoLoaded, setVideoLoaded] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
   function handleChangeVideo(i: number) {
     setActiveIdx(i);
-    setVideoLoaded(false);
   }
 
   const active = videos[activeIdx];
@@ -55,29 +53,14 @@ export function VideoReelSection() {
         </h2>
       </div>
 
-      {/* Main video player */}
+      {/* Main video player — downloads only when scrolled into view */}
       <div className="relative aspect-[4/3] md:aspect-[21/9] bg-[#0B2118] overflow-hidden">
-        {/* Skeleton shimmer — shows while video is loading on mobile */}
-        {!videoLoaded && (
-          <div className="absolute inset-0 z-0 bg-white/5 overflow-hidden">
-            <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-          </div>
-        )}
-
-        {/* Video — fades in smoothly when ready */}
-        <video
-          ref={videoRef}
+        <LazyVideo
           key={active.src}
           src={active.src}
-          autoPlay
-          loop
+          poster={active.poster}
           muted={muted}
-          playsInline
-          preload="auto"
-          disablePictureInPicture
-          disableRemotePlayback
-          onLoadedData={() => setVideoLoaded(true)}
-          className={`absolute inset-0 w-full h-full object-cover opacity-90 z-[1] transition-opacity duration-700 pointer-events-none ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+          className="absolute inset-0 w-full h-full object-cover z-[1] pointer-events-none"
         />
 
         {/* Gradient overlay */}
@@ -104,7 +87,9 @@ export function VideoReelSection() {
           {/* Mute toggle */}
           <button suppressHydrationWarning
             onClick={() => setMuted((m) => !m)}
-            className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+            aria-label={muted ? "Unmute video" : "Mute video"}
+            aria-pressed={!muted}
+            className="w-11 h-11 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/20 transition-colors"
           >
             {muted ? <IconVolumeX size={16} /> : <IconVolume2 size={16} />}
           </button>
@@ -118,25 +103,21 @@ export function VideoReelSection() {
             <button suppressHydrationWarning
               key={v.src}
               onClick={() => handleChangeVideo(i)}
+              aria-label={`Play ${v.title}`}
+              aria-pressed={i === activeIdx}
               className={`relative aspect-video overflow-hidden transition-all duration-300 bg-white/5 ${
                 i === activeIdx
                   ? "ring-2 ring-[#C9A24A] opacity-100"
                   : "opacity-40 hover:opacity-70"
               }`}
             >
-              {/* Skeleton shimmer for thumbnails */}
-              <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-              </div>
-              {/* Video frame for thumbnail */}
-              <video
-                src={`${v.src}#t=0.001`}
-                muted
-                playsInline
-                preload="metadata"
-                disablePictureInPicture
-                disableRemotePlayback
-                className="absolute inset-0 w-full h-full object-cover"
+              {/* Poster image as thumbnail — no video download for the strip */}
+              <Image
+                src={v.poster}
+                alt=""
+                fill
+                sizes="25vw"
+                className="object-cover"
               />
               <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
                 {i === activeIdx ? (

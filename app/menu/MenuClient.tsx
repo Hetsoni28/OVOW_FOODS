@@ -60,8 +60,8 @@ export function MenuClient({
     };
 
     return filtered.sort((a, b) => {
-      const aIsTop = a.signature || a.isBestseller ? 1 : 0;
-      const bIsTop = b.signature || b.isBestseller ? 1 : 0;
+      const aIsTop = a.signature || a.isBestSeller || a.isBestseller ? 1 : 0;
+      const bIsTop = b.signature || b.isBestSeller || b.isBestseller ? 1 : 0;
 
       // DYNAMIC MODE: When viewing "All Menu Items"
       if (activeCategory === "All" && timeSeed !== 0) {
@@ -148,7 +148,7 @@ export function MenuClient({
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between py-6 gap-4">
           <div className="flex items-center gap-4">
-            <p className="text-[10px] uppercase tracking-[0.25em] font-bold text-primary/50 flex items-center gap-2">
+            <p className="text-[10px] uppercase tracking-[0.25em] font-bold text-primary/70 flex items-center gap-2">
               <IconSlidersHorizontal size={12} className="text-[#C9A24A]" />
               {filteredProducts.length} DISH{filteredProducts.length !== 1 && "ES"}
             </p>
@@ -172,6 +172,10 @@ export function MenuClient({
 
         {filteredProducts.length > 0 ? (
           <>
+            {/* Section heading for the dish grid (keeps h1 → h2 → h3 order for SEO/screen readers) */}
+            <h2 className="sr-only">
+              {activeCategory === "All" ? "All pure vegetarian dishes" : `${activeCategory} — pure vegetarian`}
+            </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8 lg:gap-12">
               {paginatedProducts.map((p) => {
                 return <ProductCard key={p.slug} product={p} fallbackVideo={undefined} />;
@@ -188,11 +192,11 @@ export function MenuClient({
                     document.body.scrollTop = 0;
                   }}
                   disabled={currentPage === 1}
-                  className="px-6 py-2 border border-[#C9A24A]/30 rounded-full text-[#C9A24A] text-xs font-bold uppercase tracking-widest disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#C9A24A] hover:text-white transition-all"
+                  className="px-6 py-2 border border-[#C9A24A]/30 rounded-full text-[#86671C] text-xs font-bold uppercase tracking-widest disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#C9A24A] hover:text-white transition-all"
                 >
                   Previous
                 </button>
-                <span className="text-primary/60 text-xs font-bold tracking-widest">
+                <span className="text-primary/70 text-xs font-bold tracking-widest">
                   {currentPage} / {totalPages}
                 </span>
                 <button suppressHydrationWarning
@@ -203,7 +207,7 @@ export function MenuClient({
                     document.body.scrollTop = 0;
                   }}
                   disabled={currentPage === totalPages}
-                  className="px-6 py-2 border border-[#C9A24A]/30 rounded-full text-[#C9A24A] text-xs font-bold uppercase tracking-widest disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#C9A24A] hover:text-white transition-all"
+                  className="px-6 py-2 border border-[#C9A24A]/30 rounded-full text-[#86671C] text-xs font-bold uppercase tracking-widest disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#C9A24A] hover:text-white transition-all"
                 >
                   Next
                 </button>

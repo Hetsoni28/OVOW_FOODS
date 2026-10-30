@@ -3,9 +3,11 @@
 import { IconMinus, IconPlus, IconTrash, IconSwaminarayan } from "@/components/atoms/Icons";
 import { CartItem as CartItemType } from "@/types";
 import { useCart } from "@/context/CartContext";
+import { getLineKey } from "@/lib/cart";
 
 export function CartItem({ item }: { item: CartItemType }) {
   const { increment, decrement, removeItem } = useCart();
+  const lineKey = getLineKey(item);
 
   return (
     <div className="flex items-start gap-4 py-5 border-b border-primary/10 last:border-0">
@@ -27,14 +29,14 @@ export function CartItem({ item }: { item: CartItemType }) {
         {item.extras && item.extras.length > 0 && (
           <div className="mt-1 flex flex-col gap-0.5">
             {item.extras.map((extra) => (
-              <p key={extra.name} className="text-[10px] text-[#C9A24A] font-bold">
+              <p key={extra.name} className="text-[10px] text-[#86671C] font-bold">
                 + {extra.name} (+₹{extra.price})
               </p>
             ))}
           </div>
         )}
-        <p className="text-xs text-primary/50 mt-0.5">{item.size}</p>
-        <p className="text-sm font-semibold text-[#C9A24A] mt-1">
+        <p className="text-xs text-primary/70 mt-0.5">{item.size}</p>
+        <p className="text-sm font-semibold text-[#86671C] mt-1">
           ₹{(item.price * item.quantity).toLocaleString("en-IN")}
         </p>
       </div>
@@ -42,19 +44,19 @@ export function CartItem({ item }: { item: CartItemType }) {
       {/* Qty controls */}
       <div className="flex items-center gap-2 mt-1">
         <button suppressHydrationWarning
-          onClick={() => decrement(item.slug)}
-          className="w-8 h-8 flex items-center justify-center border border-primary/20 text-primary hover:bg-primary hover:text-white transition-colors"
-          aria-label="Decrease quantity"
+          onClick={() => decrement(lineKey)}
+          className="w-10 h-10 flex items-center justify-center border border-primary/20 text-primary hover:bg-primary hover:text-white transition-colors"
+          aria-label={item.quantity === 1 ? `Remove ${item.name}` : `Decrease ${item.name} quantity`}
         >
           <IconMinus size={12} />
         </button>
-        <span className="w-6 text-center text-sm font-semibold text-primary">
-          {item.quantity}
+        <span className="w-6 text-center text-sm font-semibold text-primary" aria-live="polite">
+          <span className="sr-only">Quantity </span>{item.quantity}
         </span>
         <button suppressHydrationWarning
-          onClick={() => increment(item.slug)}
-          className="w-8 h-8 flex items-center justify-center border border-primary/20 text-primary hover:bg-primary hover:text-white transition-colors"
-          aria-label="Increase quantity"
+          onClick={() => increment(lineKey)}
+          className="w-10 h-10 flex items-center justify-center border border-primary/20 text-primary hover:bg-primary hover:text-white transition-colors"
+          aria-label={`Increase ${item.name} quantity`}
         >
           <IconPlus size={12} />
         </button>
@@ -62,9 +64,9 @@ export function CartItem({ item }: { item: CartItemType }) {
 
       {/* Remove */}
       <button suppressHydrationWarning
-        onClick={() => removeItem(item.slug)}
-        className="mt-1 text-primary/30 hover:text-red-500 transition-colors"
-        aria-label="Remove item"
+        onClick={() => removeItem(lineKey)}
+        className="w-10 h-10 -mt-1 -mr-2 flex items-center justify-center text-primary/70 hover:text-red-700 transition-colors"
+        aria-label={`Remove ${item.name} from cart`}
       >
         <IconTrash size={15} />
       </button>

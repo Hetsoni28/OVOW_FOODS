@@ -1,15 +1,22 @@
 import { MenuClient } from "./MenuClient";
 import type { Metadata } from "next";
+import { jsonLd, absoluteUrl, breadcrumbJsonLd } from "@/lib/seo";
 import { client } from "@/sanity/lib/client";
 import { ALL_PRODUCTS_QUERY, ALL_CATEGORIES_QUERY } from "@/sanity/lib/queries";
 import type { Product, Category } from "@/types";
 import { LazyVideo } from "@/components/atoms/LazyVideo";
 import { DownloadMenuButton } from "@/components/atoms/DownloadMenuButton";
+import Image from "next/image";
+import { cmsPageMetadata } from "@/lib/pageSeo";
 
-export const metadata: Metadata = {
-  title: "Menu",
-  description: "Explore our premium 100% pure vegetarian menu. Signature dishes, comfort meals, breads, and desserts.",
-};
+// Defaults below; editors can override them in Sanity Studio → Page SEO → "menu"
+export function generateMetadata(): Promise<Metadata> {
+  return cmsPageMetadata("menu", {
+    title: "Pure Veg Menu – Biryani, Paneer, Dal & Desserts",
+    description: "Browse the full OVOW FOODS menu — Dum Matka Biryani, premium paneer subjis, dal, rotis, desserts and sides. 100% pure vegetarian, Swaminarayan style available.",
+    path: "/menu",
+  });
+}
 
 export default async function Menu() {
   const [products, categories] = await Promise.all([
@@ -17,19 +24,35 @@ export default async function Menu() {
     client.fetch<Category[]>(ALL_CATEGORIES_QUERY, {}, { next: { revalidate: 60 } }),
   ]);
 
+  const menuSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "OVOW FOODS Menu",
+    itemListElement: products.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: absoluteUrl(`/menu/${p.slug}`),
+      name: p.name,
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-[#F8F4EA]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLd([menuSchema, breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Menu", path: "/menu" }])])}
+      />
       {/* ── Cinematic Hero Banner ── */}
       <section className="relative min-h-[45vh] md:min-h-[55vh] flex flex-col pt-[130px] md:pt-[160px] pb-12 overflow-hidden bg-[#0B2118]">
         {/* Layer 1: Static image fallback */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src="/images/hero-poster.jpg"
           alt=""
           aria-hidden="true"
-          fetchPriority="high"
-          decoding="async"
-          className="absolute inset-0 w-full h-full object-cover z-0"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover z-0"
         />
 
         {/* Layer 2: Video */}
@@ -38,6 +61,7 @@ export default async function Menu() {
           className="absolute inset-0 w-full h-full object-cover z-0 opacity-50"
           threshold={0}
           rootMargin="0px"
+          deferUntilIdle
         />
 
         {/* Layered gradient background over video */}
@@ -62,14 +86,14 @@ export default async function Menu() {
 
         {/* Hero Content */}
         <div className="relative z-10 container-x pb-8 w-full">
-          <p className="text-[#C9A24A] text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] mb-3">
-            ✦ Pure Vegetarian · Premium Quality
-          </p>
           <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.05] mb-4">
+            <span className="block font-sans text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] text-[#C9A24A] mb-3">
+              ✦ Pure Vegetarian Menu · Ahmedabad
+            </span>
             The OVOW<br />
             <span className="text-[#C9A24A]">Menu.</span>
           </h1>
-          <p className="text-white/50 text-sm md:text-base max-w-md leading-relaxed">
+          <p className="text-white/60 text-sm md:text-base max-w-md leading-relaxed">
             Curated cravings, crafted with love. Every dish tells a story.
           </p>
           <div className="mt-6">

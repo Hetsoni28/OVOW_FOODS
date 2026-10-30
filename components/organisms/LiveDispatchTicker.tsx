@@ -35,22 +35,31 @@ function TruckIcon() {
 export function LiveDispatchTicker({ events }: { events: OrderEvent[] }) {
   const [idx, setIdx] = useState(0);
   const [visible, setVisible] = useState(true);
+  // "3m ago" depends on the current time, so only render it in the browser —
+  // the server-rendered (cached) value would never match and cause a hydration error.
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (events.length <= 1) return;
+    let swap: ReturnType<typeof setTimeout> | undefined;
     const t = setInterval(() => {
       setVisible(false);
-      setTimeout(() => {
+      swap = setTimeout(() => {
         setIdx((i) => (i + 1) % events.length);
         setVisible(true);
       }, 400);
     }, 4000);
-    return () => clearInterval(t);
+    return () => {
+      clearInterval(t);
+      clearTimeout(swap);
+    };
   }, [events.length]);
 
   if (!events.length) return null;
 
-  const ev = events[idx];
+  const ev = events[idx % events.length];
 
   return (
     /* Full-width on mobile so it can breathe; auto/inline on md+ */
@@ -95,11 +104,15 @@ export function LiveDispatchTicker({ events }: { events: OrderEvent[] }) {
                   <span className="font-bold text-[#0B2118] whitespace-nowrap">
                     {ev.itemCount} {ev.itemCount === 1 ? "item" : "items"}
                   </span>
-                  <span className="text-[#0B2118]/40 font-medium whitespace-nowrap">dispatched to</span>
+                  <span className="text-[#0B2118]/70 font-medium whitespace-nowrap">dispatched to</span>
                   {/* Area truncates if very long */}
                   <span className="font-bold text-[#0B2118] truncate max-w-[100px] sm:max-w-none">{ev.area}</span>
-                  <span className="text-[#0B2118]/30 hidden sm:inline">·</span>
-                  <span className="text-[#0B2118]/35 font-medium whitespace-nowrap hidden sm:inline">{timeAgo(ev.placedAt)}</span>
+                  {mounted && (
+                    <>
+                      <span className="text-[#0B2118]/70 hidden sm:inline">·</span>
+                      <span className="text-[#0B2118]/70 font-medium whitespace-nowrap hidden sm:inline">{timeAgo(ev.placedAt)}</span>
+                    </>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -111,7 +124,7 @@ export function LiveDispatchTicker({ events }: { events: OrderEvent[] }) {
           {/* Recent badge — hidden on xs, visible sm+ */}
           <div className="hidden sm:flex items-center gap-1.5 bg-[#C9A24A]/10 border border-[#C9A24A]/25 rounded-full px-2.5 py-1 flex-shrink-0">
             <span className="w-1.5 h-1.5 rounded-full bg-[#C9A24A] flex-shrink-0" />
-            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#C9A24A]">
+            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#86671C]">
               {events.length} Recent
             </span>
           </div>

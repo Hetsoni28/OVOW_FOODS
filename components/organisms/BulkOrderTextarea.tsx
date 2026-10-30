@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent } from "react";
+import { ChangeEvent, useId } from "react";
 
 interface BulkOrderTextareaProps {
   label: string;
@@ -9,18 +9,15 @@ interface BulkOrderTextareaProps {
   placeholder?: string;
 }
 
-export function BulkOrderTextarea({
-  label,
-  value,
-  onChange,
-  placeholder
-}: BulkOrderTextareaProps) {
+export function BulkOrderTextarea({ label, value, onChange, placeholder }: BulkOrderTextareaProps) {
+  const id = useId();
   return (
     <div>
-      <label className="block text-xs uppercase tracking-widest font-bold text-primary/40 mb-2">
+      <label htmlFor={id} className="block text-xs uppercase tracking-widest font-bold text-primary/70 mb-2">
         {label}
       </label>
       <textarea
+        id={id}
         rows={2}
         value={value}
         onChange={onChange}

@@ -61,7 +61,7 @@ export function CraftSection() {
           {/* Right Block - Light Theme */}
           <motion.div variants={fadeUp} className="flex flex-col h-full">
             <div className="bg-white p-12 md:p-20 flex-1 flex flex-col justify-center border border-primary/5 hover:border-primary/20 transition-colors duration-500">
-              <span className="text-primary/40 text-[10px] md:text-xs uppercase tracking-[0.3em] font-bold mb-6 flex items-center gap-4">
+              <span className="text-primary/70 text-[10px] md:text-xs uppercase tracking-[0.3em] font-bold mb-6 flex items-center gap-4">
                 <span className="w-8 h-[1px] bg-primary/20"></span>
                 The Process
               </span>
@@ -73,13 +73,13 @@ export function CraftSection() {
               </p>
               
               <div className="flex items-center gap-6 pt-8 border-t border-primary/10 mt-auto">
-                <div className="w-14 h-14 rounded-full border border-[#C9A24A] flex flex-col items-center justify-center text-[#C9A24A] shrink-0">
+                <div className="w-14 h-14 rounded-full border border-[#C9A24A] flex flex-col items-center justify-center text-[#86671C] shrink-0">
                   <span className="text-[10px] font-bold uppercase tracking-widest leading-none mb-0.5">100%</span>
                   <span className="text-[8px] uppercase tracking-widest leading-none">Pure</span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className="text-primary font-bold text-xs md:text-sm tracking-widest uppercase">Vegetarian Excellence</span>
-                  <span className="text-primary/50 text-xs italic">Crafted for the conscious palate</span>
+                  <span className="text-primary/70 text-xs italic">Crafted for the conscious palate</span>
                 </div>
               </div>
             </div>

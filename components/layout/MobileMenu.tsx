@@ -4,6 +4,7 @@ import Link from "next/link";
 import { IconX } from "@/components/atoms/Icons";
 import { useEffect } from "react";
 import { InstallAppButton } from "@/components/atoms/InstallAppButton";
+import { useDialog } from "@/hooks/useDialog";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -20,6 +21,8 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
     { href: "/party-bulk-orders", label: "Bulk Orders" },
     { href: "/contact", label: "Contact" },
   ];
+
+  const dialogRef = useDialog<HTMLDivElement>(isOpen, onClose);
 
   // Lock/unlock body scroll using a CSS class (more reliable than inline style)
   useEffect(() => {
@@ -40,12 +43,19 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
       {/* Backdrop */}
       <div
         onClick={onClose}
+        aria-hidden="true"
         className="fixed inset-0 z-[99] bg-black/40"
         style={{ animation: "menuFadeIn 0.3s ease both" }}
       />
 
       {/* Drawer */}
       <div
+        id="mobile-menu"
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Site menu"
+        tabIndex={-1}
         className="fixed top-0 right-0 bottom-0 w-[85vw] max-w-sm z-[100] flex flex-col bg-[#F9F6F0] shadow-2xl"
         style={{ animation: "menuSlideIn 0.35s cubic-bezier(0.16,1,0.3,1) both" }}
       >
@@ -56,7 +66,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           </span>
           <button suppressHydrationWarning
             onClick={onClose}
-            className="p-2 text-primary hover:opacity-70 transition-opacity"
+            className="w-11 h-11 -mr-2 flex items-center justify-center text-primary hover:opacity-70 transition-opacity"
             aria-label="Close menu"
           >
             <IconX size={24} />
@@ -64,7 +74,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         </div>
 
         {/* Links — scrollable */}
-        <div className="flex flex-col px-6 py-6 gap-0 overflow-y-auto flex-1">
+        <nav aria-label="Mobile" className="flex flex-col px-6 py-6 gap-0 overflow-y-auto flex-1">
           {links.map((link) => (
             <Link
               key={link.href}
@@ -75,26 +85,26 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
               {link.label}
             </Link>
           ))}
-        </div>
+        </nav>
 
         {/* Footer — above mobile bottom bar (80px clearance) */}
         <div className="p-6 pb-24 border-t border-primary/10 flex-shrink-0 space-y-5">
           {/* Install App CTA */}
           <div>
-            <p className="text-xs uppercase tracking-widest text-primary/50 font-bold mb-3">
+            <p className="text-xs uppercase tracking-widest text-primary/70 font-bold mb-3">
               Quick Access
             </p>
             <InstallAppButton />
           </div>
 
           <div>
-          <p className="text-xs uppercase tracking-widest text-primary/50 font-bold mb-2">
+          <p className="text-xs uppercase tracking-widest text-primary/70 font-bold mb-2">
             Get in touch
           </p>
-          <a href="tel:+917567566214" className="text-primary hover:opacity-70 text-sm block mb-1 font-medium">
+          <a href="tel:+917567566214" className="text-primary hover:opacity-70 text-sm block py-2 font-medium">
             +91 75675 66214
           </a>
-          <a href="mailto:hello@ovowfoods.com" className="text-primary hover:opacity-70 text-sm block">
+          <a href="mailto:hello@ovowfoods.com" className="text-primary hover:opacity-70 text-sm block py-2">
             hello@ovowfoods.com
           </a>
           </div>

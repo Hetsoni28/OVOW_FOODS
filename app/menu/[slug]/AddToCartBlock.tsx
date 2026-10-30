@@ -33,7 +33,7 @@ export function AddToCartBlock({ product }: { product: Product }) {
 
   // Resolve status: new field takes priority, legacy boolean as fallback
   const status = product.availabilityStatus ?? (product.available === false ? 'soldout' : 'available');
-  const isSoldOut = status === 'soldout';
+  const isSoldOut = status === 'soldout' || product.available === false; // matches the product page badge
   const isLimited = status === 'limited';
 
   const handleDecrease = () => setQuantity((q) => Math.max(1, q - 1));
@@ -80,7 +80,7 @@ export function AddToCartBlock({ product }: { product: Product }) {
                 <p className="text-sm font-semibold text-primary/70">
                   We&apos;re preparing something delicious.
                 </p>
-                <p className="text-xs text-primary/40 mt-1 leading-relaxed">
+                <p className="text-xs text-primary/70 mt-1 leading-relaxed">
                   This item is temporarily unavailable. Please check back soon or explore our other dishes.
                 </p>
               </div>
@@ -88,7 +88,7 @@ export function AddToCartBlock({ product }: { product: Product }) {
           </div>
           <button
             disabled
-            className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-primary/5 text-primary/25 cursor-not-allowed border border-primary/[0.08]"
+            className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-primary/5 text-primary/70 cursor-not-allowed border border-primary/[0.08]"
           >
             <IconShoppingBag size={18} />
             <span className="text-[11px] font-bold uppercase tracking-[0.2em]">
@@ -128,13 +128,14 @@ export function AddToCartBlock({ product }: { product: Product }) {
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         className="mb-6"
       >
-        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/40 mb-3">
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/70 mb-3">
           Preparation Style
         </p>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3" role="group" aria-label="Preparation style">
           {/* Regular Option */}
           <button
             onClick={() => setVariant('regular')}
+            aria-pressed={variant === 'regular'}
             className={`relative flex flex-col items-center justify-center gap-2.5 p-4 border-2 transition-all duration-300 ${
               variant === 'regular'
                 ? 'border-[#C9A24A] bg-[#C9A24A]/5'
@@ -147,11 +148,11 @@ export function AddToCartBlock({ product }: { product: Product }) {
             </div>
             <div className="text-center">
               <p className={`text-xs font-bold uppercase tracking-widest ${
-                variant === 'regular' ? 'text-primary' : 'text-primary/60'
+                variant === 'regular' ? 'text-primary' : 'text-primary/70'
               }`}>
                 Regular
               </p>
-              <p className="text-[9px] text-primary/40 mt-0.5">With onion &amp; garlic</p>
+              <p className="text-[9px] text-primary/70 mt-0.5">With onion &amp; garlic</p>
             </div>
             {variant === 'regular' && (
               <motion.div
@@ -165,6 +166,7 @@ export function AddToCartBlock({ product }: { product: Product }) {
           {/* Swaminarayan Option */}
           <button
             onClick={() => setVariant('swaminarayan')}
+            aria-pressed={variant === 'swaminarayan'}
             className={`relative flex flex-col items-center justify-center gap-2.5 p-4 border-2 transition-all duration-300 ${
               variant === 'swaminarayan'
                 ? 'border-[#0B2118] bg-[#0B2118]/5'
@@ -175,11 +177,11 @@ export function AddToCartBlock({ product }: { product: Product }) {
             <IconSwaminarayan size={32} />
             <div className="text-center">
               <p className={`text-[9px] font-black uppercase tracking-[0.18em] mt-1 ${
-                variant === 'swaminarayan' ? 'text-[#0B2118]' : 'text-primary/50'
+                variant === 'swaminarayan' ? 'text-[#0B2118]' : 'text-primary/70'
               }`}>
                 Swaminarayan
               </p>
-              <p className="text-[8px] text-primary/35 mt-0.5">No onion or garlic</p>
+              <p className="text-[8px] text-primary/70 mt-0.5">No onion or garlic</p>
             </div>
             {variant === 'swaminarayan' && (
               <motion.div
@@ -200,11 +202,12 @@ export function AddToCartBlock({ product }: { product: Product }) {
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="mb-6"
         >
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/40 mb-3">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/70 mb-3">
             Add-ons
           </p>
           <button
             onClick={() => setWantsRaita((v) => !v)}
+            aria-pressed={wantsRaita}
             className={`w-full flex items-center gap-4 p-4 border-2 transition-all duration-300 text-left group ${
               wantsRaita
                 ? "border-[#C9A24A] bg-[#C9A24A]/5 shadow-[0_0_20px_rgba(201,162,74,0.12)]"
@@ -245,13 +248,13 @@ export function AddToCartBlock({ product }: { product: Product }) {
                   FREE
                 </span>
               </div>
-              <p className="text-xs text-primary/50 mt-0.5">
+              <p className="text-xs text-primary/70 mt-0.5">
                 Freshly prepared boondi raita — the perfect companion to your biryani
               </p>
             </div>
 
             {/* Price */}
-            <span className={`text-base font-serif font-bold flex-shrink-0 ${wantsRaita ? "text-green-600" : "text-primary/30"}`}>
+            <span className={`text-base font-serif font-bold flex-shrink-0 ${wantsRaita ? "text-green-600" : "text-primary/70"}`}>
               ₹0
             </span>
           </button>
@@ -273,7 +276,7 @@ export function AddToCartBlock({ product }: { product: Product }) {
               Customize Your Order
             </p>
           </div>
-          <span className="text-[9px] font-bold uppercase tracking-widest text-primary/30 bg-primary/5 px-2.5 py-1 border border-primary/10">
+          <span className="text-[9px] font-bold uppercase tracking-widest text-primary/70 bg-primary/5 px-2.5 py-1 border border-primary/10">
             Optional
           </span>
         </div>
@@ -286,6 +289,8 @@ export function AddToCartBlock({ product }: { product: Product }) {
               <motion.button
                 key={extra.id}
                 onClick={() => toggleExtra(extra.id)}
+                aria-pressed={isSelected}
+                aria-label={`${extra.name}, plus ₹${extra.price}`}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.05 * idx, duration: 0.3 }}
@@ -312,7 +317,7 @@ export function AddToCartBlock({ product }: { product: Product }) {
                 }`}>
                   <extra.Icon
                     size={20}
-                    className={`transition-colors duration-300 ${isSelected ? 'text-[#C9A24A]' : 'text-primary/40 group-hover:text-primary/60'}`}
+                    className={`transition-colors duration-300 ${isSelected ? 'text-[#86671C]' : 'text-primary/70 group-hover:text-primary/60'}`}
                   />
                 </div>
 
@@ -321,7 +326,7 @@ export function AddToCartBlock({ product }: { product: Product }) {
                   <p className={`text-sm font-bold tracking-wide transition-colors ${isSelected ? 'text-white' : 'text-primary'}`}>
                     {extra.name}
                   </p>
-                  <p className={`text-[10px] mt-0.5 transition-colors ${isSelected ? 'text-white/50' : 'text-primary/40'}`}>
+                  <p className={`text-[10px] mt-0.5 transition-colors ${isSelected ? 'text-white/60' : 'text-primary/70'}`}>
                     {extra.desc}
                   </p>
                 </div>
@@ -377,12 +382,12 @@ export function AddToCartBlock({ product }: { product: Product }) {
                   >
                     <IconCheck size={14} className="text-[#C9A24A]" strokeWidth={3} />
                   </motion.div>
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/70">
                     {selectedExtras.length} Extra{selectedExtras.length > 1 ? 's' : ''} Added
                   </span>
                 </div>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-[9px] font-bold uppercase tracking-widest text-primary/40">Extras Total</span>
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-primary/70">Extras Total</span>
                   <span className="font-serif text-lg font-black text-[#C9A24A]">+₹{extrasTotal}</span>
                 </div>
               </div>
@@ -400,13 +405,14 @@ export function AddToCartBlock({ product }: { product: Product }) {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={handleDecrease}
-            className="w-10 h-10 rounded-none bg-primary/5 flex items-center justify-center text-primary/60 hover:text-primary hover:bg-primary/10 transition-colors disabled:opacity-30 disabled:hover:bg-primary/5"
+            aria-label="Decrease quantity"
+            className="w-10 h-10 rounded-none bg-primary/5 flex items-center justify-center text-primary/70 hover:text-primary hover:bg-primary/10 transition-colors disabled:opacity-30 disabled:hover:bg-primary/5"
             disabled={quantity <= 1}
           >
             <IconMinus size={18} strokeWidth={2.5} />
           </motion.button>
 
-          <div className="relative w-8 h-8 flex items-center justify-center overflow-hidden">
+          <div className="relative w-8 h-8 flex items-center justify-center overflow-hidden" aria-live="polite" aria-label={`Quantity ${quantity}`} role="status">
             <AnimatePresence mode="popLayout">
               <motion.span
                 key={quantity}
@@ -424,7 +430,8 @@ export function AddToCartBlock({ product }: { product: Product }) {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={handleIncrease}
-            className="w-10 h-10 rounded-none bg-primary/5 flex items-center justify-center text-primary/60 hover:text-primary hover:bg-primary/10 transition-colors"
+            aria-label="Increase quantity"
+            className="w-10 h-10 rounded-none bg-primary/5 flex items-center justify-center text-primary/70 hover:text-primary hover:bg-primary/10 transition-colors"
           >
             <IconPlus size={18} strokeWidth={2.5} />
           </motion.button>
@@ -440,7 +447,7 @@ export function AddToCartBlock({ product }: { product: Product }) {
           className={`group relative overflow-hidden flex-1 w-full flex items-center justify-between px-8 py-4 rounded-none transition-all duration-500 shadow-xl ${
             added
               ? "bg-[#25D366] shadow-[#25D366]/30 text-white"
-              : "bg-[#C9A24A] shadow-[#C9A24A]/20 text-white hover:bg-[#0B2118] hover:shadow-[#0B2118]/20"
+              : "bg-[#C9A24A] shadow-[#C9A24A]/20 text-[#0B2118] hover:bg-[#0B2118] hover:text-white hover:shadow-[#0B2118]/20"
           }`}
         >
           {!added && (

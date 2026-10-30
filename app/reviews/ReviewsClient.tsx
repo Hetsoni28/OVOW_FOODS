@@ -27,10 +27,10 @@ export function ReviewsClient({ reviews }: { reviews: Review[] }) {
             initial="hidden"
             animate="visible"
           >
-            <motion.p variants={fadeUp} className="text-xs uppercase tracking-widest text-[#2E7D4F] font-bold mb-4">
-              Real Food. Real Love.
-            </motion.p>
             <motion.h1 variants={fadeUp} className="font-serif text-5xl md:text-6xl leading-tight mb-6">
+              <span className="block font-sans text-xs uppercase tracking-widest text-[#2E7D4F] font-bold mb-4">
+                OVOW FOODS Customer Reviews · Real Food. Real Love.
+              </span>
               What our guests say.
             </motion.h1>
             <motion.p variants={fadeUp} className="text-primary/70 mb-10">
@@ -78,12 +78,12 @@ export function ReviewsClient({ reviews }: { reviews: Review[] }) {
                 
                 <div className="relative z-10 flex items-center justify-between border-t border-primary/10 pt-6 mt-auto">
                   <p className="font-bold text-xs uppercase tracking-widest text-primary">{review.name}</p>
-                  <p className="text-[10px] uppercase tracking-widest text-primary/40 font-bold">{review.date}</p>
+                  <p className="text-[10px] uppercase tracking-widest text-primary/70 font-bold">{review.date}</p>
                 </div>
               </motion.div>
             ))}
             {reviews.length === 0 && (
-              <div className="col-span-full text-center text-primary/50 py-20 bg-white border border-primary/10">
+              <div className="col-span-full text-center text-primary/70 py-20 bg-white border border-primary/10">
                 No reviews published yet. Be the first to leave one!
               </div>
             )}
