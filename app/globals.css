@@ -134,3 +134,37 @@ html.menu-open body {
 .skip-link:focus {
   transform: translateY(0);
 }
+
+/* ── Landing page editorial details ───────────────────────────────────────── */
+/* Film-grain overlay for the deep-green sections (uses /public/noise.png) */
+.grain {
+  position: relative;
+  isolation: isolate;
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image: url("/noise.png");
+  background-size: 128px 128px;
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+}
+/* Hairline link underline that grows on hover/focus */
+.link-rule {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 100% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  /* extra block padding keeps the tap target ≥24px tall */
+  display: inline-block;
+  padding-top: 3px;
+  padding-bottom: 4px;
+  transition: background-size 0.35s ease;
+}
+.link-rule:hover {
+  background-size: 0% 1px;
+  background-position: 100% 100%;
+}

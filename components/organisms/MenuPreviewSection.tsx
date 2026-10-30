@@ -3,6 +3,8 @@ import { client } from "@/sanity/lib/client";
 import { HOME_FEATURED_PRODUCTS_QUERY } from "@/sanity/lib/queries";
 import type { Product } from "@/types";
 import Link from "next/link";
+import { SectionLabel } from "@/components/molecules/SectionLabel";
+import { IconArrowRight } from "@/components/atoms/Icons";
 
 export async function MenuPreviewSection() {
   const featuredProducts = await client.fetch<Product[]>(
@@ -12,23 +14,32 @@ export async function MenuPreviewSection() {
   );
 
   return (
-    <section className="bg-[#F4F1E9] py-24 md:py-32 text-primary relative overflow-hidden">
-      <div className="container-x text-center mb-12 md:mb-16 relative z-10">
-        <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl mb-4 text-[#0B2118]">
-          Curated Masterpieces
-        </h2>
-        <p className="opacity-80 max-w-2xl mx-auto text-sm md:text-base">
-          Experience our highest-rated signatures. Authentic subjis and dum biryanis, slow-cooked to absolute perfection.
-        </p>
-      </div>
+    <section className="bg-[#EFE9DB] py-24 text-primary md:py-32">
+      <div className="container-x">
+        {/* Header: label + title left, intro + link right */}
+        <div className="grid gap-8 border-b border-primary/15 pb-10 md:grid-cols-12 md:items-end md:pb-12">
+          <div className="md:col-span-7">
+            <SectionLabel index="02">From the menu</SectionLabel>
+            <h2 className="mt-6 font-serif text-5xl leading-[1] tracking-[-0.02em] text-[#0B2118] md:text-7xl">
+              Curated <em className="text-[#86671C]">masterpieces</em>
+            </h2>
+          </div>
+          <div className="md:col-span-5 md:pl-8">
+            <p className="max-w-sm text-[15px] leading-relaxed text-primary/80">
+              Our most-ordered subjis and dum biryanis, slow-cooked the old way. The selection changes through the day.
+            </p>
+            <Link
+              href="/menu"
+              className="group mt-6 inline-flex items-center gap-3 text-[13px] font-semibold uppercase tracking-[0.16em] text-[#0B2118]"
+            >
+              <span className="link-rule">See the full menu</span>
+              <IconArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+          </div>
+        </div>
 
-      <div className="container-x relative z-10">
-        <DynamicCuratedMasterpieces products={featuredProducts} />
-        
-        <div className="mt-12 md:mt-16 text-center">
-          <Link href="/menu" className="inline-flex items-center justify-center border border-[#C9A24A] text-[#86671C] px-8 py-3 text-sm tracking-[0.2em] uppercase hover:bg-[#C9A24A] hover:text-white transition-colors duration-300">
-            Explore Full Menu
-          </Link>
+        <div className="mt-12 md:mt-14">
+          <DynamicCuratedMasterpieces products={featuredProducts} />
         </div>
       </div>
     </section>

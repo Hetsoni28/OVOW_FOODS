@@ -38,7 +38,9 @@ export default async function Home() {
   let orderEvents: OrderEvent[] = [];
   try {
     const result = await client.fetch<OrderEvent[]>(RECENT_ORDER_EVENTS_QUERY);
-    orderEvents = Array.isArray(result) ? result : [];
+    // "Live from the kitchen" should only show recent orders (page revalidates every 60s)
+    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    orderEvents = (Array.isArray(result) ? result : []).filter((e) => new Date(e.placedAt).getTime() >= weekAgo);
   } catch {
     // Silently fail — ticker just won't show if Sanity is unavailable
   }
@@ -48,7 +50,7 @@ export default async function Home() {
       <HeroSection />
       {/* Live dispatch ticker — only shows when there are real events */}
       {orderEvents.length > 0 && (
-        <div className="bg-[#F9F6F0] py-4 border-b border-primary/5">
+        <div className="border-t border-white/10 bg-[#0B2118]">
           <LiveDispatchTicker events={orderEvents} />
         </div>
       )}

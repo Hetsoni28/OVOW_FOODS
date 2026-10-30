@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { IconPhone, IconInstagram, IconFacebook, IconMapPin } from "@/components/atoms/Icons";
 import { Logo } from "@/components/atoms/Logo";
 import { COMPANY_CONFIG } from "@/lib/config";
@@ -102,37 +101,25 @@ export function Footer() {
               &copy; {new Date().getFullYear()} OVOW Foods. All rights reserved.
             </p>
 
-            {/* Designer Badge */}
+            {/* Designer credit */}
             <a
-              href="https://hetsoni28-portfolio.vercel.app/"
+              href="https://www.hntech.in/"
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center gap-3 order-1 sm:order-2"
+              aria-label="Designed and developed by HNTECH (opens in a new tab)"
+              className="group flex items-center gap-3 order-1 sm:order-2 py-1"
             >
-              {/* Avatar — SH Logo */}
-              <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-[#C9A24A]/40 group-hover:border-[#C9A24A]/80 transition-all duration-300 shrink-0 group-hover:scale-110">
-                <Image
-                  src="/sh-logo.jpg"
-                  alt=""
-                  width={36}
-                  height={36}
-                  className="w-full h-full object-cover rounded-full"
-                />
-              </div>
-
-              {/* Text */}
-              <div className="flex flex-col text-left">
-                <span className="text-white/60 text-[8px] uppercase tracking-[0.25em] font-medium group-hover:text-white/40 transition-colors duration-300">
+              <span className="flex flex-col text-left">
+                <span className="text-white/60 text-[9px] uppercase tracking-[0.25em] font-medium">
                   Designed &amp; Developed by
                 </span>
-                <span className="text-[#C9A24A] group-hover:text-white transition-colors duration-300 text-[11px] font-bold uppercase tracking-[0.15em]">
-                  Soni Het
+                <span className="text-[#C9A24A] group-hover:text-white transition-colors duration-300 text-xs font-bold uppercase tracking-[0.2em]">
+                  HNTECH
                 </span>
-              </div>
-
-              {/* Arrow */}
+              </span>
               <svg
-                className="w-3 h-3 text-white/60 group-hover:text-[#C9A24A]/60 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300"
+                aria-hidden="true"
+                className="w-3 h-3 text-white/60 group-hover:text-[#C9A24A] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300"
                 fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
               >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M7 7h10v10" />
