@@ -233,6 +233,9 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
   const [mode, setMode] = useState<"default" | "search" | "filled">(value ? "filled" : "default");
   const [recentAddresses, setRecentAddresses] = useState<string[]>([]);
   const [activeIdx, setActiveIdx] = useState(-1); // keyboard-highlighted suggestion
+  // Query the current results belong to — "No results" only shows once a search
+  // for exactly what's typed has finished (not while the user is still typing)
+  const [searchedQuery, setSearchedQuery] = useState("");
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchSeqRef = useRef(0); // ignores responses from searches that are no longer the latest
@@ -426,10 +429,12 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
         setSuggestions(merged.slice(0, 8));
         setShowSuggestions(merged.length > 0);
         setActiveIdx(-1);
+        setSearchedQuery(q.trim());
       } catch {
         if (seq !== searchSeqRef.current) return;
         setSuggestions([]);
         setShowSuggestions(false);
+        setSearchedQuery(q.trim());
       } finally {
         if (seq === searchSeqRef.current) setSearching(false);
       }
@@ -450,6 +455,11 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
 
   // Combobox keyboard support: ↑/↓ to move, Enter to pick, Escape to close
   function handleSearchKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter" && activeIdx < 0 && searchQuery.trim().length >= 3) {
+      e.preventDefault();
+      applyTypedAddress();
+      return;
+    }
     if (!showSuggestions || suggestions.length === 0) {
       if (e.key === "Escape") setSearchQuery("");
       return;
@@ -468,6 +478,23 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
       setShowSuggestions(false);
       setActiveIdx(-1);
     }
+  }
+
+  // Many new societies aren't on OpenStreetMap yet — never dead-end the customer:
+  // put what they typed into the address box and let them add area + pincode.
+  function applyTypedAddress() {
+    const typed = searchQuery.trim();
+    if (!typed) return;
+    onChange(value && !value.toLowerCase().includes(typed.toLowerCase()) ? `${typed}, ${value}` : `${typed}, `);
+    setSearchQuery("");
+    setSuggestions([]);
+    setShowSuggestions(false);
+    setSearchedQuery("");
+    setMode("filled");
+    requestAnimationFrame(() => {
+      const el = document.getElementById("address") as HTMLTextAreaElement | null;
+      if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+    });
   }
 
   function handleSelectRecent(addr: string) {
@@ -573,9 +600,21 @@ export function SmartAddressField({ value, onChange, error }: SmartAddressFieldP
             {searching ? "Searching addresses…" : searchQuery.length >= 3 ? `${suggestions.length} address suggestion${suggestions.length === 1 ? "" : "s"} available` : ""}
           </p>
           {/* No results message */}
-          {!searching && searchQuery.length >= 3 && !showSuggestions && (
-            <div className="absolute top-full left-0 right-0 z-50 mt-1.5 bg-white border border-primary/10 rounded-xl shadow-lg px-4 py-3">
-              <p className="text-xs text-primary/70 text-center">No results found. Try a nearby landmark or type the address manually.</p>
+          {!searching && searchQuery.trim().length >= 3 && searchedQuery === searchQuery.trim() && !showSuggestions && (
+            <div className="absolute top-full left-0 right-0 z-50 mt-1.5 bg-white border border-primary/10 rounded-xl shadow-lg p-3 space-y-2">
+              <p className="text-xs text-primary/70 text-center">
+                Not on the map yet — that&apos;s common for newer societies.
+              </p>
+              <button
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={applyTypedAddress}
+                className="w-full flex items-center justify-center gap-2 px-3 py-3 rounded-lg bg-[#0B2118] text-white text-xs font-bold tracking-wide hover:bg-primary transition-colors"
+              >
+                <IconMapPin size={14} />
+                <span className="truncate">Use &ldquo;{searchQuery.trim()}&rdquo; as my address</span>
+              </button>
+              <p className="text-[11px] text-primary/70 text-center">Then add your area, landmark &amp; pincode below. Or tap &ldquo;Use my location&rdquo;.</p>
             </div>
           )}
         </div>

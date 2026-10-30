@@ -311,6 +311,11 @@ export function OrderReceipt({ orderId }: { orderId: string }) {
                           ? "✓ Payment marked done. Awaiting verification."
                           : "Awaiting confirmation"}
                     </p>
+                    {order.payment.utr && (
+                      <p className="text-xs text-primary/70 mt-1">
+                        UPI Ref No (UTR): <span className="font-mono font-bold text-primary tracking-wider">{order.payment.utr}</span>
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

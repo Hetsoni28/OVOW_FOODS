@@ -28,15 +28,20 @@ export default async function OrderActionPage({
   const resolvedSearchParams = await searchParams;
   const encodedPayload = resolvedSearchParams.d as string;
 
-  let orderData = { n: "Unknown Customer", p: "", a: "Unknown Address", t: "0" };
+  let orderData: { n: string; p: string; a: string; t: string | number; m?: "upi" | "cod"; u?: string } =
+    { n: "Unknown Customer", p: "", a: "Unknown Address", t: "0" };
 
   try {
     if (encodedPayload) {
-      orderData = { ...orderData, ...JSON.parse(decodeURIComponent(atob(encodedPayload))) };
+      // Older links weren't URL-encoded, so a "+" in the base64 arrives as a space
+      orderData = { ...orderData, ...JSON.parse(decodeURIComponent(atob(encodedPayload.replace(/ /g, "+")))) };
     }
   } catch (e) {
     console.error("Failed to parse order payload", e);
   }
+
+  // The link payload is customer-controlled — only show a well-formed 12-digit UTR
+  const utr = /^\d{12}$/.test(String(orderData.u ?? "")) ? String(orderData.u) : undefined;
 
   // Only expose WhatsApp/copy actions for a real 10-digit mobile number
   const phone = /^\d{10}$/.test(String(orderData.p)) ? String(orderData.p) : undefined;
@@ -78,16 +83,41 @@ export default async function OrderActionPage({
             </div>
           </div>
 
-          {/* Payment confirmed badge */}
-          <div className="flex items-center gap-3 bg-green-500/10 border border-green-500/20 p-4">
-            <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-              <IconCheckCircle size={16} className="text-green-400" />
+          {/* Payment status — the customer's claim, to be verified by the merchant */}
+          {orderData.m === "cod" ? (
+            <div className="flex items-center gap-3 bg-amber-500/10 border border-amber-500/20 p-4">
+              <div className="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                <IconCheckCircle size={16} className="text-amber-300" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-amber-200">Cash on Delivery</p>
+                <p className="text-[11px] text-amber-100/80 mt-0.5">Collect ₹{Number(orderData.t).toLocaleString("en-IN")} in cash at delivery.</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-bold text-green-300">Payment Marked as Completed</p>
-              <p className="text-[11px] text-green-400/60 mt-0.5">Verify UPI transaction screenshot before booking delivery.</p>
+          ) : (
+            <div className="bg-green-500/10 border border-green-500/20 p-4 space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                  <IconCheckCircle size={16} className="text-green-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-green-300">Customer says: UPI payment done</p>
+                  <p className="text-[11px] text-green-100/80 mt-0.5">Not verified yet — check your bank / UPI app before accepting.</p>
+                </div>
+              </div>
+              {utr ? (
+                <div className="flex items-center justify-between gap-3 bg-black/20 px-4 py-3">
+                  <div>
+                    <p className="text-[9px] uppercase tracking-widest text-white/60">UPI Ref No (UTR)</p>
+                    <p className="font-mono text-lg font-bold tracking-[0.15em] text-white">{utr}</p>
+                  </div>
+                  <p className="text-[10px] text-white/60 text-right max-w-[140px]">Search this number in your payment history</p>
+                </div>
+              ) : (
+                <p className="text-[11px] text-amber-200">No UTR provided — ask the customer for the 12-digit UPI reference number.</p>
+              )}
             </div>
-          </div>
+          )}
 
           {/* Customer info card */}
           <div className="bg-white/5 border border-white/10 overflow-hidden">

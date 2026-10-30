@@ -24,7 +24,7 @@ export function CheckoutStepPayment({ paymentMethod, setPaymentMethod, cart, car
           <h2 className="font-serif text-3xl md:text-4xl text-primary mb-3">Order Summary</h2>
           <p className="text-primary/70 text-sm">Review your items and choose payment method.</p>
         </div>
-        <button suppressHydrationWarning onClick={onBack} className="p-2 hover:bg-primary/5 rounded-full transition-colors group">
+        <button suppressHydrationWarning onClick={onBack} aria-label="Back to delivery details" className="w-11 h-11 flex items-center justify-center hover:bg-primary/5 rounded-full transition-colors group">
           <IconArrowLeft size={20} className="text-primary/40 group-hover:text-primary transition-colors" />
         </button>
       </motion.div>

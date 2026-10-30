@@ -2,30 +2,59 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { IconArrowLeft, IconCheck, IconCopy, IconAlertTriangle } from "@/components/atoms/Icons";
-import { useState } from "react";
-import Image from "next/image";
+import { useEffect, useState } from "react";
 import { pageAnim, childAnim } from "@/lib/animations";
 import { COMPANY_CONFIG } from "@/lib/config";
+import { UTR_LENGTH, isValidUtr, normalizeUtr } from "@/lib/upi";
 import { CheckoutOrderSummary } from "./CheckoutOrderSummary";
 import type { CartItem } from "@/types";
 
 interface CheckoutStepQRProps {
   orderId: string;
   cartTotal: number;
-  qrUrl: string;
   upiUri: string;
   cart: CartItem[];
-  onConfirmPayment: () => void;
+  onConfirmPayment: (utr: string) => void;
   onBack: () => void;
 }
 
-export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConfirmPayment, onBack }: CheckoutStepQRProps) {
+export function CheckoutStepQR({ orderId, cartTotal, upiUri, cart, onConfirmPayment, onBack }: CheckoutStepQRProps) {
   const [copiedUpi, setCopiedUpi] = useState(false);
+
+  // QR is drawn in the browser — no third-party QR service, works even if one is down.
+  // The library is loaded only on this step.
+  const [qrSrc, setQrSrc] = useState<string | null>(null);
+  const [qrFailed, setQrFailed] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    setQrSrc(null);
+    setQrFailed(false);
+    import("qrcode")
+      .then(({ default: QRCode }) =>
+        QRCode.toDataURL(upiUri, { width: 480, margin: 2, errorCorrectionLevel: "M", color: { dark: "#000000", light: "#ffffff" } })
+      )
+      .then((src) => { if (!cancelled) setQrSrc(src); })
+      .catch(() => { if (!cancelled) setQrFailed(true); });
+    return () => { cancelled = true; };
+  }, [upiUri]);
   const [copiedAmt, setCopiedAmt] = useState(false);
 
   // Set when the customer taps "Open UPI App". We never auto-confirm payment —
   // the order only moves on when they tap "I've Paid" themselves.
   const [upiLaunched, setUpiLaunched] = useState(false);
+  const [utr, setUtr] = useState("");
+  const [utrTouched, setUtrTouched] = useState(false);
+  const utrValid = isValidUtr(utr);
+  const showUtrError = utrTouched && !utrValid;
+
+  const handleConfirm = () => {
+    if (!utrValid) {
+      setUtrTouched(true);
+      document.getElementById("utr")?.focus();
+      return;
+    }
+    onConfirmPayment(utr);
+  };
 
   const copyUpi = () => {
     navigator.clipboard.writeText(COMPANY_CONFIG.upiId);
@@ -46,7 +75,7 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
           <h2 className="font-serif text-3xl md:text-4xl text-primary mb-2">Scan &amp; Pay</h2>
           <p className="text-primary/70 text-sm">Works with PhonePe, GPay, Paytm, BHIM &amp; all UPI apps</p>
         </div>
-        <button suppressHydrationWarning onClick={onBack} className="p-2 hover:bg-primary/5 rounded-full transition-colors group">
+        <button suppressHydrationWarning onClick={onBack} aria-label="Back to payment method" className="w-11 h-11 flex items-center justify-center hover:bg-primary/5 rounded-full transition-colors group">
           <IconArrowLeft size={20} className="text-primary/40 group-hover:text-primary transition-colors" />
         </button>
       </motion.div>
@@ -73,20 +102,28 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
               </div>
               <div className="flex items-center gap-1.5 mt-1">
                 <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                <span className="text-[10px] text-green-600 font-semibold uppercase tracking-widest">Amount pre-filled in QR</span>
+                <span className="text-[10px] text-green-700 font-semibold uppercase tracking-widest">Amount pre-filled in QR</span>
               </div>
             </div>
 
             {/* QR Code */}
             <div className="bg-white p-4 shadow-xl border border-primary/5 relative z-10">
-              <Image
-                src={qrUrl}
-                alt={`UPI QR Code — ₹${cartTotal.toLocaleString("en-IN")}`}
-                width={220}
-                height={220}
-                className="w-52 h-52 md:w-60 md:h-60 object-contain"
-                unoptimized
-              />
+              {qrSrc ? (
+                // eslint-disable-next-line @next/next/no-img-element -- data: URL generated on the device
+                <img
+                  src={qrSrc}
+                  alt={`UPI payment QR code for ₹${cartTotal.toLocaleString("en-IN")} to ${COMPANY_CONFIG.name}`}
+                  width={240}
+                  height={240}
+                  className="w-52 h-52 md:w-60 md:h-60 object-contain [image-rendering:pixelated]"
+                />
+              ) : qrFailed ? (
+                <div className="w-52 h-52 md:w-60 md:h-60 flex items-center justify-center text-center text-xs text-primary/70 p-4">
+                  Couldn&apos;t draw the QR code. Use &ldquo;Open UPI App&rdquo; or pay to the UPI ID below.
+                </div>
+              ) : (
+                <div className="w-52 h-52 md:w-60 md:h-60 bg-primary/5 animate-pulse" role="status" aria-label="Generating QR code" />
+              )}
             </div>
 
             <p className="text-[10px] text-primary/70 mt-3 z-10 relative text-center">
@@ -147,12 +184,47 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
                 <div className="bg-[#0B2118] text-white p-4">
                   <p className="text-sm font-bold text-white">Finished paying?</p>
                   <p className="text-[11px] text-white/60">
-                    Once the payment is successful, tap <span className="text-[#C9A24A] font-black">&ldquo;I&apos;ve Paid&rdquo;</span> below.
+                    Once the payment is successful, enter the 12-digit UPI reference number below and tap <span className="text-[#C9A24A] font-black">&ldquo;I&apos;ve Paid&rdquo;</span>.
                   </p>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* UPI reference number — lets the restaurant verify the payment in their bank app */}
+          <div className="border border-primary/10 bg-white p-5 space-y-2">
+            <label htmlFor="utr" className="block text-[11px] font-bold uppercase tracking-widest text-primary">
+              UPI Reference No. (UTR) <span aria-hidden="true" className="text-[#86671C]">·</span>
+              <span className="sr-only">(required)</span>
+            </label>
+            <input
+              id="utr"
+              type="text"
+              inputMode="numeric"
+              autoComplete="off"
+              // no maxLength: UTRs are often copied with spaces ("4123 4567 8901"),
+              // normalizeUtr strips non-digits and caps at 12
+              value={utr}
+              onChange={(e) => setUtr(normalizeUtr(e.target.value))}
+              onBlur={() => setUtrTouched(true)}
+              placeholder="12-digit number, e.g. 412345678901"
+              aria-required="true"
+              aria-invalid={showUtrError}
+              aria-describedby={showUtrError ? "utr-help utr-error" : "utr-help"}
+              className={`w-full border-b-2 bg-transparent py-2.5 text-lg font-mono tracking-[0.15em] text-primary placeholder:text-primary/40 placeholder:text-sm placeholder:tracking-normal placeholder:font-sans focus:outline-none transition-colors ${
+                showUtrError ? "border-red-400" : "border-primary/20 focus:border-[#86671C]"
+              }`}
+            />
+            <p id="utr-help" className="text-[11px] text-primary/70 leading-relaxed">
+              After paying, open the payment in your UPI app and copy the <strong>UPI Ref No / UTR / Transaction ID</strong> (12 digits).
+              We match it with our bank to confirm your order.
+            </p>
+            {showUtrError && (
+              <p id="utr-error" role="alert" className="text-[11px] text-red-700 font-semibold">
+                Enter the 12-digit UPI reference number ({utr.length}/{UTR_LENGTH} digits)
+              </p>
+            )}
+          </div>
 
           {/* Action Buttons */}
           <div className="flex gap-4 pt-2">
@@ -164,8 +236,11 @@ export function CheckoutStepQR({ orderId, cartTotal, qrUrl, upiUri, cart, onConf
               <span>1. Open UPI App</span>
             </a>
             <button suppressHydrationWarning
-              onClick={onConfirmPayment}
-              className="flex-1 flex flex-col items-center justify-center bg-[#C9A24A] text-[#0B2118] py-3 px-2 text-xs font-bold tracking-wider hover:bg-[#0B2118] hover:text-white transition-colors shadow-lg shadow-[#0B2118]/20"
+              onClick={handleConfirm}
+              aria-disabled={!utrValid}
+              className={`flex-1 flex flex-col items-center justify-center py-3 px-2 text-xs font-bold tracking-wider transition-colors shadow-lg shadow-[#0B2118]/20 ${
+                utrValid ? "bg-[#C9A24A] text-[#0B2118] hover:bg-[#0B2118] hover:text-white" : "bg-[#C9A24A]/50 text-[#0B2118]/70 cursor-not-allowed"
+              }`}
             >
               <span>2. I&apos;ve Paid ✓</span>
             </button>

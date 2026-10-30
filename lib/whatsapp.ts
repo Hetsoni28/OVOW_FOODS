@@ -131,7 +131,8 @@ export function buildCheckoutWhatsAppMessage(
   customer: CheckoutCustomerDetails,
   total: number,
   orderRef: string,
-  paymentMethod: "upi" | "cod" = "upi"
+  paymentMethod: "upi" | "cod" = "upi",
+  utr?: string
 ): string {
   const lines = items.flatMap(
     (item) => {
@@ -153,10 +154,13 @@ export function buildCheckoutWhatsAppMessage(
     n: customer.name,
     p: customer.mobile,
     a: customer.address,
-    t: total
+    t: total,
+    m: paymentMethod,
+    ...(utr && { u: utr }),
   }))) : "";
 
-  const actionLink = `${typeof window !== "undefined" ? window.location.origin : ""}/order-action/${orderRef}?d=${payload}`;
+  // base64 can contain "+" and "/" — encode so the link survives being opened from WhatsApp
+  const actionLink = `${typeof window !== "undefined" ? window.location.origin : ""}/order-action/${orderRef}?d=${encodeURIComponent(payload)}`;
 
   const deliveryLine = isPorter
     ? `💚 *PORTER DELIVERY* (Needs Booking)`
@@ -191,8 +195,9 @@ export function buildCheckoutWhatsAppMessage(
     isUpi
       ? `✅ *Method:* UPI / Online`
       : `💵 *Method:* Cash on Delivery (COD)`,
+    isUpi && utr ? `🔢 *UPI Ref No (UTR):* ${utr}` : undefined,
     isUpi
-      ? `⚠️ _Please verify payment in merchant app before fulfilling._`
+      ? `⚠️ _Verify this UTR in the bank / UPI app before accepting the order._`
       : `⚠️ _Collect cash of ₹${total.toLocaleString("en-IN")} at delivery._`,
     ``,
     isUpi ? `📸 *PAYMENT SCREENSHOT REQUIRED*` : undefined,

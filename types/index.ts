@@ -113,6 +113,7 @@ export interface Order {
     amount: number;
     customerConfirmation: "NOT_CONFIRMED" | "CUSTOMER_MARKED_PAID";
     verification: "PENDING" | "VERIFIED" | "FAILED";
+    utr?: string; // UPI reference number entered by the customer
   };
 
   orderStatus: OrderStatus;

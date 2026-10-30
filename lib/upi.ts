@@ -19,12 +19,18 @@ export function buildUpiUri(amount: number, orderRef: string): string {
   return `upi://pay?pa=${pa}&pn=${pn}&am=${am}&cu=${cu}&tn=${tn}`;
 }
 
+
 /**
- * Returns a URL to qrserver.com that generates a QR image for the UPI URI.
- * Uses the free public API — no npm package needed.
- * Size 300x300, medium error correction.
+ * UPI Reference Number (UTR / RRN): every UPI payment gets a 12-digit number,
+ * shown in the payer's app as "UPI Ref No", "UTR" or "UPI transaction ID".
+ * The merchant can search for it in their bank / UPI app to confirm the money arrived.
  */
-export function buildQrUrl(amount: number, orderRef: string): string {
-  const uri = buildUpiUri(amount, orderRef);
-  return `https://api.qrserver.com/v1/create-qr-code/?size=280x280&ecc=M&data=${encodeURIComponent(uri)}`;
+export const UTR_LENGTH = 12;
+
+export function normalizeUtr(input: string): string {
+  return input.replace(/\D/g, "").slice(0, UTR_LENGTH);
+}
+
+export function isValidUtr(utr: string): boolean {
+  return /^\d{12}$/.test(utr);
 }

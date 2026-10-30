@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/context/CartContext";
-import { buildUpiUri, buildQrUrl } from "@/lib/upi";
+import { buildUpiUri } from "@/lib/upi";
 import { generateOrderRef } from "@/lib/order";
 import { buildCheckoutWhatsAppMessage } from "@/lib/whatsapp";
 import { COMPANY_CONFIG } from "@/lib/config";
@@ -38,8 +38,7 @@ export function CheckoutClient() {
   
   const [orderId, setOrderId] = useState("");
   const [upiUri, setUpiUri] = useState("");
-  const [qrUrl, setQrUrl] = useState("");
-  const [finalCart, setFinalCart] = useState<{items: CartItem[], total: number, method: "upi" | "cod"} | null>(null);
+  const [finalCart, setFinalCart] = useState<{items: CartItem[], total: number, method: "upi" | "cod", utr?: string} | null>(null);
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -74,7 +73,7 @@ export function CheckoutClient() {
     setStep(2);
   };
 
-  const saveSnapshot = (method: "UPI" | "COD", confirmed: boolean) => {
+  const saveSnapshot = (method: "UPI" | "COD", confirmed: boolean, utr?: string) => {
     const orderSnapshot = {
       orderId,
       createdAt: new Date().toISOString(),
@@ -109,6 +108,7 @@ export function CheckoutClient() {
         method,
         amount: total,
         customerConfirmation: confirmed ? "CUSTOMER_MARKED_PAID" as const : "NOT_CONFIRMED" as const,
+        ...(utr && { utr }),
         verification: "PENDING" as const,
       },
       orderStatus: "RECEIVED" as const
@@ -148,15 +148,14 @@ export function CheckoutClient() {
     } else {
       // Build the QR from the payment method chosen on this step, not step 1
       setUpiUri(buildUpiUri(total, orderId));
-      setQrUrl(buildQrUrl(total, orderId));
       setStep(3); // Go to QR code for UPI, wait for user to confirm payment
     }
   };
 
-  const handleConfirmPayment = () => {
+  const handleConfirmPayment = (utr: string) => {
     recordOrder("upi");
-    saveSnapshot("UPI", true);
-    setFinalCart({ items: [...items], total, method: "upi" });
+    saveSnapshot("UPI", true, utr);
+    setFinalCart({ items: [...items], total, method: "upi", utr });
     clearCart();
     fireOrderEvent("upi");
     setStep(4);
@@ -204,7 +203,6 @@ export function CheckoutClient() {
               key="step3"
               orderId={orderId}
               cartTotal={total}
-              qrUrl={qrUrl}
               upiUri={upiUri}
               cart={items}
               onConfirmPayment={handleConfirmPayment}
@@ -218,7 +216,7 @@ export function CheckoutClient() {
               cartTotal={finalCart?.total || 0}
               handleSendWhatsApp={() => {
                 if (!finalCart) return;
-                const msg = buildCheckoutWhatsAppMessage(finalCart.items, details, finalCart.total, orderId, finalCart.method);
+                const msg = buildCheckoutWhatsAppMessage(finalCart.items, details, finalCart.total, orderId, finalCart.method, finalCart.utr);
                 window.open(`https://wa.me/${COMPANY_CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
               }}
             />
